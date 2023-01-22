@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
@@ -101,7 +101,10 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-
+  const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})
+  const transaction=[{name:"test1",address:"",id:"",date:new Date,amount:"", active:'false'},
+  {name:"test2",address:"",id:"",date:new Date,amount:"", active:'false'},
+  {name:"test3",address:"",id:"",date:new Date,amount:"", active:'false'}]
   const handleConnectClick = async () => {
     try {
       await connectSnap();
@@ -125,6 +128,14 @@ const Index = () => {
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
+
+  const onChange=(e:any)=>{
+    setFormData((prevState)=>({
+      ...prevState,
+      [e.target.name]: e.target.value
+      
+    }))
+  }
 
   return (
     <Container>
@@ -202,6 +213,26 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+        <div>
+            <h3>Payment</h3>
+            <div className = "field1">
+          
+            <input placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>        
+            <input placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>      
+            <input placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
+            <input placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
+            <input placeholder='Date' name="date" type='date' value={formData.date.toDateString()} onChange={onChange}/>      
+            </div>
+
+            <button  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
+        </div>
+
+        <div>
+          <h3>Transcations</h3>
+          {transaction.map((data)=>{
+            return <div>{data.name}</div>
+          })}
+        </div>
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
