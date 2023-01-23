@@ -5,6 +5,7 @@ import {
   connectSnap,
   getSnap,
   sendHello,
+  addData,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -129,11 +130,20 @@ const Index = () => {
     }
   };
 
+  const handleAddDataClick = async (data) => {
+    try {
+      await addData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
   const onChange=(e:any)=>{
     setFormData((prevState)=>({
       ...prevState,
       [e.target.name]: e.target.value
-      
+
     }))
   }
 
@@ -216,15 +226,15 @@ const Index = () => {
         <div>
             <h3>Payment</h3>
             <div className = "field1">
-          
-            <input placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>        
-            <input placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>      
-            <input placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
-            <input placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
-            <input placeholder='Date' name="date" type='date' value={formData.date.toDateString()} onChange={onChange}/>      
+
+            <input placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+            <input placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>
+            <input placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>
+            <input placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>
+            <input placeholder='Date' name="date" type='date' value={formData.date.toString()} onChange={onChange}/>
             </div>
 
-            <button  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
+            <button  className = "submitBtn" onClick={()=>{handleAddDataClick(formData)}}> submit</button>
         </div>
 
         <div>
