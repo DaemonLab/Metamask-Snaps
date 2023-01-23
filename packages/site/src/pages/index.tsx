@@ -5,6 +5,7 @@ import {
   connectSnap,
   getSnap,
   sendHello,
+  addData,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -129,11 +130,20 @@ const Index = () => {
     }
   };
 
+  const handleAddDataClick = async (data) => {
+    try {
+      await addData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
   const onChange=(e:any)=>{
     setFormData((prevState)=>({
       ...prevState,
       [e.target.name]: e.target.value
-      
+
     }))
   }
 
