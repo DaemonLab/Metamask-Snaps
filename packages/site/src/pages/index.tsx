@@ -102,9 +102,9 @@ const ErrorMessage = styled.div`
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
   const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})
-  const transaction=[{name:"test1",address:"",id:"",date:new Date,amount:"", active:'false'},
-  {name:"test2",address:"",id:"",date:new Date,amount:"", active:'false'},
-  {name:"test3",address:"",id:"",date:new Date,amount:"", active:'false'}]
+  const transaction=[{name:"test1",address:"",id:"",date:new Date,amount:"", active:true},
+  {name:"test2",address:"",id:"",date:new Date,amount:"10", active:false},
+  {name:"test3",address:"",id:"",date:new Date,amount:"0", active:false}]
   const handleConnectClick = async () => {
     try {
       await connectSnap();
@@ -213,25 +213,123 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <div>
-            <h3>Payment</h3>
-            <div className = "field1">
+        <div style={{
+          display: "flex",
+          flexDirection:"column",
+          backgroundColor:'black',
+          padding:6,
+          paddingLeft:16,
+          paddingRight:16,
+          rowGap:16,
+          border:'1px solid white',
+          borderRadius: 25
           
-            <input placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>        
-            <input placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>      
-            <input placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
-            <input placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
-            <input placeholder='Date' name="date" type='date' value={formData.date.toDateString()} onChange={onChange}/>      
+          
+          
+        }}>
+            
+            
+          <div className="" style={{
+          display: "flex",
+          flexDirection:"column",
+          rowGap:4
+          
+        }}>
+            <div style={
+              {
+                fontSize: 26,
+                fontWeight: "bold",
+                textAlign:"center",
+                marginBottom:10,
+                marginTop:10
+              }
+            }>Payment</div>
+            <div className="" style={{
+              display:"flex",
+              alignItems:"center",
+              columnGap:3,
+              rowGap:4
+              }}>
+                <input style={{height:24}} placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+            </div>   
+            <div className=""
+            style={{
+              display:"flex",
+              alignItems:"center",
+              columnGap:3
+              }}>
+           <input style={{height:24}}  placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>  
+              </div>     
+               
+            <input style={{height:24}} placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
+            <input style={{height:24}}  placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
+            <input style={{height:24}}  placeholder='Date' name="date" type='date' value={formData.date.toDateString()} onChange={onChange}/>      
+            
             </div>
-
-            <button  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
+            <button style={{marginBottom:6}}  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
         </div>
 
-        <div>
-          <h3>Transcations</h3>
+        <div  style={{
+          display: "flex",
+          flexDirection:"column",
+          backgroundColor:'black',
+          padding:6,
+          paddingLeft:16,
+          paddingRight:16,
+          rowGap:16,
+          border:'1px solid white',
+          borderRadius: 25 ,
+          width: '50%'
+          
+        }}>
+          <div className="" style={{
+          display: "flex",
+          flexDirection:"column",
+          rowGap:4,
+          margin:2
+        }}>
+          <div style={{
+                fontSize: 26,
+                fontWeight: "bold",
+                textAlign:"center",
+                marginBottom:10,
+                marginTop:10
+              }}>Transcations</div>
           {transaction.map((data)=>{
-            return <div>{data.name}</div>
+            return <div style={{
+              display:'flex',
+              justifyContent:'space-between',
+              paddingLeft:4,
+              paddingRight:4,
+                fontSize: 16,
+                fontWeight: "semibold",
+                border: '1px solid white',
+                borderRadius: 4,
+                backgroundColor: data.active? 'green' :'red',
+            }} className="">
+              <div className="">{data.name}</div>
+             
+              <div className=""style={{
+                  display:'flex',
+                  columnGap:4
+                  
+                }}>
+                   <div className="" style={{
+                  marginRight:4,
+                  fontWeight:'semibold'
+                }}>{data.amount}</div>
+                <button style={{
+                  padding:3,
+                  
+                }} onClick={()=>{console.log('Edit')}}> E</button>
+                <button style={{
+                  padding:3,
+                
+                }} onClick={()=>{console.log('Delete')}}> D</button>
+              </div>
+              </div>
           })}
+          </div>
         </div>
         <Notice>
           <p>
