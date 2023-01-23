@@ -1,0 +1,33 @@
+# Dependency directory
+node_modules
+
+# Annoying copies
+
+# MythX
+bin/
+
+# local env variables
+.env
+
+#buidler
+cache/
+
+# build directory
+artifacts/
+build/
+
+# OpenZeppelin SDK
+.openzeppelin/dev-*.json
+.openzeppelin/.session*
+.openzeppelin/.lock*
+
+# macOS
+.DS_Store
+*.icloud
+
+# solidity
+coverage*
+.coverage*
+
+# yarn
+yarn-error.log
