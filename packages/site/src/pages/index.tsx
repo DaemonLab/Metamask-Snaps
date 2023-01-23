@@ -130,7 +130,7 @@ const Index = () => {
     }
   };
 
-  const handleAddDataClick = async (data) => {
+  const handleAddDataClick = async (data:any) => {
     try {
       await addData(data);
     } catch (e) {
