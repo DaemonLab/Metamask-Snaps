@@ -16,6 +16,7 @@ import {
   Card,
   SendTransactButton,
 } from '../components';
+import './pages.css'
 
 const Container = styled.div`
   display: flex;
@@ -137,6 +138,10 @@ const Index = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    
+  }
+
   return (
     <Container>
       <Heading>
@@ -232,6 +237,27 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={handleSubmit}>
+              <div className="formdiv">
+                <label>From: </label>
+                <br/>
+                <input type="text" className='inputx'/>
+              </div>
+              <br/>
+              <div className="formdiv">
+                <label>To: </label>
+                <br/>
+                <input type="text" className='inputx'/>
+              </div>
+              <div className="formdiv">               
+                <input type="submit" className='btnx'/>
+              </div>
+            </form>
+          </div>
+        </div>
+        
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
