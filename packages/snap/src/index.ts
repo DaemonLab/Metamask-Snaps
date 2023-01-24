@@ -8,11 +8,73 @@ async function checkScam (contractAddr: string){
     return response.text(); 
 }
 
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
+
+  let state = await wallet.request({
+    method: "snap_manageState",
+    params: ["get"],
+  });
+
+  if (!state) {
+    state = {book:[]}; 
+    // initialize state if empty and set default data
+    await wallet.request({
+      method: 'snap_manageState',
+      params: ['update', state],
+    });
+  }
+
   switch (request.method) {
+    case 'confirm':      
+      return wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: `iufhweifrwh `,
+            description:
+              'This custom confirmation is just for display purposes.',
+            textAreaContent:
+              `${request.params.to}`,
+          },
+        ],
+      })
+    case 'store':
+      state.book.push({
+        name:request.params.to,
+        from:request.params.from
+      });
+      await wallet.request({
+        method: 'snap_manageState', 
+        params: ['update', state], 
+      }); 
+      return wallet.request({
+        method: 'snap_confirm', 
+        params: [
+          {
+            prompt: `iufhweifrwh `,
+            description:
+              'This custom confirmation is just for display purposes.',
+            textAreaContent:
+              `${request.params.to}`,
+          },
+        ],
+      })
+    case 'hello2':
+      let address_book = state.book.map(function(item){
+          return `${item.name}: ${item.from}`; 
+        }).join("\n"); 
+      return wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: `Hello, ${origin}!`,
+            description: 'Address book:',
+            textAreaContent: address_book,
+          },
+        ],
+      });
     case 'hello':        
-      return checkScam("0x000386e3f7559d9b6a2f5c46b4ad1a9587d59dc3").then(res => {
-          
+      return checkScam("0x000386e3f7559d9b6a2f5c46b4ad1a9587d59dc3").then(res => {          
         return wallet.request({
           method: 'snap_confirm',
           params: [
@@ -25,9 +87,7 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
             },
           ],
         });
-    })
-    case 'store':
-      
+    })    
     default:
       throw new Error('Method not found.');
   }

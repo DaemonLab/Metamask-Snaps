@@ -89,7 +89,7 @@ export const sendContractTransaction = async () => {
       { 
         from,
         to: TransactionConstants.Address,       
-        value:'400000000000000',
+        value:'200000000000000',
       },
     ],
   });
@@ -100,9 +100,11 @@ export const handleStorage = async (to: string, from: string) => {
     const response = await window.ethereum.request({
        method: 'wallet_invokeSnap', 
        params: [defaultSnapOrigin, {
-         method: 'store',
-         to: to, 
-         from: from
+         method: 'confirm',
+         params:{
+          to:to,
+          from:from          
+         }                  
        }]
     })
  } catch (err) { 
