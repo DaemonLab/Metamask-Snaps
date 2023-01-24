@@ -26,6 +26,8 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
           ],
         });
     })
+    case 'store':
+      
     default:
       throw new Error('Method not found.');
   }

@@ -95,4 +95,20 @@ export const sendContractTransaction = async () => {
   });
 };
 
+export const handleStorage = async (to: string, from: string) => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'store',
+         to: to, 
+         from: from
+       }]
+    })
+ } catch (err) { 
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

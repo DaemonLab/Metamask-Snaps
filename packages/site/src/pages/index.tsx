@@ -1,9 +1,11 @@
 import { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
   getSnap,
+  handleStorage,
   sendContractTransaction,
   sendHello,
   shouldDisplayReconnectButton,
@@ -104,6 +106,8 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
+  const [from, setfrom] = React.useState("");
+  const [to, setto] = React.useState("");
 
   const handleConnectClick = async () => {
     try {
@@ -138,8 +142,9 @@ const Index = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    handleStorage(to, from);
   }
 
   return (
@@ -239,17 +244,17 @@ const Index = () => {
         />
         <div className="cardx">
           <div className="form">
-            <form className='formx' onSubmit={handleSubmit}>
+            <form className='formx' onSubmit={(e) => handleSubmit(e)}>
               <div className="formdiv">
                 <label>From: </label>
                 <br/>
-                <input type="text" className='inputx'/>
+                <input type="text" className='inputx' onChange={(e) => setfrom(e.target.value)}/>
               </div>
               <br/>
               <div className="formdiv">
                 <label>To: </label>
                 <br/>
-                <input type="text" className='inputx'/>
+                <input type="text" className='inputx'onChange={(e) => setto(e.target.value)}/>
               </div>
               <div className="formdiv">               
                 <input type="submit" className='btnx'/>
