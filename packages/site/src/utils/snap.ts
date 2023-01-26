@@ -85,4 +85,34 @@ export const addData = async (obj: object) => {
   });
 };
 
+export const getData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getJobs',
+      },
+    ],
+  });
+  return data;
+};
+
+export const deleteData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'deleteJob',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

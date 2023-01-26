@@ -1,6 +1,6 @@
-import { useContext,useState } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
-import Table from './tables'
+import { display } from '@mui/system';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
@@ -8,6 +8,8 @@ import {
   sendHello,
   addData,
   shouldDisplayReconnectButton,
+  getData,
+  deleteData,
 } from '../utils';
 import {
   ConnectButton,
@@ -16,6 +18,7 @@ import {
   SendHelloButton,
   Card,
 } from '../components';
+import Table from './tables';
 
 const Container = styled.div`
   display: flex;
@@ -103,10 +106,22 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})
-  const transaction=[{name:"test1",address:"",id:"1",date:new Date,amount:"", active:true},
-  {name:"test2",address:"",id:"2",date:new Date,amount:"10", active:false},
-  {name:"test3",address:"",id:"3",date:new Date,amount:"0", active:false}]
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    id: '',
+    date: new Date(),
+    amount: '',
+    active: 'false',
+  });
+  const refreshTable = () => {
+    getData().then((data) => {
+      console.log(data);
+      setJobs(data);
+    });
+  };
+  const [jobs, setJobs] = useState(() => refreshTable());
+
   const handleConnectClick = async () => {
     try {
       await connectSnap();
@@ -131,22 +146,33 @@ const Index = () => {
     }
   };
 
-  const handleAddDataClick = async (data:any) => {
+  const handleAddDataClick = async (data: any) => {
     try {
       await addData(data);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
+    refreshTable();
   };
 
-  const onChange=(e:any)=>{
-    setFormData((prevState)=>({
-      ...prevState,
-      [e.target.name]: e.target.value
+  const handleDeleteDataClick = async (data: any) => {
+    try {
+      await deleteData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+    console.log('done');
+    refreshTable();
+  };
 
-    }))
-  }
+  const onChange = (e: any) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <Container>
@@ -224,64 +250,111 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <div style={{
-          display: "flex",
-          flexDirection:"column",
-          backgroundColor:'black',
-          padding:6,
-          paddingLeft:16,
-          paddingRight:16,
-          rowGap:16,
-          border:'1px solid white',
-          borderRadius: 25
-          
-          
-          
-        }}>
-            
-            
-          <div className="" style={{
-          display: "flex",
-          flexDirection:"column",
-          rowGap:4
-          
-        }}>
-            <div style={
-              {
-                fontSize: 26,
-                fontWeight: "bold",
-                textAlign:"center",
-                marginBottom:10,
-                marginTop:10
-              }
-            }>Payment</div>
-            <div className="" style={{
-              display:"flex",
-              alignItems:"center",
-              columnGap:3,
-              rowGap:4
-              }}>
-                <input style={{height:24}} placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>
-            </div>   
-            <div className=""
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'black',
+            padding: 6,
+            paddingLeft: 16,
+            paddingRight: 16,
+            rowGap: 16,
+            border: '1px solid white',
+            borderRadius: 25,
+          }}
+        >
+          <div
+            className=""
             style={{
-              display:"flex",
-              alignItems:"center",
-              columnGap:3
-              }}>
-           <input style={{height:24}}  placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>  
-              </div>     
-               
-            <input style={{height:24}} placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
-            <input style={{height:24}}  placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
-            <input style={{height:24}}  placeholder='Date' name="date" type='date' onChange={onChange}/>      
-            
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: 4,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 26,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginBottom: 10,
+                marginTop: 10,
+              }}
+            >
+              Payment
             </div>
-            <button style={{marginBottom:6}}  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
+            <div
+              className=""
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: 3,
+                rowGap: 4,
+              }}
+            >
+              <input
+                style={{ height: 24 }}
+                placeholder="Name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={onChange}
+              />
+            </div>
+            <div
+              className=""
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: 3,
+              }}
+            >
+              <input
+                style={{ height: 24 }}
+                placeholder="Address"
+                name="address"
+                type="text"
+                value={formData.address}
+                onChange={onChange}
+              />
+            </div>
+
+            <input
+              style={{ height: 24 }}
+              placeholder="ID"
+              name="id"
+              type="text"
+              value={formData.id}
+              onChange={onChange}
+            />
+            <input
+              style={{ height: 24 }}
+              placeholder="Amount"
+              name="amount"
+              type="number"
+              value={formData.amount}
+              onChange={onChange}
+            />
+            <input
+              style={{ height: 24 }}
+              placeholder="Date"
+              name="date"
+              type="date"
+              onChange={onChange}
+            />
+          </div>
+          <button
+            style={{ marginBottom: 6 }}
+            className="submitBtn"
+            onClick={() => {
+              console.log(formData);
+              handleAddDataClick(formData);
+            }}
+          >
+            {' '}
+            submit
+          </button>
         </div>
 
-       
-       
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
@@ -290,9 +363,9 @@ const Index = () => {
             field.
           </p>
         </Notice>
-      
       </CardContainer>
-      <Table data={transaction}  />
+
+      <Table data={jobs} deletefunc={handleDeleteDataClick} />
     </Container>
   );
 };
