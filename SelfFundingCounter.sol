@@ -46,12 +46,12 @@ contract SelfAutomatingCounters {
         address _registrar,
         AutomationRegistryBaseInterface _registry
     ) {
-        // Example 0x326C977E6efc84E512bB9C30f76E30c160eD06FB Goerli
+        // Example 0xFf7eA549a8D5973a1C7BCcb9a22F44B51bc22025 Goerli
         i_link = _link;
 
         // Example 0x9806cf6fBc89aBF286e8140C42174B94836e36F2 Goerli
         registrar = _registrar;
-        // 0x02777053d6764996e594c3E88AFID58D5363a2e6 Goerli
+        // 0x02777053d6764996e594c3E88AF1D58D5363a2e6 Goerli
         i_registry = _registry;
     }
     
