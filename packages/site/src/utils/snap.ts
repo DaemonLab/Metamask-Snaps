@@ -115,4 +115,21 @@ export const deleteData = async (data: any) => {
   }
 };
 
+export const updateData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'updateJob',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

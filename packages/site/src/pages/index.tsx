@@ -10,6 +10,7 @@ import {
   shouldDisplayReconnectButton,
   getData,
   deleteData,
+  updateData,
 } from '../utils';
 import {
   ConnectButton,
@@ -117,7 +118,10 @@ const Index = () => {
   const refreshTable = () => {
     getData().then((data) => {
       console.log(data);
-      setJobs(data);
+      if (data !== null) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        setJobs(data);
+      }
     });
   };
   const [jobs, setJobs] = useState(() => refreshTable());
@@ -159,6 +163,17 @@ const Index = () => {
   const handleDeleteDataClick = async (data: any) => {
     try {
       await deleteData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+    console.log('done');
+    refreshTable();
+  };
+
+  const handleUpdateDataClick = async (data: any) => {
+    try {
+      await updateData(data);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -365,7 +380,11 @@ const Index = () => {
         </Notice>
       </CardContainer>
 
-      <Table data={jobs} deletefunc={handleDeleteDataClick} />
+      <Table
+        data={jobs}
+        deletefunc={handleDeleteDataClick}
+        updatefunc={handleUpdateDataClick}
+      />
     </Container>
   );
 };

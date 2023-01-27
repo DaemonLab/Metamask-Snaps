@@ -45,7 +45,7 @@ const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const Table = ({ data, deletefunc }: any) => {
+const Table = ({ data, deletefunc, updatefunc }: any) => {
   const [dense, setDense] = useState(false);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -64,6 +64,7 @@ const Table = ({ data, deletefunc }: any) => {
   const handleClose = () => {
     console.log(formData);
     setOpen(false);
+    updatefunc(formData);
   };
 
   const onChange = (e: any) => {
