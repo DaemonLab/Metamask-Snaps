@@ -2,6 +2,7 @@ import { useContext,useState } from 'react';
 import styled from 'styled-components';
 import Table from './tables'
 import { MetamaskActions, MetaMaskContext } from '../hooks';
+import Sidebar from '../components/Sidebar';
 import {
   connectSnap,
   getSnap,
@@ -149,20 +150,23 @@ const Index = () => {
   }
 
   return (
+    <>
+   
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        hello
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+       startting
       </Subtitle>
+    
       <CardContainer>
         {state.error && (
           <ErrorMessage>
             <b>An error happened:</b> {state.error.message}
           </ErrorMessage>
         )}
-        {!state.isFlask && (
+        {/* {!state.isFlask && (
           <Card
             content={{
               title: 'Install',
@@ -188,7 +192,7 @@ const Index = () => {
             }}
             disabled={!state.isFlask}
           />
-        )}
+        )} */}
         {shouldDisplayReconnectButton(state.installedSnap) && (
           <Card
             content={{
@@ -205,6 +209,7 @@ const Index = () => {
             disabled={!state.installedSnap}
           />
         )}
+        
         <Card
           content={{
             title: 'Send Hello message',
@@ -224,6 +229,7 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+       
         <div style={{
           display: "flex",
           flexDirection:"column",
@@ -279,21 +285,10 @@ const Index = () => {
             </div>
             <button style={{marginBottom:6}}  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
         </div>
-
-       
-       
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
-      
       </CardContainer>
       <Table data={transaction}  />
     </Container>
+    </>
   );
 };
 

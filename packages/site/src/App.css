@@ -1,0 +1,29 @@
+/* grid centrer */
+.chat {
+  display: grid;
+  place-items: center;
+  background-color: #090e11;
+  color: #f1f1f2eb;
+  font-family: "Open sans";
+  height: 100vh;
+}
+.chat__body {
+  display: flex;
+  border-radius: 4px;
+  background-color: #2a2f32;
+  margin-top: -30px;
+  width: 90vw;
+  height: 90vh;
+  box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 0.75);
+  overflow-y: hidden;
+}
+/* #1d6f70 outgoing message */
+@media (max-width: 628px) {
+  .chat__body {
+    display: flex;
+    height: 100vh;
+    margin: 0 !important;
+    width: 100vw;
+    overflow-y: hidden;
+  }
+}

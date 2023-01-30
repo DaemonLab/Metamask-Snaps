@@ -1,9 +1,15 @@
 import { FunctionComponent, ReactNode, useContext } from 'react';
 import styled from 'styled-components';
 import { Footer, Header } from './components';
-
+import Sidebar from './components/Sidebar'
+import './App.css';
 import { GlobalStyle } from './config/theme';
 import { ToggleThemeContext } from './Root';
+
+import React,{useState} from 'react';
+import Chat from './components/Chat'
+import { BrowserRouter , Routes, Route } from "react-router-dom";
+import { useStateValue } from "./login/StateProvider";
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,13 +27,21 @@ export const App: FunctionComponent<AppProps> = ({ children }) => {
   const toggleTheme = useContext(ToggleThemeContext);
 
   return (
-    <>
+    <BrowserRouter>
       <GlobalStyle />
+      <Header handleToggleClick={toggleTheme} />
+      <div className="chat__body">
+      <Sidebar/>
+      <Routes>
+              <Route  path="/rooms/:roomId" element={<Chat />}/>
+              {/* <Route  path="/rooms/:roomId" element={<Chat />} /> */}
+      </Routes>
+      </div>
+      {children}
       <Wrapper>
-        <Header handleToggleClick={toggleTheme} />
-        {children}
+    
         <Footer />
       </Wrapper>
-    </>
+    </BrowserRouter>
   );
 };
