@@ -11,7 +11,7 @@ contacts : [
 ]
 balances : [
   {
-    name : string,
+    address : string,
     owedBalance : float
   }
 ]
