@@ -27,7 +27,7 @@ recurring_payments : [
     name : string,
     to : string,
     amount : float,
-    frequency : timestamp,
+    billDate : timestamp,
     activeStatus : boolean
   }
 ]
