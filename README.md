@@ -4,25 +4,25 @@
 ```js
 [
   {
-    public_address : string
+    public_address : string,
     contacts : [
       {
         name : string,
         address : string
       }
-    ]
+    ],
     balances : [
       {
         address : string,
         owedBalance : float
       }
-    ]
+    ],
     groups : [
       {
         group_id : reference,
         balancesOwed : float
       }
-    ]
+    ],
     recurring_payments : [
       {
         _id : id,
@@ -41,14 +41,15 @@
 ```js
 [
   {
-    _id : id
-    type : (group, personal)
+    _id : id,
+    name : string,
+    type : (group, personal),
     members : [
       {
         user : reference,
         owedBalance : float
       }
-    ]
+    ],
     splits : [
       {
         _id : id,
@@ -62,7 +63,7 @@
         ],
         chat : [
           {
-            _id : id
+            _id : id,
             date : timestamp,
             message : string
           }
