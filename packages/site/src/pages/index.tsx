@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
+  getaddress,
   getSnap,
   handleStorage,
   sendContractTransaction,
   sendHello,
+  handleTestx,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -106,8 +108,13 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [from, setfrom] = React.useState("");
+  const [name, setname] = React.useState("");
+  const [address, setaddress] = React.useState("");
   const [to, setto] = React.useState("");
+
+  const handleAdresses = async (e: any) => {
+    getaddress();
+  }
 
   const handleConnectClick = async () => {
     try {
@@ -133,9 +140,11 @@ const Index = () => {
     }
   };
 
-  const handleTranscation = async () => {
+  const handleTranscation = async (e: any) => {
+    e.preventDefault();
+
     try {
-      await sendContractTransaction();
+      await sendContractTransaction(to);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -144,9 +153,13 @@ const Index = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    handleStorage(to, from);
+    handleStorage(name, address);
   }
 
+  const handleTest = async (e:any) => {
+    e.preventDefault();
+    handleTestx();
+  }
   return (
     <Container>
       <Heading>
@@ -223,7 +236,7 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <Card
+        {/* <Card
           content={{
             title: 'Send Insights',
             description:
@@ -241,28 +254,61 @@ const Index = () => {
             Boolean(state.installedSnap) &&
             !shouldDisplayReconnectButton(state.installedSnap)
           }
-        />
+        /> */}
         <div className="cardx">
           <div className="form">
-            <form className='formx' onSubmit={(e) => handleSubmit(e)}>
-              <div className="formdiv">
+            <form className='formx' onSubmit={(e) => handleTranscation(e)}>
+              {/* <div className="formdiv">
                 <label>From: </label>
                 <br/>
                 <input type="text" className='inputx' onChange={(e) => setfrom(e.target.value)}/>
               </div>
-              <br/>
+              <br/> */}
               <div className="formdiv">
                 <label>To: </label>
                 <br/>
                 <input type="text" className='inputx'onChange={(e) => setto(e.target.value)}/>
               </div>
               <div className="formdiv">               
-                <input type="submit" className='btnx'/>
+                <input type="submit" className='btnx' value="Send Transaction"/>
               </div>
             </form>
           </div>
         </div>
-        
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={(e) => handleSubmit(e)}>
+              <div className="formdiv">
+                <label>Name: </label>
+                <br/>
+                <input type="text" className='inputx' onChange={(e) => setname(e.target.value)}/>
+              </div>
+              <br/>
+              <div className="formdiv">
+                <label>Adress: </label>
+                <br/>
+                <input type="text" className='inputx'onChange={(e) => setaddress(e.target.value)}/>
+              </div>
+              <div className="formdiv">               
+                <input type="submit" className='btnx' value="Add Address"/>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="cardx"> 
+        <h6>Get Adresses</h6>
+          <p className='crdtxt'>
+            Click this button to get addresses in your address book.
+          </p>         
+           <button className="btnx btn2" onClick={(e) => handleAdresses(e)}>Get Adresses</button>          
+        </div>        
+        <div className="cardx"> 
+        <h6>Test</h6>
+          <p className='crdtxt'>
+            Click this button to get addresses in your address book.
+          </p>         
+           <button className="btnx btn2" onClick={(e) => handleTest(e)}>Get Adresses</button>          
+        </div>    
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

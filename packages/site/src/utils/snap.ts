@@ -76,7 +76,7 @@ export enum TransactionConstants {
   Address = '0x000386e3f7559d9b6a2f5c46b4ad1a9587d59dc3',    
 }
 
-export const sendContractTransaction = async () => {
+export const sendContractTransaction = async (to: string) => {
   // Get the user's account from MetaMask.
   const [from] = (await window.ethereum.request({
     method: 'eth_requestAccounts',
@@ -88,7 +88,7 @@ export const sendContractTransaction = async () => {
     params: [
       { 
         from,
-        to: TransactionConstants.Address,       
+        to: to,
         value:'200000000000000',
       },
     ],
@@ -100,7 +100,7 @@ export const handleStorage = async (to: string, from: string) => {
     const response = await window.ethereum.request({
        method: 'wallet_invokeSnap', 
        params: [defaultSnapOrigin, {
-         method: 'confirm',
+         method: 'store',
          params:{
           to:to,
           from:from          
@@ -108,6 +108,34 @@ export const handleStorage = async (to: string, from: string) => {
        }]
     })
  } catch (err) { 
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
+export const getaddress = async () => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'hello2',                       
+       }]
+    })
+ } catch (err) { 
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
+export const handleTestx = async () => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'confirm2',                       
+       }]
+    })
+ } catch (err) {
     console.error(err)
     alert('Problem happened: ' + err.message || err)
  }

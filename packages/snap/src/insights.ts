@@ -1,9 +1,10 @@
-export async function getInsights(transaction: Record<string, unknown>, data: any) {
+export async function getInsights(transaction: Record<string, unknown>, res: string, spam: string) {
     try {     
       return {
         "Your ID": `${transaction.from}`,
-        "Recievers ID": `${transaction.to}`,
-        "is it safe": `${data}`,
+        "Recievers ID":`${transaction.to}`,
+        "Is it SPAM": `${spam}`,
+        "Recievers Balance Warning": `${res}`,
       };
     } catch (error) {
       console.error(error);
@@ -13,4 +14,4 @@ export async function getInsights(transaction: Record<string, unknown>, data: an
     }
   }
   
-  
+    
