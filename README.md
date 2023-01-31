@@ -2,63 +2,71 @@
 ## Schema
 ### Users
 ```js
-public_address : string
-contacts : [
+[
   {
-    name : string,
-    address : string
-  }
-]
-balances : [
-  {
-    address : string,
-    owedBalance : float
-  }
-]
-groups : [
-  {
-    group_id : reference,
-    balancesOwed : float
-  }
-]
-recurring_payments : [
-  {
-    _id : id,
-    name : string,
-    to : string,
-    amount : float,
-    billDate : timestamp,
-    activeStatus : boolean
+    public_address : string
+    contacts : [
+      {
+        name : string,
+        address : string
+      }
+    ]
+    balances : [
+      {
+        address : string,
+        owedBalance : float
+      }
+    ]
+    groups : [
+      {
+        group_id : reference,
+        balancesOwed : float
+      }
+    ]
+    recurring_payments : [
+      {
+        _id : id,
+        name : string,
+        to : string,
+        amount : float,
+        billDate : timestamp,
+        activeStatus : boolean
+      }
+    ]
   }
 ]
 ```
 
 ### Groups
 ```js
-_id : id
-type : (group, personal)
-members : [
+[
   {
-    user : reference,
-    owedBalance : float
-  }
-]
-splits : [
-  {
-    _id : id,
-    date : timestamp,
-    name : string,
-    involved : [
+    _id : id
+    type : (group, personal)
+    members : [
       {
         user : reference,
-        amount : float
+        owedBalance : float
       }
-    ],
-    chat : [
+    ]
+    splits : [
       {
-        _id : id
+        _id : id,
         date : timestamp,
-        message : string
+        name : string,
+        involved : [
+          {
+            user : reference,
+            amount : float
+          }
+        ],
+        chat : [
+          {
+            _id : id
+            date : timestamp,
+            message : string
+          }
+        ]
       }
     ]
   }
