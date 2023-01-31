@@ -1,7 +1,6 @@
+import Web3 from 'web3';
 import { defaultSnapOrigin } from '../config';
 import { GetSnapsResponse, Snap } from '../types';
-import { Buffer } from 'buffer';
-
 /**
  * Get the installed snaps in MetaMask.
  *
@@ -74,48 +73,35 @@ export const sendHello = async () => {
 };
 
 export const login = async () => {
-  console.log('login');
-
   const [from] = (await window.ethereum.request({
     method: 'eth_requestAccounts',
   })) as string[];
 
-  fetch('http://localhost:4000/message?' + new URLSearchParams({
-    address: from
-  }))
-    .then(async response => response.json())
-    .then(async data => {
-      if (data.error == null) {
-        try {
-          console.log('no error');
-          const msg = `0x${Buffer.from(data.messageToSign, 'utf8').toString('hex')}`;
-          const sign = await window.ethereum.request({
-            method: 'personal_sign',
-            params: [msg, from, 'Message Sign'],
-          })
-          if (sign) {
-            verifySignature(from, sign.toString());
-          }
-
-        } catch (error) {
-          console.log(error);
-
-        }
-
-      }
-    });
-}
-
-const verifySignature = async (from: string, signature: string) => {
-  fetch('http://localhost:4000/jwt?' + new URLSearchParams({
+  const msg = {
     address: from,
-    signature: signature
-  }))
-    .then(response => response.json())
-    .then(data => {
-      localStorage.setItem('jwt', JSON.stringify(data));
-    })
-}
+    time: new Date().getTime(),
+  };
+  const messageHash = Web3.utils.sha3(JSON.stringify(msg));
+  const sign = await window.ethereum.request({
+    method: 'personal_sign',
+    params: [messageHash, from],
+  });
 
+  const res = await fetch('http://localhost:4000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      signature: sign,
+      address: from,
+      time: msg.time,
+    }),
+  });
+
+  const data = await res.json();
+  localStorage.setItem('acces_token', data.accessToken);
+  localStorage.setItem('refresh_token', data.refreshToken);
+};
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

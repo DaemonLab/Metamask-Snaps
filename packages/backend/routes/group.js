@@ -1,11 +1,23 @@
 import express from 'express';
+import {
+  addSplit,
+  deleteSplit,
+  updateSplit,
+  addGroup,
+  listSplits,
+  listGroups,
+} from '../controllers/group.js';
+import { JwtGuard } from '../middleware/auth.js';
+
 const router = express.Router();
+router.use(JwtGuard);
 
-import { addSplit } from '../controllers/group.js';
-
-router.route('/').post(addGroup).get(listGroup);
-router.route(':gid/split').post(addSplit).get(listSplit);
-router.route(':gid/split/:sid').delete(deleteSplit).put(updateSplit).get(getSplits);
-router.route('')
+router.route('/').post(addGroup).get(listGroups);
+router.route(':gid/split').post(addSplit).get(listSplits);
+router
+  .route(':gid/split/:sid')
+  .delete(deleteSplit)
+  .put(updateSplit);
+// .get(getSplit);
 
 export default router;

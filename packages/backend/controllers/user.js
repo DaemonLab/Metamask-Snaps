@@ -1,98 +1,166 @@
-import Users from '../models/users.js'
+// change error 
+import { db } from '../firebase.js';
+import {
+  getDoc,
+  deleteDoc,
+  updateDoc,
+  runTransaction,
+  doc,
+} from '@firebase/firestore';
 
-export const getAllUsers = async(req,res) => {
+export const getUser = async (req, res) => {
   try {
-      const users = await Users.find({})
-      return res.status(201).json({"users":users})
-
+    console.log('getuser', req.body);
+    const docRef = db.collection('users').doc(req.body);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      return res.status(404).json({
+        message: 'user does not exists',
+      });
+    }
+    return res.status(200).json({ data: docSnap.data() });
   } catch (error) {
-      return res.status(404).json({"message":error})
+    console.log(error);
+    return res.status(404).json({ error: error.message });
   }
-}
+};
 
-export const deleteUser = async(req,res) => {
-    try {
-        const {userName : userName} = req.params
-        await Users.deleteOne({userName:userName});
-        return res.status(201).json({"message":"Deleted Successfully"})
+// Update user details
+export const updateuser = async (req, res) => {
+  try {
+    console.log('updateuser', req.body);
+    const docRef = db.collection('users').docSnap(req.body);
+    const docSnap = await getDoc(docRef, data);
 
-    } catch (error) {
-        return res.status(404).json({"message":error})
+    if (!docSnap.exists()) {
+      return res.status(404).json({
+        message: 'user does not exists',
+      });
     }
-}
 
-export const addUser = async(req,res) => {
-    try {
-        console.log("Adding a new user ",req.body)
-        const user = await Users.create(req.body)
-        return res.status(201).json({"newUser":user})
-
-    } catch (error) {
-        return res.status(404).json({"message":error})
-    }
-}
-
-export const getUser = async(req,res) => {
-    try {
-        const userName = req.userName
-        console.log("Get user admin called",userName)
-        const user = await Users.findOne({userName:userName})
-        return res.status(201).json({"user":user})
-
-    } catch (error) {
-        return res.status(404).json({message:error})
-    }
-}
-
-export const updateGeneralDetails = async(req,res) => {
-    try {
-
-        const userName = req.userName
-        console.log("Update general Details called",userName)
-
-        let user = await Users.findOne({userName:userName})
-        const versionIndex = (user.contentVersions).length - 1;
-
-        const updateDetails = req.body;
-        let name = updateDetails.name;
-        let socialMedia = updateDetails.socialMedia;
-        let caption = updateDetails.caption;
-        let email = updateDetails.email;
-        let phoneNumber = updateDetails.phoneNumber;
-        let themeDetails = updateDetails.themeDetails;
-        let publishedVersion = (user.contentVersions).length - 1
-
-        if(name){user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.userDetails.name`] : name}},{new:true})}
-        if(socialMedia){user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.userDetails.socialMedia`] : socialMedia}},{new:true})}
-        if(caption){ user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.homePagePoster.caption`] : caption}},{new:true})}
-        if(email){user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.contactDetails.email`] : email }},{new:true})}
-        if(phoneNumber){user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.contactDetails.phoneNumber`] : phoneNumber}},{new:true})}
-        if(themeDetails){user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions.${versionIndex}.themeDetails`] : themeDetails}},{new:true})}
-        if(publishedVersion){await Users.updateOne({userName:userName},{'$set': { [`publishedVersion`] : publishedVersion}},{new:true})}
-
-        return res.status(201).json({"updatedUser":user});
-
-    } catch (error) {
-        console.log(error)
-        return res.status(404).json({message:"Failed Update"})
-    }
-}
-
-export const publishVersion = async(req,res)=>{
-  try{
-        const userName = req.userName
-        console.log("Publish version called",userName)
-        let user = await Users.findOne({userName:userName})
-        let contentVersions = user.contentVersions
-
-        contentVersions[0] = contentVersions[1]
-
-        user = await Users.updateOne({userName:userName},{'$set': { [`contentVersions`] : contentVersions}},{new:true})
-        return res.status(201).json({"updatedUser":user})
-
+    const updated = await updateDoc(docRef, data, { merge: true });
   } catch (error) {
-    console.log(error)
-    return res.status(404).json({message:error})
+    return res.status(404).json({ error: error.message });
   }
+};
 
-}
+// Get Contact details
+export const getContact = async (req, res) => {
+  try {
+    console.log('getcontact', req.body);
+    const docRef = db.collection('users').doc(req.body);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      return res.status(404).json({
+        message: 'user does not exists',
+      });
+    }
+
+    const contact = await getDoc(doc(db, 'users', req.body, 'contacts'));
+    return res.status(200).json({ data: docSnap.data() });
+  } catch (error) {
+    return res.status(404).json({ error: error.message });
+  }
+};
+
+// Add Contact details
+export const addContact = async (req, res) => {
+  try {
+    const data = req.body;
+    const user = req.user;
+    console.log('user', user);
+    console.log('addcontact', data);
+
+    await runTransaction(db, async (transaction) => {
+      const docRef = doc(db, 'users', user);
+      const docSnap = await transaction.get(docRef);
+      if (!docSnap.exists()) {
+        throw 'Document does not exist!';
+      } else {
+        let contacts = docSnap.data().contacts || [];
+        let incomingContacts = data.contacts;
+        let reduced = contacts.filter(
+          (aitem) =>
+            !incomingContacts.find((bitem) => aitem.address === bitem.address),
+        );
+        let newContacts = reduced.concat(incomingContacts);
+        transaction.update(docRef, { contacts: newContacts });
+      }
+    });
+
+    return res.status(200).json({ status: 'OK' });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ error: error.message });
+  }
+};
+
+// Update Contact details
+export const updateContact = async (req, res) => {
+  try {
+    console.log('updatecontact', req.body);
+    const docSnap = db.collection('users').doc(req.body);
+    if (!docSnap.exists()) {
+      return res.status(404).json({
+        message: 'user does not exists',
+      });
+    }
+
+    //check if contact exists
+    if (
+      !docSnap.data().contacts.some((contact) => contact.id === req.body.id)
+    ) {
+      return res.status(404).json({
+        message: 'contact does not exists',
+      });
+    }
+
+    const contactRef = await doc(
+      db,
+      'users',
+      req.body,
+      'contacts',
+      req.body.id,
+    );
+    const updated = await updateDoc(contactRef, { merge: true });
+
+    return res.status(200).json({ data: docSnap.data() });
+  } catch (error) {
+    return res.status(404).json({ error: error.message });
+  }
+};
+
+// Delete Contact details
+export const deleteContact = async (req, res) => {
+  try {
+    console.log('deletecontact', req.body);
+    const docSnap = db.collection('users').doc(req.body);
+    if (!docSnap.exists()) {
+      return res.status(404).json({
+        message: 'user does not exists',
+      });
+    }
+
+    //check if contact exists
+    if (
+      !docSnap.data().contacts.some((contact) => contact.id === req.body.id)
+    ) {
+      return res.status(404).json({
+        message: 'contact does not exists',
+      });
+    }
+
+    const contactRef = await doc(
+      db,
+      'users',
+      req.body,
+      'contacts',
+      req.body.id,
+    );
+    const deleted = await deleteDoc(contactRef);
+
+    return res.status(200).json({ data: docSnap.data() });
+  } catch (error) {
+    return res.status(404).json({ error: error.message });
+  }
+};

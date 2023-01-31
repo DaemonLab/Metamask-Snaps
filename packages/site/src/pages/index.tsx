@@ -127,6 +127,7 @@ const Index = () => {
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
+
   const handleLoginClick = async () => {
     try {
       await login();
@@ -135,6 +136,7 @@ const Index = () => {
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
+
   return (
     <Container>
       <Heading>
@@ -214,8 +216,7 @@ const Index = () => {
         <Card
           content={{
             title: 'Login',
-            description:
-              'Login by signing a message',
+            description: 'Login by signing a message',
             button: (
               <LoginButton
                 onClick={handleLoginClick}
