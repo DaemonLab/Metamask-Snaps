@@ -10,6 +10,7 @@ import React,{useState} from 'react';
 import Chat from './components/Chat'
 import { BrowserRouter , Routes, Route } from "react-router-dom";
 import { useStateValue } from "./login/StateProvider";
+import Midbar from './components/Midbar';
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,7 +34,8 @@ export const App: FunctionComponent<AppProps> = ({ children }) => {
       <div className="chat__body">
       <Sidebar/>
       <Routes>
-              <Route  path="/rooms/:roomId" element={<Chat />}/>
+              <Route  path="/rooms/:roomId" element={<Midbar />}/>
+              <Route  path="/rooms/:roomId/transacts/:transactid" element={<Chat />}/>
               {/* <Route  path="/rooms/:roomId" element={<Chat />} /> */}
       </Routes>
       </div>

@@ -5,6 +5,7 @@ import { Avatar, IconButton, Tooltip } from '@mui/material';
 import { AddCircleOutline, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined, SearchRounded } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Sidebarchat from './SidebarChat';
+import Midbar from './Midbar';
 
 
 const Sidebar=()=> {
@@ -15,8 +16,17 @@ const Sidebar=()=> {
             message:{
                 
             }
+        }},
+        {
+        id:2,
+        data:{
+            name:'Room 2',
+            message:{
+                
+            }
         }
-    }]);
+      }
+    ]);
     // useEffect(() => 
     //   onSnapshot(collection(db,"rooms"),(snapshot) => 
     //         setRooms(snapshot.docs.map((doc) => ({

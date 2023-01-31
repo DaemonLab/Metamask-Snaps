@@ -2,23 +2,24 @@ import React,{useState,useEffect} from 'react'
 import "./Chat.css";
 import { Avatar,IconButton  } from '@mui/material';
 import Divider from '@mui/material/Divider';
-
+import Midbar from './Midbar';
 import { AttachFile, InsertEmoticonOutlined, MicOutlined, MoreVert, Search, SearchRounded } from '@mui/icons-material';
 import { useParams } from "react-router-dom";
 
 // import { Picker } from "emoji-mart";
-function Chat() {
+function Chat() {  
+  let {roomId, transactid} = useParams();  
+
     const[seed,setSeed]=useState("");
     const[input,setInput]=useState("");
-    const { roomId } = useParams();
     const [roomName, setRoomName] = useState("");
     const [messages, setMessages] = useState([{
         data:{
-            name:'A',
-            message:'Heelo',
-            timestamp:new Date,
+            name:`${roomId}`,
+            message:`Heefwfreglo ${transactid} `,
+            timestamp:new Date,        
         }
-    }]);;
+    }]);
 //     useEffect(() => {
 //     setSeed(Math.floor(Math.random()*5000))
 //     }, [])
@@ -104,6 +105,8 @@ const [lastseenPhoto, setLastseen] = useState("");
 //   }, [messages]);
 //   console.log(lastseenPhoto)
     return (
+      <>
+      <Midbar />
         <div className="Chat">
             <div className="Chat__header">
             <Avatar src={lastseenPhoto}/>
@@ -137,9 +140,9 @@ const [lastseenPhoto, setLastseen] = useState("");
        for eg : if a message is sent by sendwer the message color will be differnet and reciever color will be differfnt  */}
             {messages.map((message:any)=>(
                 <p className={`Chat__Messages  ${message.data.name === displayName && "Chat__Reciver"}`}>
-                <span className='Chat__Name'>{message.data.name}</span>
+                <span className='Chat__Name'>{message.data.name} </span>
                 <br></br>
-              {message.data.message}
+              {message.data.message} jfpoerw {transactid}
                 <span className='Chat__Time'>{message.data.timestamp.toUTCString().slice(5,12)}</span>
                 </p>
              ))}
@@ -178,6 +181,7 @@ const [lastseenPhoto, setLastseen] = useState("");
                 <IconButton><MicOutlined style={{color:"#B1B3B5",padding:"10px",}}/></IconButton>
             </div>
         </div>
+        </>
     )
 }
 
