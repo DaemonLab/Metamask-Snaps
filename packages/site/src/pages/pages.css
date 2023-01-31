@@ -7,6 +7,15 @@
     margin-top: 30px;
     margin-bottom: 30px;
 }
+.cardx2{
+    width: 280px;
+    height: 350px;
+    border: solid 1px white;
+    border-radius: 20px;
+    background-color: rgb(23, 23, 23);
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
 .form{
     height: 130px;
     padding: 30px;

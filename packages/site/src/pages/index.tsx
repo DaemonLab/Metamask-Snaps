@@ -110,6 +110,8 @@ const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
   const [name, setname] = React.useState("");
   const [address, setaddress] = React.useState("");
+  const [btc, setbtc] = React.useState("0");
+  const [btcadd, setbtcadd] = React.useState("");
   const [to, setto] = React.useState("");
 
   const handleAdresses = async (e: any) => {
@@ -154,6 +156,15 @@ const Index = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     handleStorage(name, address);
+  }
+
+  const handleSubmitBtc =async (e:any) => {
+    e.preventDefault();
+
+    const res = await fetch(`https://blockchain.info/q/addressbalance/${btcadd}?confirmations=3`)    
+    let data = await res.json();
+    console.log(data)
+    setbtc(data)
   }
 
   const handleTest = async (e:any) => {
@@ -273,6 +284,7 @@ const Index = () => {
                 <input type="submit" className='btnx' value="Send Transaction"/>
               </div>
             </form>
+           
           </div>
         </div>
         <div className="cardx">
@@ -295,13 +307,30 @@ const Index = () => {
             </form>
           </div>
         </div>
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={(e) => handleSubmitBtc(e)}>
+              <div className="formdiv">
+                <label>BTC Address: </label>
+                <br/>
+                <input type="text" className='inputx' onChange={(e) => setbtcadd(e.target.value)}/>
+              </div>                           
+              <div className="formdiv">               
+                <input type="submit" className='btnx' value="Get BTC Balance"/>
+              </div>
+            </form>
+            <p className='crdtxt'>              
+            {btc}
+            </p>
+          </div>
+        </div>
         <div className="cardx"> 
         <h6>Get Adresses</h6>
           <p className='crdtxt'>
             Click this button to get addresses in your address book.
           </p>         
            <button className="btnx btn2" onClick={(e) => handleAdresses(e)}>Get Adresses</button>          
-        </div>        
+        </div>           
         <div className="cardx"> 
         <h6>Test</h6>
           <p className='crdtxt'>
