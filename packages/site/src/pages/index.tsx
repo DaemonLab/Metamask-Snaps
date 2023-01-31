@@ -113,7 +113,7 @@ const Index = () => {
     id: '',
     date: new Date(),
     amount: '',
-    active: 'false',
+    active: true,
   });
   const refreshTable = () => {
     getData().then((data) => {

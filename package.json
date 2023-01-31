@@ -50,8 +50,12 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@metamask/key-tree": "^6.2.1",
+    "@metamask/snaps-types": "^0.28.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.6",
-    "@mui/x-data-grid": "^5.17.20"
+    "@mui/x-data-grid": "^5.17.20",
+    "@noble/bls12-381": "^1.4.0",
+    "ethers": "^5.7.2"
   }
 }
