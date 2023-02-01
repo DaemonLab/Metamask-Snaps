@@ -17,7 +17,7 @@
         owedBalance : float
       }
     ],
-    groups<collection> : [
+    groups<array> : [
       {
         group_id : reference,
         balancesOwed : float
@@ -44,13 +44,13 @@
     _id : id,
     name : string,
     type : (group, personal),
-    members : [
+    members<array> : [
       {
         user : reference,
         owedBalance : float
       }
     ],
-    splits : [
+    splits<collection> : [
       {
         _id : id,
         date : timestamp,
