@@ -11,11 +11,25 @@ async function checkScam (contractAddr: string){
     // Check if contract is spam
     const response = await fetch('https://eth-mainnet.g.alchemy.com/nft/v2/'+apiKey+'/isSpamContract?contractAddress='+contractAddr);
     return response.text(); 
-}
+  }
 
 async function checkTransacts (address: string){   
   // Check if account has any transaction or not
   const response = await fetch(`https://api.etherscan.io/api?module=account&action=balance&address=`+address+`&tag=latest&apikey=`+apiKey2);
+  return response.text(); 
+}
+
+async function hasTransacts (address: string){   
+  // Check if account has any transaction or not
+  const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&offset=10&sort=asc&apikey=${apiKey2}`);
+  return response.text(); 
+}
+
+//
+
+async function getFee (){   
+  // Check if account has any transaction or not
+  const response = await fetch(`https://api.blocknative.com/gasprices/blockprices`);
   return response.text(); 
 }
 
@@ -122,6 +136,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {  
   let result: any;
   let spam: any;
+  let fee: any;
+  let transacts: any;
+
   await checkTransacts(`${transaction.to}`).then( async res => {   
     const resx=JSON.parse(res);    
     result="ATTENTION: Recievers balance is 0"; 
@@ -132,8 +149,16 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   await checkScam(`${transaction.to}`).then(async res => {
     spam=res;
   })
+  await getFee().then(res => {
+    const res2 = JSON.parse(res);
+    fee = res2.blockPrices[0].estimatedPrices[0].maxFeePerGas
+  })
+  await hasTransacts(`${transaction.to}`).then(res => {
+    const res2 = JSON.parse(res);
+    transacts = res2.result.length
+  })
   return {
-    insights: await getInsights(transaction, result, spam)
+    insights: await getInsights(transaction, result, spam, fee, transacts)
   } 
   }
 
