@@ -5,19 +5,19 @@
 [
   {
     public_address : string,
-    contacts : [
+    contacts<array> : [
       {
         name : string,
         address : string
       }
     ],
-    balances : [
+    balances<array> : [
       {
         address : string,
         owedBalance : float
       }
     ],
-    groups : [
+    groups<collection> : [
       {
         group_id : reference,
         balancesOwed : float
