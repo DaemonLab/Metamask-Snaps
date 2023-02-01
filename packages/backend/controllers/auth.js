@@ -34,7 +34,7 @@ export const login = async (req, res) => {
       const accessToken = jwt.sign(
         { address },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' },
+        { expiresIn: '1d' },
       );
       const refreshToken = jwt.sign(
         { address },
@@ -54,10 +54,9 @@ export const login = async (req, res) => {
 };
 
 export const refresh = (req, res) => {
-  const { refreshToken } = req.body;
-
   try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKN_SECRET);
+    const { refreshToken } = req.body;
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const accessToken = jwt.sign(
       { address: decoded.address },
       process.env.ACCESS_TOKEN_SECRET,
@@ -67,6 +66,6 @@ export const refresh = (req, res) => {
     );
     res.json({ accessToken });
   } catch (error) {
-    res.status(401).json({ message: 'Refresh token is invalid' });
+    res.status(401).json({ message: error.message});
   }
 };

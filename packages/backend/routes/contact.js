@@ -1,16 +1,19 @@
 import express from 'express';
 import {
-  getUser,
-  updateUser,
-} from '../controllers/user.js';
+  getContact,
+  addContact,
+  updateContact,
+  deleteContact,
+} from '../controllers/contacts.js';
 import { JwtGuard } from '../middleware/auth.js';
 
 const router = express.Router();
 router.use(JwtGuard);
 
 router.route('/')
-  .get(getUser)
-  .post(updateUser);
-
+  .get(getContact)
+  .post(addContact)
+  .put(updateContact)
+  .delete(deleteContact);
 
 export default router;

@@ -5,6 +5,8 @@ import cors from 'cors';
 import { login, refresh } from './controllers/auth.js';
 import groupRoute from './routes/group.js';
 import userRoute from './routes/user.js';
+import contactRoute from './routes/contact.js';
+import splitRoute from "./routes/split.js";
 import { JwtGuard } from './middleware/auth.js';
 
 const app = express();
@@ -15,14 +17,20 @@ app.use(cors({ origin:'*' }))
 
 app.post('/login', login);
 app.post('/refresh', refresh);
+app.post('/contact', contactRoute);
 app.use('/group', groupRoute);
+app.use('/split', splitRoute);
 app.use('/user', userRoute);
+
+app.get('/', (req,res)=>{
+  return res.json({hello : "world"})
+})
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(
     `Server listening on http://localhost:${process.env.SERVER_PORT}!`,
   );
 });
-
 // *******************
-// TODO 2: adding people in groups
+// TODO 1: delete contact, update user, split all(*), get group
+// TOD0 200: remove returns from between

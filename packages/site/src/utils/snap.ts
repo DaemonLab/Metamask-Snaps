@@ -100,7 +100,7 @@ export const login = async () => {
   });
 
   const data = await res.json();
-  localStorage.setItem('acces_token', data.accessToken);
+  localStorage.setItem('access_token', data.accessToken);
   localStorage.setItem('refresh_token', data.refreshToken);
 };
 
