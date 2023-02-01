@@ -19,7 +19,7 @@
     ],
     groups<array> : [
       {
-        group_id : reference,
+        groupId : reference,
         balancesOwed : float
       }
     ],
