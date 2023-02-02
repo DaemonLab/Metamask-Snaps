@@ -6,6 +6,7 @@ import {
   updateDoc,
   runTransaction,
   doc,
+  setDoc,
 } from '@firebase/firestore';
 
 export const getUser = async (req, res) => {
@@ -29,9 +30,9 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     console.log('updateuser', req.body);
-    const data  = req.body.data;
+    const data = req.body;
     const docRef = doc(db, 'users', req.user);
-    const docSnap = await getDoc(docRef, data);
+    const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
       return res.status(404).json({
@@ -39,7 +40,7 @@ export const updateUser = async (req, res) => {
       });
     }
     const updated = await setDoc(docRef, data, { merge: true });
-    return res.status(200).json({ status : "Updated Sucessfully" });
+    return res.status(200).json({ status: 'Updated Sucessfully' });
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }

@@ -16,7 +16,7 @@ app.use(cors({ origin: '*' }));
 
 app.post('/login', login);
 app.post('/refresh', refresh);
-app.post('/contact', contactRoute);
+app.use('/contact', contactRoute);
 app.use('/group', groupRoute);
 app.use('/split', splitRoute);
 app.use('/user', userRoute);
@@ -32,6 +32,25 @@ app.listen(PORT, () => {
 });
 
 // *******************
-// TODO 1: delete contact, update user, split all(*), get group
-// TODO 2: make Dockerfile
+// TODO 1: split delete*, get, list
 // TOD0 200: remove returns from between
+
+  //Result addContact working, send data like this :
+  //  {"contacts" : [
+  //     {
+  //         "name" : "Gaurav good boy",
+  //         "address" : "0x8972"
+  //     },
+  //     {
+  //         "name": "Nilay",
+  //         "address": "0x1111"
+  //     }
+  // ]
+  // }
+  // response is {"status":"OK"}
+
+// Result deleteContact working, send data like this :
+  // {"address" : "0x8972"}
+  //  response is {"status":"OK"}
+
+// Update user working, keep user data in request body, response is {"status":"Updated Successfully"}

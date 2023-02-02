@@ -56,71 +56,17 @@ export const addContact = async (req, res) => {
   }
 };
 
-// Update Contact details
-export const updateContact = async (req, res) => {
-  try {
-    console.log('updatecontact', req.body);
-    const docSnap = db.collection('users').doc(req.body);
-    if (!docSnap.exists()) {
-      return res.status(404).json({
-        message: 'user does not exists',
-      });
-    }
-
-    //check if contact exists
-    if (
-      !docSnap.data().contacts.some((contact) => contact.id === req.body.id)
-    ) {
-      return res.status(404).json({
-        message: 'contact does not exists',
-      });
-    }
-
-    const contactRef = await doc(
-      db,
-      'users',
-      req.body,
-      'contacts',
-      req.body.id,
-    );
-    const updated = await updateDoc(contactRef, { merge: true });
-
-    return res.status(200).json({ data: docSnap.data() });
-  } catch (error) {
-    return res.status(404).json({ error: error.message });
-  }
-};
-
 // Delete Contact details
 export const deleteContact = async (req, res) => {
   try {
     console.log('deletecontact', req.body);
-    const docSnap = db.collection('users').doc(req.body);
-    if (!docSnap.exists()) {
-      return res.status(404).json({
-        message: 'user does not exists',
-      });
-    }
-
-    //check if contact exists
-    if (
-      !docSnap.data().contacts.some((contact) => contact.id === req.body.id)
-    ) {
-      return res.status(404).json({
-        message: 'contact does not exists',
-      });
-    }
-
-    const contactRef = await doc(
-      db,
-      'users',
-      req.body,
-      'contacts',
-      req.body.id,
+    let docSnap = await getDoc(doc(db, 'users', req.user));
+    const oldContacts = docSnap.data().contacts || [];
+    let newContacts = oldContacts.filter(
+      (contact) => contact.address !== req.body.address
     );
-    const deleted = await deleteDoc(contactRef);
-
-    return res.status(200).json({ data: docSnap.data() });
+    await updateDoc(doc(db, 'users', req.user), { contacts: newContacts });
+    return res.status(200).json({ status: 'OK' });
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }

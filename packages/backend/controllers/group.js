@@ -17,32 +17,28 @@ export const addGroup = async (req, res) => {
     await runTransaction(db, async (transaction) => {
       const groupRef = doc(collection(db, 'groups'));
 
-      const group = {
-        groupId: groupRef,
-        balanceOwed: 0,
-      };
-
       const transactionSnapshots = await Promise.all(
         data.users.map((mem) => getDoc(doc(db, 'users', mem))),
       );
 
       transactionSnapshots.forEach((transactionSnap) => {
         if (transactionSnap.exists()) {
-          let groups = transactionSnap.data().groups || [];
-          groups.push(group);
+          let groups = transactionSnap.data().groups || {};
+          groups[groupRef.id] = 0;
           transaction.update(transactionSnap.ref, { groups: groups });
         }
       });
 
+      const members = transactionSnapshots.reduce((acc, transactionSnap) => {
+        if (transactionSnap.exists()) acc[transactionSnap.data().address] = 0;
+        return acc;
+      }, {});
+
+      console.log(members);
       transaction.set(groupRef, {
         name: data.name,
         type: data.type,
-        members: data.users.map((member) => {
-          return {
-            user: member,
-            owedBalance: 0,
-          };
-        }),
+        members: members,
       });
     });
 
@@ -59,15 +55,11 @@ export const listGroups = async (req, res) => {
     const docSnap = await getDoc(doc(db, 'users', req.user));
 
     if (!docSnap.exists()) {
-      return res.status(404).json({
-        message: 'user does not exists',
-      });
+      throw new Error('user does not exists');
     }
 
     if (!docSnap.data().groups) {
-      return res.status(404).json({
-        message: 'you are not part of any group',
-      });
+      throw new Error('you are not part of any group');
     }
     const data = docSnap.data().groups;
     console.log('groups', data);
@@ -81,7 +73,6 @@ export const listGroups = async (req, res) => {
 export const getGroup = async (req, res) => {
   try {
     console.log('getgroup', req.body, req.params.gid);
-
     const docSnap = await getDoc(doc(db, 'groups', req.params.gid));
 
     if (!docSnap.exists()) {
@@ -120,23 +111,16 @@ export const addMember = async (req, res) => {
         throw new Error('Group does not exist!');
       }
 
-      const members = groupSnap.data().members || [];
-      console.log();
-      if (members.some((member) => member.user === data.address)) {
-        throw new Error('User already a member!');
+      const members = groupSnap.data().members || {};
+
+      // check if data.address is already in members map
+      if (members[data.address]) {
+        throw new Error('User already part of the group!');
       }
 
-      members.push({
-        user: data.address,
-        owedBalance: 0,
-      });
-
-      const groups = userSnap.data().groups || [];
-      groups.push({
-        groupId: groupRef,
-        balanceOwed: 0,
-      });
-
+      members[data.address] = 0;
+      const groups = userSnap.data().groups || {};
+      groups[data.groupId] = 0;
       transaction.set(userRef, { groups: groups }, { merge: true });
       transaction.set(groupRef, { members: members }, { merge: true });
     });
