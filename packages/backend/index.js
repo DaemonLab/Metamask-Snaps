@@ -26,11 +26,14 @@ app.get('/', (req,res)=>{
   return res.json({hello : "world"})
 })
 
-app.listen(process.env.SERVER_PORT, () => {
+const port = process.env.PORT || process.env.SERVER_PORT
+
+app.listen(port, () => {
   console.log(
-    `Server listening on http://localhost:${process.env.SERVER_PORT}`,
+    `Server listening on http://localhost:${port}`,
   );
 });
+
 // *******************
 // TODO 1: delete contact, update user, split all(*), get group
 // TOD0 200: remove returns from between
