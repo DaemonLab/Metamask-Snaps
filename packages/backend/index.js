@@ -6,14 +6,13 @@ import { login, refresh } from './controllers/auth.js';
 import groupRoute from './routes/group.js';
 import userRoute from './routes/user.js';
 import contactRoute from './routes/contact.js';
-import splitRoute from "./routes/split.js";
-import { JwtGuard } from './middleware/auth.js';
+import splitRoute from './routes/split.js';
 
 const app = express();
-dotenv.config({ path: 'env' });
+dotenv.config();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb', extended: true }));
-app.use(cors({ origin:'*' }))
+app.use(cors({ origin: '*' }));
 
 app.post('/login', login);
 app.post('/refresh', refresh);
@@ -22,14 +21,14 @@ app.use('/group', groupRoute);
 app.use('/split', splitRoute);
 app.use('/user', userRoute);
 
-app.get('/', (req,res)=>{
-  return res.json({hello : "world"})
-})
+app.get('/', (req, res) => {
+  return res.json({ hello: 'world' });
+});
 
-app.listen(process.env.SERVER_PORT, () => {
-  console.log(
-    `Server listening on port ${process.env.SERVER_PORT}`,
-  );
+const PORT = 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
 
 // *******************

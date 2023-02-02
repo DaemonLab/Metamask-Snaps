@@ -12,10 +12,7 @@ RUN npm ci --omit=dev
 
 # Bundle app source
 COPY . .
-COPY .env env
 
-SHELL ["/bin/bash", "-c", "source", "env"] 
-
-EXPOSE $SERVER_PORT
+EXPOSE 5000
 
 CMD [ "npm", "run", "build" ]
