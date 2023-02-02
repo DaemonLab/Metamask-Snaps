@@ -23,7 +23,7 @@ export const addGroup = async (req, res) => {
       };
 
       const transactionSnapshots = await Promise.all(
-        data.members.map((mem) => getDoc(doc(db, 'users', mem))),
+        data.users.map((mem) => getDoc(doc(db, 'users', mem))),
       );
 
       transactionSnapshots.forEach((transactionSnap) => {
