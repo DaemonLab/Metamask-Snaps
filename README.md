@@ -4,7 +4,7 @@
 ```js
 [
   {
-    public_address : string,
+    address : string,
     contacts<array> : [
       {
         name : string,
@@ -17,12 +17,9 @@
         owedBalance : float
       }
     ],
-    groups<array> : [
-      {
-        groupId : reference,
-        balancesOwed : float
-      }
-    ],
+    groups<Hashmap> : {
+      groupId: balanceOwed
+    },
     recurring_payments : [
       {
         _id : id,
@@ -44,12 +41,9 @@
     _id : id,
     name : string,
     type : (group, personal),
-    members<array> : [
-      {
-        user : reference,
-        owedBalance : float
-      }
-    ],
+    members<Hashmap> : {
+      user: owedBalance
+    },
     splits<collection> : [
       {
         _id : id,
