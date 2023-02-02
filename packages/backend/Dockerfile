@@ -13,6 +13,6 @@ RUN npm ci --omit=dev
 # Bundle app source
 COPY . .
 
-EXPOSE 5000
+EXPOSE $PORT
 
 CMD [ "npm", "run", "build" ]
