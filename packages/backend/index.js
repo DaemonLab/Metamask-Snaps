@@ -27,6 +27,7 @@ app.get('/', (req,res)=>{
 })
 
 const port = process.env.PORT || process.env.SERVER_PORT
+console.log(process.env, port);
 
 app.listen(port, () => {
   console.log(
