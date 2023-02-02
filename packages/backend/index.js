@@ -10,7 +10,7 @@ import splitRoute from "./routes/split.js";
 import { JwtGuard } from './middleware/auth.js';
 
 const app = express();
-dotenv.config({ path: '../../env' });
+dotenv.config({ path: 'env' });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb', extended: true }));
 app.use(cors({ origin:'*' }))
@@ -26,15 +26,13 @@ app.get('/', (req,res)=>{
   return res.json({hello : "world"})
 })
 
-const port = process.env.PORT || process.env.SERVER_PORT
-console.log(process.env, port);
-
-app.listen(port, () => {
+app.listen(process.env.SERVER_PORT, () => {
   console.log(
-    `Server listening on http://localhost:${port}`,
+    `Server listening on port ${process.env.SERVER_PORT}`,
   );
 });
 
 // *******************
 // TODO 1: delete contact, update user, split all(*), get group
+// TODO 2: make Dockerfile
 // TOD0 200: remove returns from between

@@ -21,9 +21,5 @@
     "firebase-admin": "^11.5.0",
     "jsonwebtoken": "^9.0.0",
     "web3": "^1.8.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20",
-    "npm-check-updates": "^16.6.3"
   }
 }
