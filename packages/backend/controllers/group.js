@@ -13,9 +13,10 @@ export const addGroup = async (req, res) => {
   try {
     const data = req.body;
     console.log('addgroup :', data);
-
+    data.users.push(req.user);
+    let groupRef;
     await runTransaction(db, async (transaction) => {
-      const groupRef = doc(collection(db, 'groups'));
+      groupRef = doc(collection(db, 'groups'));
 
       const transactionSnapshots = await Promise.all(
         data.users.map((mem) => getDoc(doc(db, 'users', mem))),
@@ -42,7 +43,7 @@ export const addGroup = async (req, res) => {
       });
     });
 
-    return res.status(200).json({ status: 'success' });
+    return res.status(200).json({ status: 'success' , groupId: groupRef.id });
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }
