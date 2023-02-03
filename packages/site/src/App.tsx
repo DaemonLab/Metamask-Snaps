@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode, useContext } from 'react';
+import { FunctionComponent, ReactNode, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { Footer, Header } from './components';
 import Sidebar from './components/Sidebar'
@@ -8,42 +8,50 @@ import { ToggleThemeContext } from './Root';
 
 import React,{useState} from 'react';
 import Chat from './components/Chat'
-import { BrowserRouter , Routes, Route } from "react-router-dom";
-import { useStateValue } from "./login/StateProvider";
-import Midbar from './components/Midbar';
+import { BrowserRouter , Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  max-width: 100vw;
-`;
+import Midbar from './components/Midbar';
+import { Box } from '@mui/system';
+import Login from './pages/Login';
+import Home from './pages/Home';
 
 export type AppProps = {
   children: ReactNode;
 };
+//children renders index.ts otherwise it wont be rendered
 
 export const App: FunctionComponent<AppProps> = ({ children }) => {
   const toggleTheme = useContext(ToggleThemeContext);
+  
 
+const [accessToken,setAccessToken] =useState(null);
+
+const setToken=()=>{
+  localStorage.getItem("access_token") !== undefined
+  ? setAccessToken(localStorage.getItem("access_token")):
+  setAccessToken(null)
+}
+const removeToken=()=>{
+  setAccessToken(null);
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+}
+useEffect(()=>{
+  console.log('App.tsx rendering')
+  setToken()
+})
+ 
   return (
-    <BrowserRouter>
+    <div >
       <GlobalStyle />
-      <Header handleToggleClick={toggleTheme} />
-      <div className="chat__body">
-      <Sidebar/>
+      <BrowserRouter>
       <Routes>
-              <Route  path="/rooms/:roomId" element={<Midbar />}/>
-              <Route  path="/rooms/:roomId/transacts/:transactid" element={<Chat />}/>
-              {/* <Route  path="/rooms/:roomId" element={<Chat />} /> */}
+      <Route  path="/home/*" element={<Home children={children} toggleTheme={toggleTheme}  accessToken={accessToken}  removeToken={removeToken}/>}>
+        </Route>
+        <Route path='/' element={<Login setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
+        
       </Routes>
-      </div>
-      {children}
-      <Wrapper>
-    
-        <Footer />
-      </Wrapper>
-    </BrowserRouter>
+      </BrowserRouter>
+    </div>
   );
 };

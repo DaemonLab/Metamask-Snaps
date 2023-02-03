@@ -1,5 +1,6 @@
 import { defaultSnapOrigin } from '../config';
 import { GetSnapsResponse, Snap } from '../types';
+import Web3 from 'web3';
 
 /**
  * Get the installed snaps in MetaMask.
@@ -84,5 +85,38 @@ export const addData = async (obj: object) => {
     ],
   });
 };
+
+export const login = async () => {
+  const [from] = (await window.ethereum.request({
+    method: 'eth_requestAccounts',
+  })) as string[];
+
+  const msg = {
+    address: from,
+    time: new Date().getTime(),
+  };
+  const messageHash = Web3.utils.sha3(JSON.stringify(msg));
+  const sign = await window.ethereum.request({
+    method: 'personal_sign',
+    params: [messageHash, from],
+  });
+
+  const res = await fetch('https://knotty-calendar-production.up.railway.app/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      signature: sign,
+      address: from,
+      time: msg.time,
+    }),
+  });
+
+  const data = await res.json();
+  localStorage.setItem('access_token', data.accessToken);
+  localStorage.setItem('refresh_token', data.refreshToken);
+};
+
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

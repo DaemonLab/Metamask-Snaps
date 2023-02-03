@@ -1,11 +1,12 @@
 import React,{useState,useEffect} from 'react'
 import "./sidebarchat.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
+import axios from'axios';
 const Sidebarchat =(props: any)=> {
   // calling from anaother page and rendering props
-  const { addNewChat, name, id } = props;
+  const { addNewChat, name, id,access} = props;
   const [messages, setMessages] = useState('');
   //generating random avatar
     const[seed,setSeed]=useState("");
@@ -36,8 +37,30 @@ const Sidebarchat =(props: any)=> {
 //     }
   
 //   }, [id])
+const getTrans=async()=>{
+  try{
+  const res=await axios.get(
+    'https://knotty-calendar-production.up.railway.app/group/eocVicbi3FLtK7OLW6Ln',
+    {
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${access}` 
+        }
+  })
+    const data=res.data;
+    console.log(data)
+    }
+  catch(err)
+  {
+    console.log(err);
+  }
+}
+const navigate=useNavigate();
     return addNewChat!=="true"?(
-      <Link to ={`/rooms/${id}`}  style={{textDecoration:"none"}}>
+      <div onClick={async()=>{
+        await getTrans();
+        navigate(`/home/rooms/${id}`);
+      }} style={{textDecoration:"none"}}>
         <div className="Sidebarchat">
          <Avatar style={{padding:"0 15px 0 13px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
          <div className="SidebarChat_info">
@@ -46,7 +69,7 @@ const Sidebarchat =(props: any)=> {
              {/* <p >{messages[0]?.data.message}</p> */}
          </div>
         </div>
-        </Link>
+        </div>
     ):(
         null
     )

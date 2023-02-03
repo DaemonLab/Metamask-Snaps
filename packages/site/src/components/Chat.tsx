@@ -7,7 +7,7 @@ import { AttachFile, InsertEmoticonOutlined, MicOutlined, MoreVert, Search, Sear
 import { useParams } from "react-router-dom";
 
 // import { Picker } from "emoji-mart";
-function Chat() {  
+function Chat({rooms}:any) {  
   let {roomId, transactid} = useParams();  
 
     const[seed,setSeed]=useState("");
@@ -106,7 +106,7 @@ const [lastseenPhoto, setLastseen] = useState("");
 //   console.log(lastseenPhoto)
     return (
       <>
-      <Midbar />
+      <Midbar rooms={rooms}/>
         <div className="Chat">
             <div className="Chat__header">
             <Avatar src={lastseenPhoto}/>
@@ -150,7 +150,7 @@ const [lastseenPhoto, setLastseen] = useState("");
             </div>
                 ):( 
                 <div className="Chat__body" onClick={checkEmojiClose}>
-              {search.map((message)=>(
+              {search.map((message:any)=>(
                 <p className={`Chat__Messages  ${message.data.name === displayName && "Chat__Reciver"}`}>
                 <span className='Chat__Name'>{message.data.name}</span>
                 <br></br>
@@ -163,12 +163,12 @@ const [lastseenPhoto, setLastseen] = useState("");
             )}
 
             <div className="Chat__footer">
-            <IconButton>
+            <IconButton onClick={() => setEmoji(!emoji)}>
               {/* <InsertEmoticonIcon /> */}
               <InsertEmoticonOutlined 
               
                 style={{color:"#B1B3B5"}}
-                onClick={() => setEmoji(!emoji)}
+                
               />
               {/* {emoji ? <Picker className="emoji-mart-dark" onSelect={addEmoji} /> : null} */}
             </IconButton>

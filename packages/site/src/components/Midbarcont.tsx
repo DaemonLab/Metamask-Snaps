@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import "./sidebarchat.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 const Midbarcont =(props: any)=> {
@@ -36,8 +36,9 @@ const Midbarcont =(props: any)=> {
 //     }
   
 //   }, [id])
+const navigate=useNavigate;
     return addNewChat!=="true"?(
-      <Link to ={`/rooms/${roomid}/transacts/${id}`}  style={{textDecoration:"none"}}>
+      <div onClick={()=>{useNavigate(`/home/rooms/${roomid}/transacts/${id}`)}}  style={{textDecoration:"none"}}>
         <div className="Sidebarchat">
          <Avatar style={{padding:"0 15px 0 13px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
          <div className="SidebarChat_info">
@@ -46,7 +47,7 @@ const Midbarcont =(props: any)=> {
              {/* <p >{messages[0]?.data.message}</p> */}
          </div>
         </div>
-        </Link>
+        </div>
     ):(
         null
     )
