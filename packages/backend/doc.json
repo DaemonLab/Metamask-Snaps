@@ -1,0 +1,213 @@
+// getUser
+// route /user/
+// input
+-
+// output
+{
+    "address": "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e",
+    "contacts": [
+        {
+            "address": "0x8972",
+            "name": "Gaurav boy"
+        },
+        {
+            "address": "0x1111",
+            "name": "Nilay"
+        }
+    ],
+    "groups": {
+        "FdQnVcZvnvU9cNqN0C4x": 0,
+        "nO2nGScFseDk9VqqENxb": 0,
+        "eFny4MruQyFNeORzZZBx": 0,
+        "snwChfqgMUtzljr68SEi": 20
+    }
+}
+// updateUser
+// route /user/
+// input
+//TO-DO
+
+// addGroup
+// route /group/
+// input
+{
+    "name": "Group 1",
+    "members": [
+        "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e",
+        "0x8972"
+    ]
+}
+// output
+"Status": "Success",
+"gid": "FdQnVcZvnvU9cNqN0C4x" 
+// listGroups
+// route /group/
+// input
+-
+// output
+[
+    {
+        "id": "FdQnVcZvnvU9cNqN0C4x",
+        "name": "Group 1",
+        "type": "group",
+        "members": [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 20
+            "0x8972" : -20
+        ]
+    },
+    {
+        "id": "nO2nGScFseDk9VqqENxb",
+        "name": "Group 2",
+        "type": "personal",
+        "members": [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e" : 0
+            "0x8972" : 0
+        ]
+    },
+    {
+        "id": "eFny4MruQyFNeORzZZBx",
+        "name": "Group 3",
+        "type": "personal",
+        "members": [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10
+            "0x8972" : -10
+        ]
+    },
+    {
+        "id": "snwChfqgMUtzljr68SEi",
+        "name": "Group 4",
+        "type": "personal",
+        "members": [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e":0
+            "0x8972":0
+        ]
+    }
+]
+// getGroup
+// route /group/:gid
+// input
+-
+// output
+{
+    "id": "FdQnVcZvnvU9cNqN0C4x",
+    "name": "Group 1",
+    "type": "group",
+    "members": [
+        "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e":0
+        "0x8972":0
+    ],
+    "splits" : [{
+        "name" : "Split 1",
+        "date" : 1675373802213,
+        "invovled" : [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10,
+            "0x8972": -10
+        ]
+    },
+    {
+        "name" : "Split 2",
+        "date" : 1675373802213,
+        "invovled" : [
+            "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10,
+            "0x8972": -10
+        ]
+    }]
+}
+
+// addMember
+// route /group/add
+// input
+{
+    "gid": "FdQnVcZvnvU9cNqN0C4x",
+    "address": "0x8972"
+}
+// output
+"Status": "OK"
+// addSplit
+// route /:gid
+// input
+{
+    "name": "Split 1",
+    "date": 1675373802213,
+    "involved": [
+        {
+            "address": "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e",
+            "amount": 10
+        },
+        {
+            "address": "0x8972",
+            "amount": -10
+        }
+    ]
+}
+// output
+"split_id": "FdQnVcZvnvU9cNqN0C4x"
+// deleteSplit
+// route /:gid/:sid
+// input
+-
+// output
+"Status": "Success"
+// updateSplit
+// route /:gid/:sid
+// input
+{
+    "name": "Split 1",
+    "date": 1675373802213,
+    "involved": [
+        {
+            "address": "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e",
+            "amount": 10
+        },
+        {
+            "address": "0x8972",
+            "amount": -10
+        }
+    ]
+}
+// output
+"feature not available"
+
+// listSplits
+// route /:gid
+// input
+-
+// output
+{
+    "splits": [
+        {
+            "id": "cYBzFgMVxMNC6xfgj2fs",
+            "date": 1675431900649,
+            "name": "test split",
+            "involved": {
+                "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10,
+                "0x58e842B517D69566150B054Fb07c49336854f083": -10
+            }
+        },
+        {
+            "id": "oZI5ICjDDi6DPbSH1hC5",
+            "name": "test split",
+            "involved": {
+                "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10,
+                "0x58e842B517D69566150B054Fb07c49336854f083": -10
+            },
+            "date": 1675432342302
+        }
+    ]
+}
+
+]
+// getSplit
+// route /:gid/:sid
+// input
+-
+// output
+{
+    "id": "cYBzFgMVxMNC6xfgj2fs",
+    "name": "test split",
+    "date": 1675431900649,
+    "involved": {
+        "0x58e842B517D69566150B054Fb07c49336854f083": -10,
+        "0x309cd873d15b07cb96aa0c09e403bc5aae3f349e": 10
+    }
+}

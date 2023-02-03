@@ -5,6 +5,7 @@ import {
   doc,
   runTransaction,
   collection,
+  getDocs,
 } from '@firebase/firestore';
 import { db } from '../firebase.js';
 
@@ -66,7 +67,9 @@ export const listGroups = async (req, res) => {
     const groupInfo = await Promise.all(
       Object.keys(data).map((gid) => getDoc(doc(db, 'groups', gid))),
     );
-    const groupData = groupInfo.map((group) => group.data());
+    const groupData = groupInfo.map((group) => {
+      return { ...group.data(), id: group.id };
+    });
     console.log('groups', groupData);
     return res.status(200).json(groupData);
   } catch (error) {
@@ -79,18 +82,23 @@ export const getGroup = async (req, res) => {
   try {
     console.log('getgroup', req.body, req.params.gid);
     const docSnap = await getDoc(doc(db, 'groups', req.params.gid));
-
     if (!docSnap.exists()) {
       throw new Error('group does not exists');
     }
-
-    console.log(docSnap.data().members, docSnap.data().members.hasOwnProperty(req.user));
+    console.log(docSnap.data(), docSnap.data().members.hasOwnProperty(req.user));
     // check if user is part of the group
     if (!docSnap.data().members.hasOwnProperty(req.user)) {
       throw new Error('User not part of this group');
     }
 
-    return res.status(200).json(docSnap.data());
+    const splitsData = await getDocs(collection(db, 'groups', req.params.gid, 'splits'));
+    const splits = splitsData.docs.map((split) => {
+      return { ...split.data(), id: split.id };
+    });
+    const data = { ...docSnap.data(), splits: splits, id: docSnap.id };
+    console.log(data);
+
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }

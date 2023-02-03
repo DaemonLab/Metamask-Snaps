@@ -85,7 +85,7 @@ export const deleteSplit = async (req, res) => {
   try {
     console.log('deleting a split', req.body);
     const data = req.body;
-    const user = req.auth.address;
+    const user = req.user;
     const gid = req.params.gid;
     const sid = req.params.sid;
 
@@ -130,7 +130,7 @@ export const updateSplit = async (req, res) => {
 
 export const listSplits = async (req, res) => {
   try {
-    console.log('Listing the Splits', req.body);
+    console.log('Listing the Splits');
     const data = req.body;
     const gid = req.params.gid;
 
@@ -144,7 +144,7 @@ export const listSplits = async (req, res) => {
     }
 
     // check user exists in that group
-    if (!docSnap.data().members.some((e) => e.user === req.user)) {
+    if (!docSnap.data().members.hasOwnProperty(req.user)) {
       return res.status(304).json({
         message: 'User not included the group',
       });
@@ -152,8 +152,9 @@ export const listSplits = async (req, res) => {
     const querySnapshot = await getDocs(
       collection(db, 'groups', gid, 'splits'),
     );
-    console.log(querySnapshot);
-    const splits = querySnapshot.docs.map((doc) => doc.data());
+    const splits = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
 
     return res.status(201).json({ splits: splits });
   } catch (error) {
@@ -179,21 +180,22 @@ export const getSplit = async (req, res) => {
     }
 
     // check user exists in that group
-    if (!docSnap.data().members.some((e) => e.user === user)) {
+    if (!docSnap.data().members.hasOwnProperty(req.user)) {
       return res.status(304).json({
         message: 'User not included the group',
       });
     }
 
+    const split = await getDoc(doc(db, 'groups', gid, 'splits', sid));
     // check that the split exists
-    if (!docSnap.data().splits.some(sid)) {
+    if (!split.data()) {
       return res.status(404).json({
         message: 'Split does not exixts',
       });
     }
 
-    const split = await getDoc(doc(db, 'groups', gid, 'splits', sid));
-    return res.status(201).json({ split: split });
+    const splitData = {id: split.id, ...split.data()}
+    return res.status(201).json(splitData);
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }

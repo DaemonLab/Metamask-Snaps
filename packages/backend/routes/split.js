@@ -12,7 +12,7 @@ const router = express.Router();
 router.use(JwtGuard);
 
 router.route('/:gid').post(addSplit).get(listSplits);
-router.route(':gid/:sid')
+router.route('/:gid/:sid')
   .delete(deleteSplit)
   .put(updateSplit)
   .get(getSplit)
