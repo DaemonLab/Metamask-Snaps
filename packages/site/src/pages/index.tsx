@@ -220,11 +220,11 @@ const Index = () => {
             button: (
               <LoginButton
                 onClick={handleLoginClick}
-                disabled={!state.installedSnap}
+                // disabled={!state.installedSnap}
               />
             ),
           }}
-          disabled={!state.installedSnap}
+          // disabled={!state.installedSnap}
           fullWidth={
             state.isFlask &&
             Boolean(state.installedSnap) &&

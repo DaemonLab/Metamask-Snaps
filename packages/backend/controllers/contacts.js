@@ -34,7 +34,7 @@ export const addContact = async (req, res) => {
       if (!docSnap.exists())throw 'Document does not exist!';
       else {
         let contacts = docSnap.data().contacts || {};
-        let incomingContacts = data || {};
+        let incomingContacts = data || [];
         incomingContacts.forEach(Element => {
           contacts[Element.address] = Element.name;
         });
