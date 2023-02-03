@@ -22,6 +22,10 @@ import {
 } from '../components';
 import './pages.css'
 
+import Web3 from 'web3';
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
+
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -117,6 +121,38 @@ const Index = () => {
   const handleAdresses = async (e: any) => {
     getaddress();
   }
+
+  interface AbiFunction {
+    constant: boolean;
+    inputs: { name: string; type: string }[];
+    name: string;
+    outputs: { name: string; type: string }[];
+    payable: boolean;
+    stateMutability: string;
+    type: string;
+  }
+  //https://api.etherscan.io/api?module=contract&action=getabi&address=0x2835cb9900638263b574df95bc09f98910e15b12&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW
+  const callFuncs = async (e: any) => {
+    e.preventDefault();
+
+    const abix  = await fetch(`https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`)    
+    const data = await abix.json()
+    
+    const resx = JSON.parse(data.result)        
+    resx.filter((func: any) => func.type === "function").map((func: any) => console.log(func.name));
+    // for (const obj of abi2) {
+    //   // if (obj.type === "function") {
+    //   //   console.log(`Function: ${obj.name}`);
+    //   //   console.log("Parameters:");
+    //   //   for (const input of obj.inputs) {
+    //   //     console.log(`- Name: ${input.name}, Type: ${input.type}`);
+    //   //   }
+    //   // }
+    //   console.log(obj)
+    // }
+    // const functions = data.filter(json => json.type === 'function');        
+    
+  }  
 
   const handleConnectClick = async () => {
     try {
@@ -268,7 +304,7 @@ const Index = () => {
         /> */}
         <div className="cardx">
           <div className="form">
-            <form className='formx' onSubmit={(e) => handleTranscation(e)}>
+            <form className='formx' onSubmit={(e) => callFuncs(e)}>
               {/* <div className="formdiv">
                 <label>From: </label>
                 <br/>
@@ -278,7 +314,7 @@ const Index = () => {
               <div className="formdiv">
                 <label>To: </label>
                 <br/>
-                <input type="text" className='inputx'onChange={(e) => setto(e.target.value)}/>
+                <input type="text" className='inputx'onChange={(e) => setaddress(e.target.value)}/>
               </div>
               <div className="formdiv">               
                 <input type="submit" className='btnx' value="Send Transaction"/>
