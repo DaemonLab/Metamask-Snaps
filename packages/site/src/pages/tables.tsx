@@ -78,7 +78,7 @@ const Table=({data}:any)=> {
              {
               data.map((item:any,num:number)=>{
                 return(
-                <ListItem
+                <ListItem key={num}
                 secondaryAction={
                   <ButtonGroup  >
                       <IconButton edge="end" aria-label="create" size="large" color="primary"

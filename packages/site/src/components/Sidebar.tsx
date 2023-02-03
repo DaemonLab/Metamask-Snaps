@@ -2,7 +2,7 @@
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import "./sidebar.css"
-import { Avatar, IconButton, Tooltip, Button,ButtonGroup } from '@mui/material';
+import { Avatar, IconButton, Tooltip, Button,ButtonGroup,Switch, FormControlLabel } from '@mui/material';
 import { AddCircleRounded, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined, SearchRounded } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Sidebarchat from './SidebarChat';
@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { flexbox } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar=({rooms,access}:any)=> {
     
@@ -40,6 +41,7 @@ const Sidebar=({rooms,access}:any)=> {
   
       }))
     }
+    const navigate=useNavigate();
     const addGroup=async()=>{
       const data={
         name:formData.name,
@@ -57,6 +59,7 @@ const Sidebar=({rooms,access}:any)=> {
           console.log(res)
           await setFormData({name:"",type: "personal",users:[{address:""}]})
           handleClose();
+          navigate('/home')
               }catch(err)
               {
                 console.log(err)
@@ -131,6 +134,7 @@ function logout () {
         users:list
       }))
     }
+    const [checked, setChecked] = React.useState(true);
     const style = {
       position: 'absolute' as 'absolute',
       top: '50%',
@@ -224,8 +228,12 @@ function logout () {
               })
             }
         
-                    
-            
+                  <FormControlLabel control={  
+            <Switch checked={checked} onChange={()=>{
+              setFormData((prev)=>({...prev,
+              type:checked?'group':'personal'}))
+              setChecked(!checked);
+            }}/>} label='Personal'/>
             </div>
             <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
               

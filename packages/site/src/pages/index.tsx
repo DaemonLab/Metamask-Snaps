@@ -1,4 +1,4 @@
-import { useContext,useState } from 'react';
+import { useContext,useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Table from './tables'
 import { MetamaskActions, MetaMaskContext } from '../hooks';
@@ -103,6 +103,9 @@ const ErrorMessage = styled.div`
 `;
 
 const Index = () => {
+  useEffect(()=>{
+    alert('Index rendering')
+  },)
   const [state, dispatch] = useContext(MetaMaskContext);
   const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})
   const transaction=[{name:"test1",address:"",id:"1",date:new Date,amount:"", active:true},

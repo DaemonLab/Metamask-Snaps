@@ -34,7 +34,7 @@ const Login=({setToken,removeToken,accessToken}:any) =>{
   return (
     <Grid 
     sx={ {backgroundColor: `${({ theme }:any) => theme.colors.background.alternative}`}}
-    style={{height:'100vh'}}
+    style={{height:'90vh'}}
     >
       <h2 style={{textAlign:'center', marginBottom:0  }}>Simplify</h2>
         <Lottie options={defaultOptions}    style={{ position:'parent' }} height={'70%'} width={'70%'}/>

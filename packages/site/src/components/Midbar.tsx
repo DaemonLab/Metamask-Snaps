@@ -45,23 +45,7 @@ const Midbar=({rooms,access}:any)=> {
       backgroundColor:'black'
     };
     const {roomId}=useParams()
-    const[transacts,setTransactions]= useState([{
-        id:1,
-       name:'Transaction 1',
-            message:{
-                
-            
-        }
-    },
-    {
-        id:2,
-        
-            name:'Transaction 2 ',
-            message:{
-                
-            }
-       
-    }]);
+    const[transacts,setTransactions]= useState([]);
     // useEffect(() => 
     //   onSnapshot(collection(db,"rooms"),(snapshot) => 
     //         setRooms(snapshot.docs.map((doc) => ({

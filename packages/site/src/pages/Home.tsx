@@ -25,21 +25,7 @@ const Wrapper = styled.div`
 
 const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
     const navigate= useNavigate();
-    const[rooms,setRooms]= useState([{
-      id:1,
-      
-          name:'A',
-          type: 'personal',
-          members:{}
-      },
-      {
-      id:2,
-   
-          name:'Room 2',
-          type:'personal',
-          members:{}
-      
-    }
+    const[rooms,setRooms]= useState([
   ]);
     const getGroup=async()=>{
       try{
@@ -59,16 +45,7 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
         {
           reset=true;
         }
-        else {
-          for(let i:any = 0; i < rooms.length; i++)
-          {
-           if( data[i].name!=rooms[i].name)
-           {
-            reset=true;
-            break;
-           }
-          }
-        }
+       
         if(reset)
         {
           console.log('Data unequal')
