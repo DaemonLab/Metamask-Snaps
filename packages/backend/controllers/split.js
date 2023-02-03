@@ -83,38 +83,58 @@ export const addSplit = async (req, res) => {
 
 export const deleteSplit = async (req, res) => {
   try {
-    console.log('deleting a split', req.body);
-    const data = req.body;
+    console.log('deleting a split', req.params.sid);
     const user = req.user;
     const gid = req.params.gid;
     const sid = req.params.sid;
 
-    const docSnap = await getDoc(doc(db, 'groups', gid));
 
-    // check if group exists
-    if (!docSnap.exists()) {
-      return res.status(404).json({
-        message: 'group does not exists',
+    await runTransaction(db, async (transaction) => {
+      const splitSnap = await transaction.get(doc(db, 'groups', gid, 'splits', sid));
+      console.log(splitSnap.data());
+      const docSnap = await transaction.get(doc(db, 'groups', gid));
+
+      // check if group exists
+      if (!docSnap.exists()) throw new Error('group does not exists');
+      // check if user is a member of the group
+      if (!docSnap.data().members.hasOwnProperty(user)) throw new Error('User not included the group');
+      // check if split exists
+      if (!splitSnap.exists()) throw new Error('split does not exists');
+
+      const involved = Object.keys(splitSnap.data().involved);
+      const involvedMap = splitSnap.data().involved;
+      const involvedMembersSnaps = await Promise.all(
+        involved.map((involvedMember) =>
+          transaction.get(doc(db, 'users', involvedMember)),
+        ),
+      );
+
+      const groupBalancesMap = docSnap.data().members;
+
+      // from group balances map remove the involved members and their balances
+      involved.forEach((involvedMember) => {
+        groupBalancesMap[involvedMember] -= involvedMap[involvedMember];
       });
-    }
-
-    // check user exists in that split
-    if (!docSnap.data().members.some((e) => e.user === user)) {
-      return res.status(304).json({
-        message: 'User not included the group',
+      // from user's group balance remove the involved members and their balances
+      involvedMembersSnaps.forEach((involvedMemberRef) => {
+        involvedMemberRef.data().groups[gid] -= involvedMap[involvedMemberRef.data().address];
       });
-    }
 
-    // check that the split exists
-    if (!docSnap.data().splits.some(sid)) {
-      return res.status(404).json({
-        message: 'Split does not exixts',
+      // update the group
+      transaction.update(doc(db, 'groups', gid), {
+        members: groupBalancesMap
       });
-    }
+      // update the involved members
+      involvedMembersSnaps.forEach((involvedMemberRef) => {
+        transaction.update(doc(db, 'users', involvedMemberRef.data().address), {
+          groups: involvedMemberRef.data().groups
+        });
+      });
+      // delete the split
+      transaction.delete(doc(db, 'groups', gid, 'splits', sid));
+    });
 
-    const docRef = await deleteDoc(doc(db, 'groups', gid, 'splits', sid));
-
-    return res.status(201).json({ split_id: docRef.id });
+    return res.status(201).json({ "Status": "Ok, Split deleted" });
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }

@@ -34,11 +34,7 @@ export const updateUser = async (req, res) => {
     const docRef = doc(db, 'users', req.user);
     const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) {
-      return res.status(404).json({
-        message: 'user does not exists',
-      });
-    }
+    if (!docSnap.exists()) throw new Error('user does not exists');
     const updated = await setDoc(docRef, data, { merge: true });
     return res.status(200).json({ status: 'Updated Sucessfully' });
   } catch (error) {
