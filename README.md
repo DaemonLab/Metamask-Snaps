@@ -49,7 +49,7 @@
         _id : id,
         date : timestamp,
         name : string,
-        involved : [
+        involved<HashMap> : [
           {
             user : reference,
             amount : float
