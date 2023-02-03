@@ -5,6 +5,8 @@ import "./sidebar.css"
 import { Avatar, IconButton, Tooltip, Button,ButtonGroup,Switch, FormControlLabel } from '@mui/material';
 import { AddCircleRounded, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined, SearchRounded } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Sidebarchat from './SidebarChat';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -41,6 +43,12 @@ const Sidebar=({rooms,access}:any)=> {
   
       }))
     }
+    const onChangeContact=(e:any,index:number)=>{
+      const {name,value}:any=e.target;
+      const list:any=[...contactData]
+      list[index][name]=value;
+      setContactData((prevState)=>(list))
+    }
     const navigate=useNavigate();
     const addGroup=async()=>{
       const data={
@@ -66,7 +74,31 @@ const Sidebar=({rooms,access}:any)=> {
               }
            
     }
-function logout () {
+    const addContact=async()=>{
+      
+      console.log(contactData)
+      try{
+       
+    const res=await axios.post('https://knotty-calendar-production.up.railway.app/contact', JSON.stringify(contactData),{
+      headers: { 'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${access}` }
+      });
+                
+          console.log(res)
+          await setContactData([{name:"",address:""}])
+          handleContactClose();
+          navigate('/home')
+              }catch(err)
+              {
+                console.log(err)
+              }
+           
+    }
+    
+const logout= ()=> {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  navigate('/');
    console.log('logout')
 }
     const[seed,setSeed]=useState("");
@@ -114,9 +146,13 @@ function logout () {
     };
     //   photo
     const [open, setOpen] = React.useState(false);
+    const [contactOpen,setContactOpen]=React.useState(false);
     const handleOpen = () => setOpen(true);
+    const handleContactOpen=()=>setContactOpen(true);
+    const handleContactClose=()=>setContactOpen(false);
     const handleClose = () => setOpen(false);
     const [formData,setFormData]=useState({name:"",type: "personal",users:[{address:""}]})
+    const [contactData,setContactData]=useState([{address:"",name:""}])
     const addUsers=()=>{
       setFormData((pre:any)=>(
         {
@@ -126,6 +162,12 @@ function logout () {
 
       ))
     }
+    const addContacts=()=>{
+      const list:any=[...contactData,{address:"",name:""}]
+      console.log(list);
+      setContactData(list);
+      
+    }
     const removeUsers=(index:number)=>{
       const list=[...formData.users]
       list.splice(index,1)
@@ -133,6 +175,11 @@ function logout () {
         ...pre,
         users:list
       }))
+    } 
+    const removeContacts=(index:number)=>{
+      const list=[...contactData]
+      list.splice(index,1)
+      setContactData((pre:any)=>(list))
     }
     const [checked, setChecked] = React.useState(true);
     const style = {
@@ -141,6 +188,18 @@ function logout () {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: 400,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+      backgroundColor:'black'
+    };
+    const contactStyle = {
+      position: 'absolute' as 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 600,
       bgcolor: 'background.paper',
       border: '2px solid #000',
       boxShadow: 24,
@@ -164,7 +223,16 @@ function logout () {
                <AddCircleRounded onClick={handleOpen} fontSize="large" style={{color:"#B1B3B5", }}/>
                </Tooltip>
                </IconButton>
-            
+               <IconButton>
+                 <Tooltip title="Add/ Edit Contact"> 
+               <PersonAddAlt1Icon onClick={handleContactOpen} fontSize="large" style={{color:"#B1B3B5", }}/>
+               </Tooltip>
+               </IconButton>
+               <IconButton>
+                 <Tooltip title="Logout"> 
+               <LogoutIcon onClick={()=>{logout()}} fontSize="large" style={{color:"#B1B3B5", }}/>
+               </Tooltip>
+               </IconButton>
               <Modal
                 open={open}
                 onClose={handleClose}
@@ -241,6 +309,87 @@ function logout () {
             
             <Button   className = "submitBtn" onClick={()=>{
               addGroup()}}> submit</Button>
+        </ButtonGroup>
+        </div>
+                </Box>
+              </Modal>
+              {//for Contacts
+              }
+              <Modal
+                open={contactOpen}
+                onClose={handleContactClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={contactStyle}>
+                <div className="" style={{
+          display: "flex",
+          flexDirection:"column",
+          rowGap:4,
+          justifyContent:'center'
+          
+        }}>
+           <div style={{
+          display: "flex",
+          flexDirection:"column",
+          backgroundColor:'black',
+          padding:6,
+          paddingLeft:16,
+          paddingRight:16,
+          rowGap:16,
+          border:'1px solid white',
+          borderRadius: 25
+          
+          
+          
+        }}>
+            <div style={
+              {
+                fontSize: 26,
+                fontWeight: "bold",
+                textAlign:"center",
+                marginBottom:10,
+                marginTop:10
+              }
+            }>Add Contacts</div>
+              
+            {
+              contactData.map((user:any,index:number)=>{
+                return(
+                <div className="" key={index}
+                style={{
+                  display:"flex",
+                  flexFlow:"column",
+                  alignItems:"center",
+                  columnGap:3
+                  }}>
+               <div style={{textAlign:'left'}}>User{index+1}</div>
+               <div style={{
+                display:'flex',
+                alignItems:"center",
+                  columnGap:3
+               }}>
+                Address: <input style={{height:24}}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeContact(e,index)}/>
+               Name: <input style={{height:24}}  placeholder='Name' name="name" type='text' value={user.name} onChange={e=>onChangeContact(e,index)}/> 
+               
+               {contactData.length>1 &&
+               (<button key={index} onClick={()=>removeContacts(index)}> Remove</button>)} 
+               </div>
+                  </div>   
+                )  
+              })
+              
+            }
+        
+             
+            
+            </div>
+            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
+              
+               <Button   className = "submitBtn"  onClick={addContacts}> Add User</Button>
+            
+            <Button   className = "submitBtn" onClick={()=>{
+              addContact()}}> submit</Button>
         </ButtonGroup>
         </div>
                 </Box>

@@ -60,7 +60,7 @@ const navigate=useNavigate();
       <div onClick={async()=>{
         await getTrans();
         navigate(`/home/rooms/${id}`);
-      }} style={{textDecoration:"none"}}>
+      }} style={{textDecoration:"none", cursor:'pointer'}}>
         <div className="Sidebarchat">
          <Avatar style={{padding:"0 15px 0 13px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
          <div className="SidebarChat_info">

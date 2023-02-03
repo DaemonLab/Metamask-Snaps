@@ -37,7 +37,7 @@ const Midbar=({rooms,access}:any)=> {
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: 400,
+      width:'40%',
       bgcolor: 'background.paper',
       border: '2px solid #000',
       boxShadow: 24,
@@ -230,7 +230,7 @@ function logout () {
                 marginBottom:10,
                 marginTop:10
               }
-            }>Add Transaction</div>
+            }>New Split</div>
             <div className="" style={{
               display:"flex",
               flexDirection:'row',
@@ -238,7 +238,7 @@ function logout () {
               columnGap:3,
               rowGap:4
               }}>
-                Transaction Name : <input style={{height:24}} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+                Split Name : <input style={{height:24}} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
             </div>   
             {
               formData.users.map((user:any,index:number)=>{
@@ -249,7 +249,10 @@ function logout () {
                   alignItems:"center",
                   columnGap:3
                   }}>
-               User{index+1} Address: <input style={{height:24}}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeUser(e,index)}/> 
+               User{index+1} 
+               <Avatar style={{padding:"0 15px 0 13px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
+               Address: 
+               <input style={{height:24}}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeUser(e,index)}/> 
                {formData.users.length>1 &&
                (<button key={index} onClick={()=>removeUsers(index)}> Remove</button>)} 
                   </div>   
