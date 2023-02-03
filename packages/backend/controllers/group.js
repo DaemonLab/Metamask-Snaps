@@ -63,8 +63,12 @@ export const listGroups = async (req, res) => {
       throw new Error('you are not part of any group');
     }
     const data = docSnap.data().groups;
-    console.log('groups', data);
-    return res.status(200).json(data);
+    const groupInfo = await Promise.all(
+      Object.keys(data).map((gid) => getDoc(doc(db, 'groups', gid))),
+    );
+    const groupData = groupInfo.map((group) => group.data());
+    console.log('groups', groupData);
+    return res.status(200).json(groupData);
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }
@@ -80,8 +84,9 @@ export const getGroup = async (req, res) => {
       throw new Error('group does not exists');
     }
 
+    console.log(docSnap.data().members, docSnap.data().members.hasOwnProperty(req.user));
     // check if user is part of the group
-    if (!docSnap.data().members.some((e) => e.user === req.user)) {
+    if (!docSnap.data().members.hasOwnProperty(req.user)) {
       throw new Error('User not part of this group');
     }
 
