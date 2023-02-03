@@ -29,6 +29,8 @@ export const addGroup = async (req, res) => {
           groups[groupRef.id] = 0;
           transaction.update(transactionSnap.ref, { groups: groups });
         }
+        else
+          throw new Error('Invalid public Address/es, please signup first');
       });
 
       const members = transactionSnapshots.reduce((acc, transactionSnap) => {

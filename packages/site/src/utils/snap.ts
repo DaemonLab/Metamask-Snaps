@@ -87,7 +87,7 @@ export const login = async () => {
     params: [messageHash, from],
   });
 
-  const res = await fetch('http://localhost:4000/login', {
+  const res = await fetch('http://localhost:5000/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -100,8 +100,10 @@ export const login = async () => {
   });
 
   const data = await res.json();
-  localStorage.setItem('access_token', data.accessToken);
-  localStorage.setItem('refresh_token', data.refreshToken);
+  console.log(data);
+  window.localStorage.setItem('access_token', data.accessToken);
+  console.log("local storage");
+  window.localStorage.setItem('refresh_token', data.refreshToken);
 };
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');
