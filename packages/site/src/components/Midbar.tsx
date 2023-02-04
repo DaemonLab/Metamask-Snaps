@@ -2,22 +2,39 @@
 import React,{useState,useEffect} from 'react'
 import "./sidebar.css"
 import axios from 'axios'
-import { Avatar, IconButton, Tooltip, Button,ButtonGroup  } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import { Avatar, IconButton, Tooltip, Button,ButtonGroup} from '@mui/material';
 import { AddCircleOutline, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined, SearchRounded} from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Midbarcont from './Midbarcont';
+import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import {useNavigate} from'react-router-dom';
 import { useParams } from 'react-router-dom';
+import Checkbox, { CheckboxProps } from '@mui/material/Checkbox';
+import { experimentalStyled as styled } from '@mui/material/styles';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width:'40%',
+  width:'60%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -36,29 +53,23 @@ const memberStyle = {
   p: 4,
   backgroundColor:'black'
 };
-const Midbar=({rooms,access}:any)=> {
+
+const Midbar=({rooms,access,contacts,transacts}:any)=> {
 
   
   const [open, setOpen] = React.useState(false);
   const [memberOpen,setMemberOpen]=useState(false);
+  const [payer,setPayer]=useState();
   const handleMemberOpen=()=>setMemberOpen(true);
   const handleMemberClose=()=>setMemberOpen(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [formData,setFormData]=useState({name:""})
+    const [formData,setFormData]=useState({name:"",amount:""})
     const [memberData,setMemberData]=useState({address:""})
     const {roomId}=useParams()
-    const[transacts,setTransactions]= useState([]);
-    // useEffect(() => 
-    //   onSnapshot(collection(db,"rooms"),(snapshot) => 
-    //         setRooms(snapshot.docs.map((doc) => ({
-    //             data:doc.data(),
-    //             id: doc.id,
-           
-    //         }))))
-      
-    // ,[]
-    // )
+    // const[transacts,setTransactions]= useState([]);
+  
+   
 
     const[seed,setSeed]=useState("");
     useEffect(() => {
@@ -78,7 +89,7 @@ const Midbar=({rooms,access}:any)=> {
       };
     //   sets the search if the room nmae lenght is >0
       useEffect(() => {
-        if (transacts.length > 0) {
+        if (transacts && transacts.length > 0) {
           setSearch(matcher(input, transacts));
         }
         if (input === "") {
@@ -91,78 +102,80 @@ const Midbar=({rooms,access}:any)=> {
         setInput(e.target.value);
       };
 // add room
- const createChat = () => {
-    //   const roomName = prompt("Please enter name for chat");
-    //   if (roomName && roomName.length >= 20) {
-    //     return alert("enter a shorter name for the room");
-    //   }
-    //   if (roomName) {
-    //      addDoc(collection(db, "rooms"), {
-    //       name: roomName,
-    
-    //     });
-    //   }
-    console.log('chat created')
-    };
-    const getTrans=async()=>{
-      try{
-      const res=await axios.get(
-        `https://knotty-calendar-production.up.railway.app/group/${roomId}`,
-        {
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${access}` 
-            }
-      })
-        const data=res.data;
-        console.log(data)
-        console.log('Data',data.splits)
-        console.log('Transacts', transacts)
-        let reset=false;
-        if(data.splits.length!==transacts.length)
-        {
-          reset=true;
-        }
-        else {
-          for(let i:any = 0; i < transacts.length; i++)
-          {
-           if( data.splits[i].name!=transacts[i].name)
-           {
-            reset=true;
-            break;
-           }
-          }
-        }
-        if(reset)
-        {
-          console.log('Data unequal')
-          setTransactions(data.splits)
-        }
+ 
+  //   const getTrans=async()=>{
+  //     try{
+  //     const res=await axios.get(
+  //       `https://knotty-calendar-production.up.railway.app/group/${roomId}`,
+  //       {
+  //         headers: { 
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${access}` 
+  //           }
+  //     })
+  //       const data=res.data;
+  //       console.log(data)
+  //       console.log('Data',data.splits)
+  //       console.log('Transacts', transacts)
+  //       let reset=false;
+  //       if(data.splits.length!==transacts.length)
+  //       {
+  //         reset=true;
+  //       }
+  //       else {
+  //         for(let i:any = 0; i < transacts.length; i++)
+  //         {
+  //          if( data.splits[i].name!=transacts[i].name)
+  //          {
+  //           reset=true;
+  //           break;
+  //          }
+  //         }
+  //       }
+  //       if(reset)
+  //       {
+  //         console.log('Data unequal')
+  //         setTransactions(data.splits)
+  //       }
           
-        }
-      catch(err)
-      {
-        console.log(err);
-      }
-  }  
-  useEffect(()=>{
-    getTrans();
-  })
+  //       }
+  //     catch(err)
+  //     {
+  //       console.log(err);
+  //     }
+  // }  
+  // useEffect(()=>{
+  //   getTrans();
+    
+  // })
+  
   const navigate=useNavigate();
-  const addGroup=async()=>{
+  const split=async()=>{
+    const data={
+      name:formData.name,
+      date:new Date(),
+      involved:membersArray.map((member:any)=>{return{
+        user:member,
+        amount: payer!=member?parseFloat(formData.amount)-parseFloat(formData.amount)/membersArray.length:-1*parseFloat(formData.amount)/membersArray.length
+      }})
+    }
+   
+    console.log(data)
     try{
-  const res=await axios.post('https://knotty-calendar-production.up.railway.app/group', formData,{
+      
+  const res=await axios.post(`https://knotty-calendar-production.up.railway.app/split/${roomId}`,data,{
                 headers: { 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${access}` }
               })
         console.log(res)
         handleClose();
-        navigate('/home')
+        
             }catch(err)
             {
               console.log(err)
             }
   }
+  
   const addMember=async()=>{
     const data={
       groupId:roomId,
@@ -203,19 +216,14 @@ const Midbar=({rooms,access}:any)=> {
         }))
       }
     
-      const onChangeUser=(e:any,index:number)=>{
-        const {name,value}:any=e.target;
-        const list:any=[...formData.users]
-        list[index][name]=value;
-        setFormData((prevState)=>({
-          ...prevState,
-            users:list
-    
-        }))
-      }
-  
+      
+  const membersArray=Object.keys(rooms.find((room:any)=>roomId==room.id).members);
+  const members=rooms.find((room:any)=>roomId==room.id).members;
     return (
         <div className="Sidebar" >
+          {
+          console.log(membersArray)
+          }
            <div className="Sidebar__header" style={{alignItems:'center'}}>               
                 {rooms.find((room:any)=>roomId==room.id).name}
                 <div  style={{display: 'flex',
@@ -270,23 +278,65 @@ const Midbar=({rooms,access}:any)=> {
                 marginTop:10
               }
             }>New Split</div>
+             <div className="">
             <div className="" style={{
               display:"flex",
               flexDirection:'row',
               alignItems:"center",
               columnGap:3,
-              rowGap:4
+              rowGap:4,
+              marginBottom:20
               }}>
                 Split Name : <input style={{height:24}} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
-            </div>   
+                Total Amount : <input style={{height:24}} placeholder='in INR' name="amount" type='number' value={formData.amount} onChange={onChange}/>
 
+               
+            </div>  
+            <FormControl fullWidth style={{backgroundColor:'white'}}> 
+
+            <InputLabel id="demo-simple-select-label">Payer</InputLabel>
+
+              <Select
+                      labelId="demo-simple-select-filled-label"
+                      id="demo-simple-select-filled"
+            
+            value={payer}
+            label="Payer"
+            onChange={(e:any)=>{
+              setPayer(e.target.value);
+            }}
+          >
+            {membersArray.map((member:any,index:number)=>(
+              <MenuItem value={ member} key={index}> {contacts[member]==undefined? member:contacts[member]}</MenuItem>
+            ))}
+            {/* <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem> */}
+          </Select>
+          </FormControl>
+            {
+              
+                    <Grid container spacing={0.5} columns={1}>
+                    {membersArray.map((member:any, index:number) => (
+                      <Grid item xs={2} sm={4} md={4} key={index}>
+                        <Checkbox defaultChecked/>
+                        {
+                          
+                        contacts[member]==undefined? member:contacts[member]
+                        }
+                      </Grid>
+                    ))}
+                  </Grid>
+                 
+              }
+             </div>
             </div>
             <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
               
            
             
-            <Button   className = "submitBtn" onClick={async()=>{console.log(formData)
-            await addGroup()}}> submit</Button>
+            <Button   className = "submitBtn" onClick={async()=>{
+            await split()}}> submit</Button>
         </ButtonGroup>
         </div>
                 </Box>
@@ -366,7 +416,7 @@ const Midbar=({rooms,access}:any)=> {
                {sidebarBool ? (
             <div className="Sidebar__chats">
               <Midbarcont addNewChat="true" />
-              {transacts.map((transact:any) => (
+              {(transacts && transacts!=undefined) &&transacts.map((transact:any) => (
                 <Midbarcont key={transact.id} id={transact.id} name={transact.name} roomid={roomId} />
               ))}
             </div>

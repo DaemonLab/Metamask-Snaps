@@ -14,6 +14,7 @@ import Midbar from '../components/Midbar';
 import { Box } from '@mui/system';
 import Login from '../pages/Login';
 import axios from 'axios';
+import Midlay from './Midlay';
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,10 +26,12 @@ const Wrapper = styled.div`
 
 const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
     const navigate= useNavigate();
+    const[comb,setComb]=useState({rooms:[],contacts:null})
     const[rooms,setRooms]= useState([
   ]);
-    const getGroup=async()=>{
-      try{
+  const [contacts,setContacts]=useState();
+  const combGetSet=async()=>{
+    try{
       const res=await axios.get(
         'https://knotty-calendar-production.up.railway.app/group',
         {
@@ -37,27 +40,82 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
             'Authorization': `Bearer ${accessToken}` 
             }
       })
-        const data=res.data;
-        console.log('Data',data)
-        console.log('Rooms', rooms)
-        let reset=false;
-        if(data.length!==rooms.length)
-        {
-          reset=true;
-        }
-       
-        if(reset)
-        {
-          console.log('Data unequal')
-          setRooms(data)
-        }
-          
-        }
-      catch(err)
-      {
-        console.log(err);
-      }
+      const resContact=await axios.get('https://knotty-calendar-production.up.railway.app/contact',{
+                    headers: { 'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}` }
+                  })
+            
+            const data=res.data;
+            console.log('Data',data)
+            console.log('Rooms', comb.rooms)
+            console.log("Contact response",resContact)
+            let reset=false;
+            if(data.length!==comb.rooms.length)
+            {
+              reset=true;
+            }
+            if(comb.contacts==null || Object.keys(comb.contacts).length!=Object.keys(resContact.data).length)
+            reset=true;
+            if(reset)
+            {
+              console.log('Data unequal')
+              setComb({
+                rooms:data,
+                contacts:resContact.data
+              })
+            }    
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
   }
+  //   const getGroup=async()=>{
+  //     try{
+  //     const res=await axios.get(
+  //       'https://knotty-calendar-production.up.railway.app/group',
+  //       {
+  //         headers: { 
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${accessToken}` 
+  //           }
+  //     })
+  //       const data=res.data;
+  //       console.log('Data',data)
+  //       console.log('Rooms', rooms)
+  //       let reset=false;
+  //       if(data.length!==rooms.length)
+  //       {
+  //         reset=true;
+  //       }
+       
+  //       if(reset)
+  //       {
+  //         console.log('Data unequal')
+  //         setRooms(data)
+  //       }
+          
+  //       }
+  //     catch(err)
+  //     {
+  //       console.log(err);
+  //     }
+  // }
+  // const getContacts=async()=>{
+  //   try{
+  //     const res=await axios.get('https://knotty-calendar-production.up.railway.app/contact',{
+  //                   headers: { 'Content-Type': 'application/json',
+  //                   'Authorization': `Bearer ${accessToken}` }
+  //                 })
+  //           console.log("Contact response",res)
+  //           if(contacts==null || Object.keys(contacts).length!=Object.keys(res.data).length)
+  //           setContacts(res.data)
+  //               }catch(err)
+  //               {
+  //                 console.log(err)
+                  
+  //               }
+  // }
     useEffect(()=>{
         alert('Home rerendering')
        
@@ -70,8 +128,9 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
        
     },)
    useEffect(()=>{
-    getGroup()
+    combGetSet()
    },)
+  
   return (
     <Wrapper>
     <Header handleToggleClick={toggleTheme} />
@@ -80,10 +139,10 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
       alignItems="center"
       minHeight="100vh" >
     <div className="chat__body">
-    <Sidebar rooms={rooms} access={accessToken}/>
+    <Sidebar rooms={comb.rooms} access={accessToken}/>
     <Routes>
-            <Route  path="rooms/:roomId" element={<Midbar rooms={rooms} access={accessToken}/>}/>
-            <Route  path="rooms/:roomId/transacts/:transactid" element={<Chat rooms={rooms}  access={accessToken}/>}/>
+            <Route  path="rooms/:roomId/*" element={<Midlay rooms={comb.rooms} access={accessToken} contacts={comb.contacts}/>}/>
+            {/* <Route  path="rooms/:roomId/transacts/:transactid" element={<Chat rooms={comb.rooms}  access={accessToken} contacts={comb.contacts}/>}/> */}
     </Routes>
     </div>
     </Box>

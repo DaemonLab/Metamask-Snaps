@@ -36,9 +36,9 @@ const Midbarcont =(props: any)=> {
 //     }
   
 //   }, [id])
-const navigate=useNavigate;
+const navigate=useNavigate();
     return addNewChat!=="true"?(
-      <div onClick={()=>{useNavigate(`/home/rooms/${roomid}/transacts/${id}`)}}  style={{textDecoration:"none"}}>
+      <div onClick={()=>{navigate(`/home/rooms/${roomid}/transacts/${id}`)}}  style={{textDecoration:"none"}}>
         <div className="Sidebarchat">
          <Avatar style={{padding:"0 15px 0 13px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
          <div className="SidebarChat_info">
