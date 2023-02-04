@@ -1,41 +1,58 @@
 import React, { Fragment, useState } from "react";
 import { Paper, Grid, Typography, Box } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-
-
+import "./sidebar.css"
+import background from "../assets/bg.png";
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 // clipPath: "polygon( 0 0,100% 0, 100% 100%, 0 calc(100% - 5vw) )",
 
-const UserProfile=(props:any)=> {
+const UserProfile=({userData}:any)=> {
 
-  const formatPhone = (phoneNum:any) => {
-    let numberPattern = /\d+/g;
-    phoneNum = phoneNum.match(numberPattern).join("");
-    return phoneNum;
-  };
-  console.log(props)
+  
+
+ //console.log(userData)
   return (
-    <Fragment>
+    <Fragment >
       
-      <Paper elevation={0} style={{
+      <Paper elevation={8} style={{
          margin: "0px",
-         boxShadow:
-            "0 1px 2px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.07), 0 4px 8px rgba(0,0,0,0.07), 0 8px 16px rgba(0,0,0,0.07),0 16px 32px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.07)",
-         width: "auto",
+          width: "auto",
         height: "auto",
-         borderRadius: "0%",
-         backgroundColor:'black'
+        
+         
         }}
         sx={{backgroundColor: `${({ theme }:any) => theme.colors.background.alternative}`,}} >
 
         <div style={ {
-      backgroundImage: "url(https://source.unsplash.com/random)",
+      backgroundImage: `url(${background})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundPosition: "center",
       
+      
     }}>
-          <img src={"https://randomuser.me/api/portraits/thumb/women/61.jpg"} style={{
+      <Paper elevation={3} style={{ display: "flex",
+      justifyContent:'space-between',
+        width: "auto",
+        padding: '10px',
+        height: '40px',
+        backgroundColor:'#2a2f32',
+        borderRadius:0
+        }}>
+          <div style={{marginTop:'auto', marginBottom:'auto',color:'white'}}>
+      <b className="TEXT">{userData && userData.name}</b>
+        
+        </div>
+        <div className="Sidebar__headerRight"  style={{fontFamily:'bold', alignItems:"center",
+    lineHeight: "14px",
+    fontSize:"11px",
+    color: "#B1B3B5"}}>
+          Date: {userData && userData.date}
+        </div>
+      </Paper>
+      
+          <ReceiptLongIcon  style={{
         display: "block",
         marginLeft: "auto",
         marginRight: "auto",
@@ -43,33 +60,15 @@ const UserProfile=(props:any)=> {
         borderRadius: "50%",
         position: "relative",
         top: "30px",
-        border: "solid 7px #ffffff"
+        border: "solid 7px #ffffff",
+        color:'white',
+        backgroundColor:'grey',
+        padding:'4px',
+        fontSize:"70px",
+        
       }} />
         </div>
-        <div id="content">
-         
-            <Grid item md={12} sm={12} xs={12}>
-              <Typography variant="h5" gutterBottom>
-                <Box textAlign="center">
-                  {props.userData.name}
-                </Box>
-              </Typography>
-            </Grid>
-            <Grid item md={12} sm={12} xs={12}>
-              <Typography variant="h6" gutterBottom>
-                <Box textAlign="center">{}</Box>
-              </Typography>
-            </Grid>
-            <Grid item md={12} sm={12} xs={12}>
-              <Typography variant="overline" gutterBottom>
-                <Box textAlign="center">
-                  <LocationOnIcon /> &ensp; {},{" "}
-                  {}
-                </Box>
-              </Typography>
-            </Grid>
-          
-        </div>
+        
       </Paper>
     </Fragment>
   );

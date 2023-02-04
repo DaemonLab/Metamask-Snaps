@@ -33,9 +33,9 @@
   min-width: 100px;
 }
 .Chat__body {
-  background-image: url(./whatsapp.png);
+  background-image: url(../assets/image.jpg);
   /* background-position: center; */
-  background-repeat: repeat;
+  background-size: cover;
   padding-right: 9%;
   padding-left: 9%;
   padding-top: 12px;

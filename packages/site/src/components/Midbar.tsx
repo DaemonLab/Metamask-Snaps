@@ -217,15 +217,17 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
       }
     
       
-  const membersArray=Object.keys(rooms.find((room:any)=>roomId==room.id).members);
-  const members=rooms.find((room:any)=>roomId==room.id).members;
+      const temp=rooms.length>0 ?rooms.find((room:any)=>roomId==room.id):null;
+      console.log(temp)
+      const membersArray=temp!=null ? Object.keys(temp.members):[];
     return (
         <div className="Sidebar" >
           {
+            
           console.log(membersArray)
           }
            <div className="Sidebar__header" style={{alignItems:'center'}}>               
-                {rooms.find((room:any)=>roomId==room.id).name}
+                {temp && temp.name}
                 <div  style={{display: 'flex',
                   justifyContent:'space-between',
                   minWidth:'6vw',

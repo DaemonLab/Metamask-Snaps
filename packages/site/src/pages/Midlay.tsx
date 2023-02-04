@@ -43,20 +43,12 @@ const Midlay=({ rooms,access,contacts}:any)=> {
           {
             reset=true;
           }
-          else {
-            for(let i:any = 0; i < transacts.length; i++)
-            {
-             if( data.splits[i].name!=transacts[i].name)
-             {
-              reset=true;
-              break;
-             }
-            }
-          }
+          
           if(reset)
           {
             console.log('Data unequal')
-            setTransactions(data.splits)
+            await setTransactions(data.splits)
+            console.log('Transacts', transacts)
           }
             
           }
@@ -85,7 +77,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     
     
     <div className="chat__body"
-    style={{marginTop:0}}
+    style={{marginTop:0,flex:.7}}
         >
     <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts}/>
     <Routes>
