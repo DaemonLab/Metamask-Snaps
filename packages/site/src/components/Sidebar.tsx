@@ -400,13 +400,13 @@ const logout= ()=> {
                <div className="Sidebar__search">
                    <div className="Sidebar__searchContainer">  
                     <SearchRounded />
-                   <input placeholder="Search or Start New Chat" type="text" value={input} onChange={handleChange}/></div>
+                   <input placeholder="Search Group" type="text" value={input} onChange={handleChange}/></div>
                 
                </div>
                <Divider/>
                {/* checks the condition  whetjher the room nmae present or not */}
                {sidebarBool ? (
-            <div className="Sidebar__chats">
+            <div className="Sidebar__chats" style={{overflowX:'hidden'}}>
               <Sidebarchat addNewChat="true" />
               {rooms.map((room:any) => (
                 <Sidebarchat key={room.id} id={room.id} name={room.name} />

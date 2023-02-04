@@ -17,6 +17,14 @@
   box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 0.75);
   overflow-y: hidden;
 }
+::-webkit-scrollbar{
+  background: transparent;
+  width: 1px;
+}
+::-webkit-scrollbar-thumb{
+  background:#606060;
+  border-radius:1px;
+}
 /* #1d6f70 outgoing message */
 @media (max-width: 628px) {
   .chat__body {

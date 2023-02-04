@@ -169,7 +169,7 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
               })
         console.log(res)
         handleClose();
-        
+        navigate('/home')
             }catch(err)
             {
               console.log(err)
@@ -222,10 +222,6 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
       const membersArray=temp!=null ? Object.keys(temp.members):[];
     return (
         <div className="Sidebar" >
-          {
-            
-          console.log(membersArray)
-          }
            <div className="Sidebar__header" style={{alignItems:'center'}}>               
                 {temp && temp.name}
                 <div  style={{display: 'flex',
@@ -416,14 +412,14 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
                <Divider/>
                {/* checks the condition  whetjher the room nmae present or not */}
                {sidebarBool ? (
-            <div className="Sidebar__chats">
+            <div className="Sidebar__chats" style={{marginBottom:0,paddingBottom:0}}>
               <Midbarcont addNewChat="true" />
               {(transacts && transacts!=undefined) &&transacts.map((transact:any) => (
                 <Midbarcont key={transact.id} id={transact.id} name={transact.name} roomid={roomId} />
               ))}
             </div>
           ) : (
-            <div className="Sidebar__chats">
+            <div className="Sidebar__chats" style={{overflowX:'hidden',marginBottom:0,paddingBottom:0}}>
               <Midbarcont addNewChat="true" />
               {search.map((room:any) => (
                 <Midbarcont key={room.id} id={room.id} name={room.name} />

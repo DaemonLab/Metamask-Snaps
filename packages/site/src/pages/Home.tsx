@@ -27,9 +27,7 @@ const Wrapper = styled.div`
 const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
     const navigate= useNavigate();
     const[comb,setComb]=useState({rooms:[],contacts:null})
-    const[rooms,setRooms]= useState([
-  ]);
-  const [contacts,setContacts]=useState();
+    
   const combGetSet=async()=>{
     try{
       const res=await axios.get(
@@ -44,24 +42,26 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
                     headers: { 'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}` }
                   })
-            
+    
             const data=res.data;
             console.log('Data',data)
             console.log('Rooms', comb.rooms)
+           
             console.log("Contact response",resContact)
             let reset=false;
             if(data.length!==comb.rooms.length)
             {
               reset=true;
             }
-            if(comb.contacts==null || Object.keys(comb.contacts).length!=Object.keys(resContact.data).length)
+            if(comb.contacts==null || Object.keys(comb.contacts).length!=Object.keys(resContact.data).length )
             reset=true;
             if(reset)
             {
               console.log('Data unequal')
               setComb({
                 rooms:data,
-                contacts:resContact.data
+                contacts:resContact.data,
+              
               })
             }    
     }

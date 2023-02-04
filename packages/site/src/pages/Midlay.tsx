@@ -79,7 +79,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     <div className="chat__body"
     style={{marginTop:0,flex:.7}}
         >
-    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts}/>
+    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts} />
     <Routes>
           <Route  path="transacts/:transactid" element={<Chat rooms={rooms} transacts={transacts} access={access} contacts={contacts}/>}>
           </Route>

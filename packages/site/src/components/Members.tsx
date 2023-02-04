@@ -29,12 +29,12 @@ export default function Members({name,address,amount}:any) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ flex: '1 0 auto' }}>
-        <Typography component="div" variant="h6" style={{fontFamily:"sans-serif",color:amount<0 ?'red':'green'}}>
-        {amount<0? 'Owes': 'Gets back'}
+        <Typography component="div" variant="h6" style={{fontFamily:"sans-serif",color:amount>0 ?'red':'green'}}>
+        {amount>0? 'Owes': 'Gets back'}
         </Typography>
-      <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7,color:amount<0 ?'red':'green',textAlign:'right'}}>
+      <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7,color:amount>0 ?'red':'green',textAlign:'right'}}>
             
-            {amount}
+            {Math.abs(amount)}
           </Typography>
           </CardContent>
           </Box>

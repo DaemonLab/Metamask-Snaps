@@ -77,5 +77,5 @@ input:focus{
     flex-direction: column;
     background-color: #131c21;
  
-    overflow: scroll;
+    overflow-y: scroll;
  }
