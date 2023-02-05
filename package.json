@@ -51,13 +51,13 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "child_process": "^1.0.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.6",
     "@mui/x-data-grid": "^5.17.20",
     "axios": "^1.3.0",
+    "child_process": "^1.0.2",
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "lottie-web": "^5.10.2",
