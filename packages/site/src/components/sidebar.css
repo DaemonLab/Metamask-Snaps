@@ -1,0 +1,81 @@
+/* full side bar css */
+.Sidebar{
+    display: flex;
+    flex: 0.30;
+    flex-direction: column;
+}
+.TEXT{
+    font-size: 15px;
+    font-weight: bold;
+    /* font-weight: 900; */
+
+    margin-top: 13px;
+    align-items:center;
+    line-height: 14px;
+    color: #B1B3B5;
+}
+.Sidebar__header{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 16px;
+    height:40px;
+    border-right: 1px solid gray; 
+}
+.Sidebar__headerRight{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 8vw;
+
+}
+.Sidebar__headerRight > .MuiSvgIcon-root{
+   margin-right: 2vw;
+   font-size: 24px !important ;
+
+}
+
+.Sidebar__search{
+    display: flex;
+    align-items: center;
+    background-color: #131c21;
+    height: 30px;
+    padding: 10px;
+    border-right:1px solid rgb(48, 48, 48);
+    /* border-radius: 5px; */
+}
+.Sidebar__searchContainer{
+    display: flex;
+    align-items: center;
+    background-color: #323739;
+    height: 35px;
+ width: 100%;
+ border-radius: 20px;
+
+}
+
+.Sidebar__searchContainer > input{
+    font-family: "Open sans";
+    border:0;
+    border-radius: 20px;    
+    /* padding: 10px; */
+    background-color:#323739;
+    color: lightgray;
+}
+input:focus{
+    outline: none;
+}
+
+.Sidebar__searchContainer > .MuiSvgIcon-root{
+  padding: 10px;
+    color: gray;
+ }
+
+
+ .Sidebar__chats{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background-color: #131c21;
+ 
+    overflow-y: scroll;
+ }

@@ -1,11 +1,13 @@
-import { useContext } from 'react';
+import { useContext,useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Table from './tables'
 import { MetamaskActions, MetaMaskContext } from '../hooks';
+import Sidebar from '../components/Sidebar';
 import {
   connectSnap,
   getSnap,
-  login,
   sendHello,
+  addData,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -14,7 +16,6 @@ import {
   ReconnectButton,
   SendHelloButton,
   Card,
-  LoginButton,
 } from '../components';
 
 const Container = styled.div`
@@ -102,8 +103,14 @@ const ErrorMessage = styled.div`
 `;
 
 const Index = () => {
+  useEffect(()=>{
+    alert('Index rendering')
+  },)
   const [state, dispatch] = useContext(MetaMaskContext);
-
+  const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})
+  const transaction=[{name:"test1",address:"",id:"1",date:new Date,amount:"", active:true},
+  {name:"test2",address:"",id:"2",date:new Date,amount:"10", active:false},
+  {name:"test3",address:"",id:"3",date:new Date,amount:"0", active:false}]
   const handleConnectClick = async () => {
     try {
       await connectSnap();
@@ -128,30 +135,41 @@ const Index = () => {
     }
   };
 
-  const handleLoginClick = async () => {
+  const handleAddDataClick = async (data:any) => {
     try {
-      await login();
+      await addData(data);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
 
+  const onChange=(e:any)=>{
+    setFormData((prevState)=>({
+      ...prevState,
+      [e.target.name]: e.target.value
+
+    }))
+  }
+
   return (
+    <>
+   
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        hello
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+       startting
       </Subtitle>
+    
       <CardContainer>
         {state.error && (
           <ErrorMessage>
             <b>An error happened:</b> {state.error.message}
           </ErrorMessage>
         )}
-        {!state.isFlask && (
+        {/* {!state.isFlask && (
           <Card
             content={{
               title: 'Install',
@@ -177,7 +195,7 @@ const Index = () => {
             }}
             disabled={!state.isFlask}
           />
-        )}
+        )} */}
         {shouldDisplayReconnectButton(state.installedSnap) && (
           <Card
             content={{
@@ -194,6 +212,7 @@ const Index = () => {
             disabled={!state.installedSnap}
           />
         )}
+        
         <Card
           content={{
             title: 'Send Hello message',
@@ -213,34 +232,66 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <Card
-          content={{
-            title: 'Login',
-            description: 'Login by signing a message',
-            button: (
-              <LoginButton
-                onClick={handleLoginClick}
-                // disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          // disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
+       
+        <div style={{
+          display: "flex",
+          flexDirection:"column",
+          backgroundColor:'black',
+          padding:6,
+          paddingLeft:16,
+          paddingRight:16,
+          rowGap:16,
+          border:'1px solid white',
+          borderRadius: 25
+          
+          
+          
+        }}>
+            
+            
+          <div className="" style={{
+          display: "flex",
+          flexDirection:"column",
+          rowGap:4
+          
+        }}>
+            <div style={
+              {
+                fontSize: 26,
+                fontWeight: "bold",
+                textAlign:"center",
+                marginBottom:10,
+                marginTop:10
+              }
+            }>Payment</div>
+            <div className="" style={{
+              display:"flex",
+              alignItems:"center",
+              columnGap:3,
+              rowGap:4
+              }}>
+                <input style={{height:24}} placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+            </div>   
+            <div className=""
+            style={{
+              display:"flex",
+              alignItems:"center",
+              columnGap:3
+              }}>
+           <input style={{height:24}}  placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>  
+              </div>     
+               
+            <input style={{height:24}} placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
+            <input style={{height:24}}  placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
+            <input style={{height:24}}  placeholder='Date' name="date" type='date' onChange={onChange}/>      
+            
+            </div>
+            <button style={{marginBottom:6}}  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
+        </div>
       </CardContainer>
+      <Table data={transaction}  />
     </Container>
+    </>
   );
 };
 

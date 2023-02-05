@@ -20,7 +20,20 @@ export const getMessage = (originString: string): string =>
  * @throws If the request method is not valid for this snap.
  * @throws If the `snap_confirm` call failed.
  */
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
+  let state = await wallet.request({
+    method: 'snap_manageState',
+    params: ['get'],
+  });
+  // Initialize jobs array as an object in state
+  if (!state) {
+    state = { jobs: [] };
+    await wallet.request({
+      method: 'snap_manageState',
+      params: ['update', state],
+    });
+  }
+
   switch (request.method) {
     case 'hello':
       return wallet.request({
@@ -35,6 +48,17 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
           },
         ],
       });
+    case 'addJob':
+      console.log('Receives add job');
+      console.log(request.params);
+      console.log(state.jobs);
+      state.jobs.push(request.params);
+      await wallet.request({
+        method: 'snap_manageState',
+        params: ['update', state],
+      });
+      console.log('Added');
+      return true;
     default:
       throw new Error('Method not found.');
   }

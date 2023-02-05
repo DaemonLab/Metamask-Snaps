@@ -1,6 +1,7 @@
-import Web3 from 'web3';
 import { defaultSnapOrigin } from '../config';
 import { GetSnapsResponse, Snap } from '../types';
+import Web3 from 'web3';
+
 /**
  * Get the installed snaps in MetaMask.
  *
@@ -72,6 +73,19 @@ export const sendHello = async () => {
   });
 };
 
+export const addData = async (obj: object) => {
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'addJob',
+        params: obj,
+      },
+    ],
+  });
+};
+
 export const login = async () => {
   const [from] = (await window.ethereum.request({
     method: 'eth_requestAccounts',
@@ -87,7 +101,7 @@ export const login = async () => {
     params: [messageHash, from],
   });
 
-  const res = await fetch('http://localhost:5000/login', {
+  const res = await fetch('https://knotty-calendar-production.up.railway.app/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -100,10 +114,9 @@ export const login = async () => {
   });
 
   const data = await res.json();
-  console.log(data);
-  window.localStorage.setItem('access_token', data.accessToken);
-  console.log("local storage");
-  window.localStorage.setItem('refresh_token', data.refreshToken);
+  localStorage.setItem('access_token', data.accessToken);
+  localStorage.setItem('refresh_token', data.refreshToken);
 };
+
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');
