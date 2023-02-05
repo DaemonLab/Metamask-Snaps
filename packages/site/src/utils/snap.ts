@@ -141,4 +141,80 @@ export const handleTestx = async () => {
  }
 }
 
+export const contractData = async (arr: any, address: any, abi:any, fname: any, frequency: any, date:any  ) => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'contract',
+         params:{
+          arr: arr,
+          address: address,
+          abi:abi,
+          fname: fname,
+          frequency: frequency,
+          date:date,
+         }
+       }]
+    })
+ } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
+
+export const addjob = async (arr: any, address: any, abi:any, fname: any, frequency: any, timestamp: any ) => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'addjob',
+         params:{
+          arr: arr,
+          address: address,
+          abi:abi,
+          fname: fname,                    
+          frequency: frequency,
+          timestamp: timestamp,
+          active: true,
+          lastPayment:0,          
+         }
+       }]
+    })
+ } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
+export const getjobs = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getJobs',
+      },
+    ],
+  });
+  return data;
+};
+
+
+export const clearState = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'clearState',
+      },
+    ],
+  });
+  return data;
+};
+
+
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

@@ -11,6 +11,10 @@ import {
   sendHello,
   handleTestx,
   shouldDisplayReconnectButton,
+  contractData,
+  addjob,
+  getjobs,
+  clearState
 } from '../utils';
 import {
   ConnectButton,
@@ -21,9 +25,10 @@ import {
   SendTransactButton,
 } from '../components';
 import './pages.css'
+import { ethers } from 'ethers';
+import { CLIEngine } from 'eslint';
 
-import Web3 from 'web3';
-const web3 = new Web3('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
+
 
 
 const Container = styled.div`
@@ -117,6 +122,21 @@ const Index = () => {
   const [btc, setbtc] = React.useState("0");
   const [btcadd, setbtcadd] = React.useState("");
   const [to, setto] = React.useState("");
+  const [myarr, setmyarr] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [inparr, setinparr] = React.useState([{}]);
+  const [arr2, setarr2] = React.useState({})
+  const [abi, setabi] = React.useState([])
+  const [fname, setfname] = React.useState("");
+  const [jobs, setjobs] = React.useState([]);
+  const [frequency, setfrequency] = React.useState("")
+  const [date, setdate] = React.useState("");
+  const [timestamp, settimestamp] = React.useState(0);
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
 
   const handleAdresses = async (e: any) => {
     getaddress();
@@ -135,11 +155,23 @@ const Index = () => {
   const callFuncs = async (e: any) => {
     e.preventDefault();
 
-    const abix  = await fetch(`https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`)    
-    const data = await abix.json()
-    
-    const resx = JSON.parse(data.result)        
-    resx.filter((func: any) => func.type === "function").map((func: any) => console.log(func.name));
+    const abix  = await fetch(`https://api-goerli.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`)        
+    const data = await abix.json()    
+    console.log(data)    
+    setabi(data)
+    const resx = JSON.parse(data.result)
+    // const data2 = "[{\"inputs\":[],\"name\":\"overflow\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow2\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow3\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+    // const datax = JSON.parse(data2)
+    // const data3 = {"status":"1","message":"OK","result":"[{\"inputs\":[],\"name\":\"overflow\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow2\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow3\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"}
+    // console.log(data3)
+    // setabi(data3)
+    // console.log(datax)           
+    const funcs = await resx.filter((func: any) => func.type === "function").map((func: any) => func);        
+    setmyarr(funcs)
+    setOpen(true)
+    // getjobs().then((data: any) => {
+    //   console.log(data.length)      
+    // })
     // for (const obj of abi2) {
     //   // if (obj.type === "function") {
     //   //   console.log(`Function: ${obj.name}`);
@@ -207,6 +239,42 @@ const Index = () => {
     e.preventDefault();
     handleTestx();
   }
+
+  
+  const handleClix = async(e: any, input: any, name: any) => {    
+    setinparr(input)
+    setfname(name)
+  }  
+
+  const handleFieldChange = (event : any) => {
+    setarr2({ ...arr2, [event.target.name]: event.target.value });
+  };
+
+  const handleClear = async (e: any) => {
+    e.preventDefault();
+
+    await clearState();
+    console.log("State cleared")
+  } 
+  
+  const handleSubmitx = async (e: any) => {
+    e.preventDefault();
+    const timestamp = Math.floor(Date.now() / 1000);
+    settimestamp(timestamp);
+    console.log(arr2)
+    console.log(abi)
+    console.log(address)
+    console.log(fname)
+    console.log(date)
+    await addjob(arr2,`${address}`, abi, fname, frequency, timestamp);
+    // await contractData(arr2,`${address}`, abi, fname, date);
+    getjobs().then((data: any) => {
+      setjobs(data);
+    })
+  }
+
+  
+
   return (
     <Container>
       <Heading>
@@ -343,37 +411,64 @@ const Index = () => {
             </form>
           </div>
         </div>
-        <div className="cardx">
-          <div className="form">
-            <form className='formx' onSubmit={(e) => handleSubmitBtc(e)}>
-              <div className="formdiv">
-                <label>BTC Address: </label>
-                <br/>
-                <input type="text" className='inputx' onChange={(e) => setbtcadd(e.target.value)}/>
-              </div>                           
-              <div className="formdiv">               
-                <input type="submit" className='btnx' value="Get BTC Balance"/>
-              </div>
-            </form>
-            <p className='crdtxt'>              
-            {btc}
-            </p>
-          </div>
+        <div className="cardx2">
+          <p style={{textAlign:'center'}}>Jobs</p>
+          {
+            jobs.map((obj: any, id: any) => {
+              return(
+                <div key={id} style={{border:"solid 1px white", borderRadius:'2px', padding:"5px"}} className="jobx">
+                  <p>{obj.fname}</p>                  
+                </div>
+              )
+            })
+          }
         </div>
         <div className="cardx"> 
         <h6>Get Adresses</h6>
           <p className='crdtxt'>
             Click this button to get addresses in your address book.
           </p>         
-           <button className="btnx btn2" onClick={(e) => handleAdresses(e)}>Get Adresses</button>          
+           <button className="btnx btn2" onClick={(e) => handleClear(e)}>Clear State</button>          
         </div>           
-        <div className="cardx"> 
-        <h6>Test</h6>
-          <p className='crdtxt'>
-            Click this button to get addresses in your address book.
-          </p>         
-           <button className="btnx btn2" onClick={(e) => handleTest(e)}>Get Adresses</button>          
-        </div>    
+        <div className="cardx3"> 
+        <h6>Available Functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h6>
+         <div className='c'>
+          {myarr.map((obj: any, id: any) => {
+            return(
+              <div key={id} onClick={(e) => handleClix(e, obj.inputs, obj.name)} className="divxx">
+                <p style={{marginLeft:'20px'}}>{obj.name}</p>
+              </div>
+            )            
+          })}</div> 
+                     
+        </div>
+        <div className="cardx3">
+        <p align="center">Add Job</p> 
+        <p align="center">{fname}</p> 
+        <div className="form">          
+            <form className='formx' onSubmit={(e) => handleSubmitx(e)}>
+              {
+                inparr.map((obj:any, id:any) => {
+                  return(
+                    <div className="formdiv" key={id}>
+                      <label>{obj.name}</label>
+                      <br/>
+                      <input type="text" name={obj.name} className='inputx' onChange={handleFieldChange}/>
+                    </div>
+                  )
+                })
+              }      
+              <div className="formdiv" >
+                <label>Frequency</label>
+                <br/>
+                <input type="text" name="freq" className='inputx' onChange={(e) => setfrequency(e.target.value)}/>
+              </div>                      
+              <div className="formdiv">               
+                <input type="submit" className='btnx' value="Send"/>
+              </div>
+            </form>
+          </div>
+        </div>        
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

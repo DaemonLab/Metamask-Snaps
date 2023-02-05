@@ -48,8 +48,13 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "@metamask/key-tree": "^6.2.1",
+    "@metamask/snaps-types": "^0.28.0",
+    "@metamask/utils": "^3.4.1",
+    "@noble/bls12-381": "^1.4.0",
     "alchemy-sdk": "^2.3.0",
     "cors": "^2.8.5",
+    "ethers": "^6.0.2",
     "web3": "^1.8.1"
   }
 }
