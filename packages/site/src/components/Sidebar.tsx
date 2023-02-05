@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { flexbox } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 const Sidebar=({rooms,access}:any)=> {
     
@@ -189,23 +190,31 @@ const logout= ()=> {
       transform: 'translate(-50%, -50%)',
       width: 400,
       bgcolor: 'background.paper',
-      border: '2px solid #000',
+      border: '1px solid #131c21',
       boxShadow: 24,
+      borderRadius:'5%',
       p: 4,
-      backgroundColor:'black'
+      backgroundColor:"#0b1012",
     };
     const contactStyle = {
       position: 'absolute' as 'absolute',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: 600,
+      width: 400,
       bgcolor: 'background.paper',
-      border: '2px solid #000',
+      border: '1px solid #131c21',
+      borderRadius:'5%',
       boxShadow: 24,
       p: 4,
-      backgroundColor:'black'
+      backgroundColor:"#0b1012"
     };
+    const inputStyle={
+      padding:'10px',
+      margin:'2px',
+      fontSize:'14px',
+      fontFamily:'sans-serif'
+    }
     const photoURL =
     localStorage.getItem("photoURL") !== ""
       ? localStorage.getItem("photoURL")
@@ -250,11 +259,11 @@ const logout= ()=> {
            <div style={{
           display: "flex",
           flexDirection:"column",
-          backgroundColor:'black',
+          
           padding:6,
           paddingLeft:16,
           paddingRight:16,
-          rowGap:16,
+          rowGap:4,
           border:'1px solid white',
           borderRadius: 25
           
@@ -270,14 +279,26 @@ const logout= ()=> {
                 marginTop:10
               }
             }>Add Group</div>
+            <div style={{
+              display:"flex",
+              flexDirection:'column',
+              
+              
+              }}>
             <div className="" style={{
               display:"flex",
               flexDirection:'row',
               alignItems:"center",
-              columnGap:3,
-              rowGap:4
+              justifyContent:'space-between',
+              marginBottom:'5%'
               }}>
-                Group Name : <input style={{height:24}} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+                <div>
+                Group Name : 
+                </div><input style={inputStyle} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+                
+               
+               <PersonRemoveIcon style={{fontSize:'30px', color:'#0b1012',cursor:'default'}}/>
+              
             </div>   
             {
               formData.users.map((user:any,index:number)=>{
@@ -286,24 +307,41 @@ const logout= ()=> {
                 style={{
                   display:"flex",
                   alignItems:"center",
-                  columnGap:3
+                  columnGap:3,
+                  justifyContent:'space-between'
                   }}>
-               User{index+1} Address: <input style={{height:24}}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeUser(e,index)}/> 
-               {formData.users.length>1 &&
-               (<button key={index} onClick={()=>removeUsers(index)}> Remove</button>)} 
+                    <div>
+               User{index+1} Address : 
+               </div>
+               <input style={inputStyle}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeUser(e,index)}/> 
+               {formData.users.length>1 ?
+               (<IconButton onClick={()=>removeUsers(index)} style={{}} >
+               <PersonRemoveIcon key={index}  style={{fontSize:'25px',cursor:'pointer',color:"#B1B3B5"}}/>
+               </IconButton>) :
+               (
+                <PersonRemoveIcon style={{fontSize:'40px', color:'#0b1012',cursor:'default'}}/>
+               )
+               } 
                   </div>   
                 )  
               })
             }
-        
-                  <FormControlLabel control={  
-            <Switch checked={checked} onChange={()=>{
+        </div>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'2%'}}>
+          <div>
+            Personal
+          </div>
+          
+            <div style={{width:'70%',alignItems:'left'}}>
+            <Switch checked={checked}  onChange={()=>{
               setFormData((prev)=>({...prev,
               type:checked?'group':'personal'}))
               setChecked(!checked);
-            }}/>} label='Personal'/>
+            }}/>
             </div>
-            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
+            </div>
+            </div>
+            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}} disableElevation>
               
                <Button   className = "submitBtn"  onClick={addUsers}> Add User</Button>
             
@@ -326,17 +364,17 @@ const logout= ()=> {
           display: "flex",
           flexDirection:"column",
           rowGap:4,
-          justifyContent:'center'
+          justifyContent:'center',
+          
           
         }}>
            <div style={{
           display: "flex",
           flexDirection:"column",
-          backgroundColor:'black',
           padding:6,
           paddingLeft:16,
           paddingRight:16,
-          rowGap:16,
+          rowGap:'5%',
           border:'1px solid white',
           borderRadius: 25
           
@@ -348,8 +386,8 @@ const logout= ()=> {
                 fontSize: 26,
                 fontWeight: "bold",
                 textAlign:"center",
-                marginBottom:10,
-                marginTop:10
+                marginBottom:'2%',
+                marginTop:'2%'
               }
             }>Add Contacts</div>
               
@@ -361,19 +399,28 @@ const logout= ()=> {
                   display:"flex",
                   flexFlow:"column",
                   alignItems:"center",
-                  columnGap:3
                   }}>
-               <div style={{textAlign:'left'}}>User{index+1}</div>
+               <div style={{textAlign:'left',border:'0.5px solid #1e272b',padding:'3%',borderRadius:'5%',margin:'2%'}}>
+                <div className="" style={{display:'flex',justifyContent:'space-between',alignItems:'center',}}>
+                <div style={{fontFamily:'sans-serif', fontWeight:'bold',fontSize:'25px',marginTop:'5%',marginBottom:'5%'}}>User{index+1}</div>
+                {contactData.length>1 &&
+               (<IconButton key={index} onClick={()=>removeContacts(index)}> 
+               <PersonRemoveIcon key={index}  style={{fontSize:'25px',cursor:'pointer',color:"#B1B3B5"}}/>
+               </IconButton>)} 
+               </div>
                <div style={{
                 display:'flex',
-                alignItems:"center",
-                  columnGap:3
+                flexDirection:'column',
+                
                }}>
-                Address: <input style={{height:24}}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeContact(e,index)}/>
-               Name: <input style={{height:24}}  placeholder='Name' name="name" type='text' value={user.name} onChange={e=>onChangeContact(e,index)}/> 
+                <div className="" style={{display:'flex',justifyContent:'space-between',alignItems:"center",}}>
+                Address : <input style={inputStyle}  placeholder='Address' name="address" type='text' value={user.address} onChange={e=>onChangeContact(e,index)}/>
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:"center"}}>
+               Name : <input style={inputStyle}  placeholder='Name' name="name" type='text' value={user.name} onChange={e=>onChangeContact(e,index)}/> 
+               </div>
                
-               {contactData.length>1 &&
-               (<button key={index} onClick={()=>removeContacts(index)}> Remove</button>)} 
+               </div>
                </div>
                   </div>   
                 )  
@@ -384,10 +431,11 @@ const logout= ()=> {
              
             
             </div>
-            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
-              
-               <Button   className = "submitBtn"  onClick={addContacts}> Add User</Button>
-            
+            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}} disableElevation>
+            {contactData.length<3 ? (<Button   className = "submitBtn"  onClick={addContacts}> Add User</Button>
+            ):(<Button disabled  className = "submitBtn" style={{backgroundColor:'grey',border:'1px gray'}} > Add User</Button>
+            )} 
+               
             <Button   className = "submitBtn" onClick={()=>{
               addContact()}}> submit</Button>
         </ButtonGroup>

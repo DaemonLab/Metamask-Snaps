@@ -28,30 +28,37 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
-
+const inputStyle={
+  padding:'10px',
+  margin:'2px',
+  fontSize:'14px',
+  fontFamily:'sans-serif'
+}
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width:'60%',
+  width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '1px solid #131c21',
   boxShadow: 24,
+  borderRadius:'5%',
   p: 4,
-  backgroundColor:'black'
+  backgroundColor:"#0b1012",
 };
 const memberStyle = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width:350,
+  width: 350,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '1px solid #131c21',
+  borderRadius:'5%',
   boxShadow: 24,
   p: 4,
-  backgroundColor:'black'
+  backgroundColor:"#0b1012"
 };
 
 const Midbar=({rooms,access,contacts,transacts}:any)=> {
@@ -254,15 +261,15 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
           
         }}>
            <div style={{
-          display: "flex",
-          flexDirection:"column",
-          backgroundColor:'black',
-          padding:6,
-          paddingLeft:16,
-          paddingRight:16,
-          rowGap:16,
-          border:'1px solid white',
-          borderRadius: 25
+           display: "flex",
+           flexDirection:"column",
+           
+           padding:6,
+           paddingLeft:16,
+           paddingRight:16,
+           rowGap:16,
+           border:'1px solid white',
+           borderRadius: 25
           
           
           
@@ -276,23 +283,26 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
                 marginTop:10
               }
             }>New Split</div>
-             <div className="">
-            <div className="" style={{
-              display:"flex",
-              flexDirection:'row',
-              alignItems:"center",
-              columnGap:3,
-              rowGap:4,
-              marginBottom:20
-              }}>
-                Split Name : <input style={{height:24}} placeholder='Group Name' name="name" type='text' value={formData.name} onChange={onChange}/>
-                Total Amount : <input style={{height:24}} placeholder='in INR' name="amount" type='number' value={formData.amount} onChange={onChange}/>
+             <div className="" >
+             <div style={{
+                display:'flex',
+                flexDirection:'column',
+                
+               }}>
+            <div className="" style={{display:'flex',justifyContent:'space-between',alignItems:"center",}}>
+                Split Name : <input style={inputStyle} placeholder='Split Name' name="name" type='text' value={formData.name} onChange={onChange}/>
+                </div>
+                <div className="" style={{display:'flex',justifyContent:'space-between',alignItems:"center",}}>
+                Total Amount : <input style={inputStyle} placeholder='in INR' name="amount" type='number' value={formData.amount} onChange={onChange}/>
+                </div>
 
-               
-            </div>  
-            <FormControl fullWidth style={{backgroundColor:'white'}}> 
+            </div> 
+            <FormControl fullWidth > 
 
-            <InputLabel id="demo-simple-select-label">Payer</InputLabel>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div>
+                Paid By :
+              </div>
 
               <Select
                       labelId="demo-simple-select-filled-label"
@@ -300,36 +310,47 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
             
             value={payer}
             label="Payer"
+            style={{fontSize:'15px',backgroundColor:'white',width:'55%'}}
             onChange={(e:any)=>{
               setPayer(e.target.value);
             }}
           >
             {membersArray.map((member:any,index:number)=>(
-              <MenuItem value={ member} key={index}> {contacts[member]==undefined? member:contacts[member]}</MenuItem>
+              <MenuItem value={ member} key={index} style={{fontSize:'15px'}}> {contacts[member]==undefined? member:contacts[member]}</MenuItem>
             ))}
             {/* <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem> */}
           </Select>
+          </div>
           </FormControl>
-            {
-              
+            {<div style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginTop:'2%'}}>
+              <div>
+                Includes :
+                </div>
+                <div>
                     <Grid container spacing={0.5} columns={1}>
                     {membersArray.map((member:any, index:number) => (
                       <Grid item xs={2} sm={4} md={4} key={index}>
+                        <div style={{display:'flex',alignItems:'center'}}>
                         <Checkbox defaultChecked/>
+                        <div style={{fontSize:'15px'}}>
                         {
                           
                         contacts[member]==undefined? member:contacts[member]
+                        
                         }
+                        </div>
+                        </div>
                       </Grid>
                     ))}
                   </Grid>
-                 
+                  </div>
+                  </div>
               }
              </div>
             </div>
-            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
+            <ButtonGroup disableElevation variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
               
            
             
@@ -359,13 +380,12 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
            <div style={{
           display: "flex",
           flexDirection:"column",
-          backgroundColor:'black',
-          padding:6,
-          paddingLeft:16,
-          paddingRight:16,
+          
+          padding:'5%',
+          paddingBottom:'8%',
           rowGap:16,
           border:'1px solid white',
-          borderRadius: 25
+          borderRadius: 25,
           
           
           
@@ -375,28 +395,29 @@ const Midbar=({rooms,access,contacts,transacts}:any)=> {
                 fontSize: 26,
                 fontWeight: "bold",
                 textAlign:"center",
-                marginBottom:10,
-                marginTop:10
+                marginBottom:'2%',
+                marginTop:'2%'
               }
             }>Add Existing User to Group</div>
             <div className="" style={{
               display:"flex",
               flexDirection:'row',
               alignItems:"center",
-              columnGap:3,
+              justifyContent:'space-between',
+              
               rowGap:4
               }}>
-                <div style={{
-              display:"flex",
-              flexDirection:'row',
-              alignItems:"center"}}>
-                User Address : <input style={{height:24}} placeholder='User Address' name="address" type='text' value={memberData.address} onChange={(e)=>{setMemberData(()=>({
+               
+                <div>
+                User Address : 
+                </div>
+                <input style={inputStyle} placeholder='User Address' name="address" type='text' value={memberData.address} onChange={(e)=>{setMemberData(()=>({
                   address:e.target.value}))}}/>
                   </div>
-            </div>   
+      
             
             </div>
-            <ButtonGroup  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
+            <ButtonGroup disableElevation  variant="contained" aria-label="small button group" style={{display:'flex',justifyContent:'center'}}>
               
               
             
