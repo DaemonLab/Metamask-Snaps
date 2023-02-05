@@ -132,7 +132,7 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
    },)
   
   return (
-    <Wrapper>
+    <Wrapper >
     <Header handleToggleClick={toggleTheme} />
     <Box display="flex"
       justifyContent="center"

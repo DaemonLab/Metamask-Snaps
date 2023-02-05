@@ -6,8 +6,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/icons-material/Checkbox';
 import Lottie from "react-lottie";
-
+import bg from '../assets/bg3.png'
 import Logo from "../assets/LoginBG.json"
+import { Image } from '@mui/icons-material';
 
 
 const Login=({setToken,removeToken,accessToken}:any) =>{
@@ -32,11 +33,14 @@ const Login=({setToken,removeToken,accessToken}:any) =>{
     
   };
   return (
+    <>
+    <img src={bg} style={{position:'absolute',backgroundSize:'cover',height:'100%',width:'100%',top:0}}/>
     <Grid 
     sx={ {backgroundColor: `${({ theme }:any) => theme.colors.background.alternative}`}}
     style={{height:'90vh'}}
     >
-      <h2 style={{textAlign:'center', marginBottom:0  }}>Simplify</h2>
+      
+      <h2 style={{zIndex:1,textAlign:'center', marginBottom:0  }}>Simplify</h2>
         <Lottie options={defaultOptions}    style={{ position:'parent' }} height={'70%'} width={'70%'}/>
             <Paper elevation={10} style={paperStyle} >
                 <Grid alignItems='center'>
@@ -64,6 +68,7 @@ const Login=({setToken,removeToken,accessToken}:any) =>{
                 
             </Paper>
         </Grid>
+        </>
   )
 }
 export default Login;
