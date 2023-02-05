@@ -146,3 +146,23 @@ export const addMember = async (req, res) => {
     return res.status(404).json({ error: error.message });
   }
 };
+
+export const settleup = async (data) => {
+  try{
+    const sender = data.sender;
+    const reciever = data.reciever;
+    const groupId = req.params.id;
+    const groupRef = doc(db, 'groups', gid);
+    const groupSnap = await getDoc(groupRef);
+    const graph = groupSnap.data().graph;
+    if (!graph) throw new Error('No graph present, Bad request');
+
+    if (!graph[sender][reciever]) throw new Error('No debt between these two');
+    graph[sender][reciever] = 0;
+    simplify({graph, groupId});
+    return res.status(200).json({ status: 'OK' });
+  }
+  catch(error){
+    return res.status(404).json({ error: error.message });
+  }
+};

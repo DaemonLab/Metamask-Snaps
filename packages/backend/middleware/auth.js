@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const JwtGuard = async (req, res, next) => {
   try {
+    console.log("JwtGuard", req.headers.authorization);
     if (!req.headers.authorization) {
       return res.status(401).json({ msg: 'Unauthorized!' });
     }

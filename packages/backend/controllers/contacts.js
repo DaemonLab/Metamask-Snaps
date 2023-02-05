@@ -26,7 +26,7 @@ export const addContact = async (req, res) => {
     const data = req.body;
     const user = req.user;
     console.log('user', user);
-    console.log('addcontact', data);
+    console.log('addcontact', data, data[1]);
 
     await runTransaction(db, async (transaction) => {
       const docRef = doc(db, 'users', user);
@@ -34,10 +34,10 @@ export const addContact = async (req, res) => {
       if (!docSnap.exists())throw 'Document does not exist!';
       else {
         let contacts = docSnap.data().contacts || {};
-        let incomingContacts = data || [];
-        incomingContacts.forEach(Element => {
-          contacts[Element.address] = Element.name;
-        });
+        let incomingContacts = data || {};
+        for(let [key, value] of Object.entries(incomingContacts)) {
+          contacts[key] = value;
+        }
         transaction.update(docRef, { contacts: contacts });
       }
     });

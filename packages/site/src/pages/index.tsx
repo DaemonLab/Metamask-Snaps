@@ -1,4 +1,5 @@
 import { useContext,useState, useEffect } from 'react';
+import { defaultSnapOrigin } from '../config';
 import styled from 'styled-components';
 import Table from './tables'
 import { MetamaskActions, MetaMaskContext } from '../hooks';
@@ -126,18 +127,93 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
+  // const handleSendHelloClick = async () => {
+  //   try {
+  //     await sendHello();
+  //   } catch (e) {
+  //     console.error(e);
+  //     dispatch({ type: MetamaskActions.SetError, payload: e });
+  //   }
+  // };
+
+  const handleLoginClick = async () => {
     try {
-      await sendHello();
+      await login();
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
 
-  const handleAddDataClick = async (data:any) => {
+  // create variable contacts to test the data
+  const contacts = [
+    {
+      name: 'test1',
+      address: '1',
+    },
+    {
+      name: 'test2',
+      address: '2',
+    },
+  ];
+
+  const addcontacts = async (contact: any) => {
     try {
-      await addData(data);
+      console.log('Sending add request');
+      await window.ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: [
+          defaultSnapOrigin,
+          {
+            method: 'addContacts',
+            params: contacts,
+          },
+        ],
+      });
+      console.log('success');
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const getcontacts = async () => {
+    try {
+      console.log('Sending get request');
+      let contacts = await window.ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: [
+          defaultSnapOrigin,
+          {
+            method: 'getContacts',
+          },
+        ],
+      });
+      console.log(contacts);
+      console.log('success');
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+  const access_token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgzMDljZDg3M2QxNWIwN2NiOTZhYTBjMDllNDAzYmM1YWFlM2YzNDllIiwiaWF0IjoxNjc1NTk4Nzk5LCJleHAiOjE2NzU2MDIzOTl9.6XlA7zwOsS452PwbgyTqKD__9f5mJJjMBUaY25F-CTc';
+  const syncContacts = async () => {
+    try {
+      console.log('Sending sync request');
+      await window.ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: [
+          defaultSnapOrigin,
+          {
+            method: 'syncContacts',
+            params: {
+              token: access_token,
+            },
+          },
+        ],
+      });
+      console.log('Syncing is successful');
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -152,9 +228,38 @@ const Index = () => {
     }))
   }
 
+  const handleSendHelloClick = async () => {
+    try {
+      addcontacts(contacts);
+      getcontacts();
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSyncClick = async () => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: [
+          defaultSnapOrigin,
+          {
+            method: 'syncContacts',
+            params: {
+              token: access_token,
+            },
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
   return (
     <>
-   
+
     <Container>
       <Heading>
         hello
@@ -162,7 +267,7 @@ const Index = () => {
       <Subtitle>
        startting
       </Subtitle>
-    
+
       <CardContainer>
         {state.error && (
           <ErrorMessage>
@@ -212,7 +317,7 @@ const Index = () => {
             disabled={!state.installedSnap}
           />
         )}
-        
+
         <Card
           content={{
             title: 'Send Hello message',
@@ -232,7 +337,7 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-       
+
         <div style={{
           display: "flex",
           flexDirection:"column",
@@ -243,17 +348,17 @@ const Index = () => {
           rowGap:16,
           border:'1px solid white',
           borderRadius: 25
-          
-          
-          
+
+
+
         }}>
-            
-            
+
+
           <div className="" style={{
           display: "flex",
           flexDirection:"column",
           rowGap:4
-          
+
         }}>
             <div style={
               {
@@ -271,23 +376,69 @@ const Index = () => {
               rowGap:4
               }}>
                 <input style={{height:24}} placeholder='Name' name="name" type='text' value={formData.name} onChange={onChange}/>
-            </div>   
+            </div>
             <div className=""
             style={{
               display:"flex",
               alignItems:"center",
               columnGap:3
               }}>
-           <input style={{height:24}}  placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>  
-              </div>     
-               
-            <input style={{height:24}} placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>      
-            <input style={{height:24}}  placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>      
-            <input style={{height:24}}  placeholder='Date' name="date" type='date' onChange={onChange}/>      
-            
+           <input style={{height:24}}  placeholder='Address' name="address" type='text' value={formData.address} onChange={onChange}/>
+              </div>
+
+            <input style={{height:24}} placeholder='ID' name="id" type='text' value={formData.id} onChange={onChange}/>
+            <input style={{height:24}}  placeholder='AMount' name="amount" type='number' value={formData.amount} onChange={onChange}/>
+            <input style={{height:24}}  placeholder='Date' name="date" type='date' onChange={onChange}/>
+
             </div>
             <button style={{marginBottom:6}}  className = "submitBtn" onClick={()=>{console.log(formData)}}> submit</button>
         </div>
+        <Card
+          content={{
+            title: 'Login',
+            description: 'Login by signing a message',
+            button: (
+              <LoginButton
+                onClick={handleLoginClick}
+                // disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          // disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+
+        <Card
+          content={{
+            title: 'Sync Contacts',
+            description: 'Sync contacts from your local storage and server',
+            button: (
+              <SendHelloButton
+                onClick={handleSyncClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+
+        <Notice>
+          <p>
+            Please note that the <b>snap.manifest.json</b> and{' '}
+            <b>package.json</b> must be located in the server root directory and
+            the bundle must be hosted at the location specified by the location
+            field.
+          </p>
+        </Notice>
       </CardContainer>
       <Table data={transaction}  />
     </Container>
