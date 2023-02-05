@@ -11,6 +11,10 @@ import {
   getData,
   deleteData,
   updateData,
+  handleTestx,
+  handleStorage,
+  sendContractTransaction,
+  getaddress,
 } from '../utils';
 import {
   ConnectButton,
@@ -20,6 +24,14 @@ import {
   Card,
 } from '../components';
 import Table from './tables';
+import './pages.css';
+
+import Web3 from 'web3';
+import React from 'react';
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
+
+
+
 
 const Container = styled.div`
   display: flex;
@@ -114,7 +126,16 @@ const Index = () => {
     date: new Date(),
     amount: '',
     active: true,
+    lastPayment: -1
   });
+  const [name, setname] = React.useState("");
+  const [address, setaddress] = React.useState("");
+  const [btc, setbtc] = React.useState("0");
+  const [btcadd, setbtcadd] = React.useState("");
+  const [to, setto] = React.useState("");
+  const handleAdresses = async (e: any) => {
+    getaddress();
+  }
   const refreshTable = () => {
     getData().then((data) => {
       console.log(data);
@@ -125,6 +146,39 @@ const Index = () => {
     });
   };
   const [jobs, setJobs] = useState(() => refreshTable());
+
+  interface AbiFunction {
+    constant: boolean;
+    inputs: { name: string; type: string }[];
+    name: string;
+    outputs: { name: string; type: string }[];
+    payable: boolean;
+    stateMutability: string;
+    type: string;
+  }
+  //https://api.etherscan.io/api?module=contract&action=getabi&address=0x2835cb9900638263b574df95bc09f98910e15b12&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW
+  const callFuncs = async (e: any) => {
+    e.preventDefault();
+
+    const abix = await fetch(`https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`)
+    const data = await abix.json()
+
+    const resx = JSON.parse(data.result)
+    resx.filter((func: any) => func.type === "function").map((func: any) => console.log(func.name));
+    // for (const obj of abi2) {
+    //   // if (obj.type === "function") {
+    //   //   console.log(`Function: ${obj.name}`);
+    //   //   console.log("Parameters:");
+    //   //   for (const input of obj.inputs) {
+    //   //     console.log(`- Name: ${input.name}, Type: ${input.type}`);
+    //   //   }
+    //   // }
+    //   console.log(obj)
+    // }
+    // const functions = data.filter(json => json.type === 'function');        
+
+  }
+
 
   const handleConnectClick = async () => {
     try {
@@ -181,6 +235,35 @@ const Index = () => {
     console.log('done');
     refreshTable();
   };
+  const handleTranscation = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await sendContractTransaction(to);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    handleStorage(name, address);
+  }
+
+  const handleSubmitBtc = async (e: any) => {
+    e.preventDefault();
+
+    const res = await fetch(`https://blockchain.info/q/addressbalance/${btcadd}?confirmations=3`)
+    let data = await res.json();
+    console.log(data)
+    setbtc(data)
+  }
+
+  const handleTest = async (e: any) => {
+    e.preventDefault();
+    handleTestx();
+  }
 
   const onChange = (e: any) => {
     setFormData((prevState) => ({
@@ -188,6 +271,7 @@ const Index = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
 
   return (
     <Container>
@@ -368,6 +452,78 @@ const Index = () => {
             {' '}
             submit
           </button>
+        </div>
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={(e) => callFuncs(e)}>
+              {/* <div className="formdiv">
+                <label>From: </label>
+                <br/>
+                <input type="text" className='inputx' onChange={(e) => setfrom(e.target.value)}/>
+              </div>
+              <br/> */}
+              <div className="formdiv">
+                <label>To: </label>
+                <br />
+                <input type="text" className='inputx' onChange={(e) => setaddress(e.target.value)} />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Send Transaction" />
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={(e) => handleSubmit(e)}>
+              <div className="formdiv">
+                <label>Name: </label>
+                <br />
+                <input type="text" className='inputx' onChange={(e) => setname(e.target.value)} />
+              </div>
+              <br />
+              <div className="formdiv">
+                <label>Adress: </label>
+                <br />
+                <input type="text" className='inputx' onChange={(e) => setaddress(e.target.value)} />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Add Address" />
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="cardx">
+          <div className="form">
+            <form className='formx' onSubmit={(e) => handleSubmitBtc(e)}>
+              <div className="formdiv">
+                <label>BTC Address: </label>
+                <br />
+                <input type="text" className='inputx' onChange={(e) => setbtcadd(e.target.value)} />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Get BTC Balance" />
+              </div>
+            </form>
+            <p className='crdtxt'>
+              {btc}
+            </p>
+          </div>
+        </div>
+        <div className="cardx">
+          <h6>Get Adresses</h6>
+          <p className='crdtxt'>
+            Click this button to get addresses in your address book.
+          </p>
+          <button className="btnx btn2" onClick={(e) => handleAdresses(e)}>Get Adresses</button>
+        </div>
+        <div className="cardx">
+          <h6>Test</h6>
+          <p className='crdtxt'>
+            Click this button to get addresses in your address book.
+          </p>
+          <button className="btnx btn2" onClick={(e) => handleTest(e)}>Get Adresses</button>
         </div>
 
         <Notice>
