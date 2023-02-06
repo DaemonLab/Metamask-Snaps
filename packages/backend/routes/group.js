@@ -3,7 +3,9 @@ import {
   addGroup,
   listGroups,
   addMember,
-  getGroup
+  getGroup,
+  settleup,
+  getGraph,
 } from '../controllers/group.js';
 import { JwtGuard } from '../middleware/auth.js';
 
@@ -13,5 +15,8 @@ router.use(JwtGuard);
 router.route('/').post(addGroup).get(listGroups);
 router.route('/:gid').get(getGroup);
 router.route('/add').post(addMember);
+
+router.route('/:gid/settleup').post(settleup)
+router.route('/:gid/graph').get(getGraph);
 
 export default router;

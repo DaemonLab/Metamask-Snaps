@@ -7,13 +7,14 @@ import {
   collection,
   getDocs,
 } from '@firebase/firestore';
+import { simplifyonSplit } from '../algorithm/simplify.js';
 import { db } from '../firebase.js';
 
 export const addSplit = async (req, res) => {
   try {
     console.log('Adding a new split ', req.body);
     const data = req.body;
-    const user = req.user;
+    // const user = req.user;
     const gid = req.params.gid;
     let docRef;
 
@@ -66,12 +67,24 @@ export const addSplit = async (req, res) => {
         });
       });
 
+      let graph = docSnap.data().graph || {};
+      let updatedGraph = await simplifyonSplit({
+        involved: involvedMap,
+        add: true,
+        graph: graph,
+      });
+
       // add the split
       docRef = doc(collection(db, 'groups', gid, 'splits'));
       transaction.set(docRef, {
         date: Date.now(),
         name: data.name,
         involved: involvedMap,
+      });
+
+      // Update the graph
+      transaction.update(doc(db, 'groups', gid), {
+        graph: updatedGraph,
       });
     });
 
@@ -88,16 +101,18 @@ export const deleteSplit = async (req, res) => {
     const gid = req.params.gid;
     const sid = req.params.sid;
 
-
     await runTransaction(db, async (transaction) => {
-      const splitSnap = await transaction.get(doc(db, 'groups', gid, 'splits', sid));
+      const splitSnap = await transaction.get(
+        doc(db, 'groups', gid, 'splits', sid),
+      );
       console.log(splitSnap.data());
       const docSnap = await transaction.get(doc(db, 'groups', gid));
 
       // check if group exists
       if (!docSnap.exists()) throw new Error('group does not exists');
       // check if user is a member of the group
-      if (!docSnap.data().members.hasOwnProperty(user)) throw new Error('User not included the group');
+      if (!docSnap.data().members.hasOwnProperty(user))
+        throw new Error('User not included the group');
       // check if split exists
       if (!splitSnap.exists()) throw new Error('split does not exists');
 
@@ -117,24 +132,37 @@ export const deleteSplit = async (req, res) => {
       });
       // from user's group balance remove the involved members and their balances
       involvedMembersSnaps.forEach((involvedMemberRef) => {
-        involvedMemberRef.data().groups[gid] -= involvedMap[involvedMemberRef.data().address];
+        involvedMemberRef.data().groups[gid] -=
+          involvedMap[involvedMemberRef.data().address];
       });
 
       // update the group
       transaction.update(doc(db, 'groups', gid), {
-        members: groupBalancesMap
+        members: groupBalancesMap,
       });
       // update the involved members
       involvedMembersSnaps.forEach((involvedMemberRef) => {
         transaction.update(doc(db, 'users', involvedMemberRef.data().address), {
-          groups: involvedMemberRef.data().groups
+          groups: involvedMemberRef.data().groups,
         });
       });
+
+      let updatedGraph = await simplifyonSplit({
+        involved: involvedMap,
+        add: false,
+        graph: docSnap.data().graph,
+      });
+
       // delete the split
       transaction.delete(doc(db, 'groups', gid, 'splits', sid));
+
+      // Update the graph
+      transaction.update(doc(db, 'groups', gid), {
+        graph: updatedGraph,
+      });
     });
 
-    return res.status(201).json({ "Status": "Ok, Split deleted" });
+    return res.status(201).json({ Status: 'Ok, Split deleted' });
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }
@@ -214,7 +242,7 @@ export const getSplit = async (req, res) => {
       });
     }
 
-    const splitData = {id: split.id, ...split.data()}
+    const splitData = { id: split.id, ...split.data() };
     return res.status(201).json(splitData);
   } catch (error) {
     return res.status(404).json({ message: error.message });
