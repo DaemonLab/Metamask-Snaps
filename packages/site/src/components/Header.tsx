@@ -5,6 +5,15 @@ import { connectSnap, getThemePreference, getSnap } from '../utils';
 import { HeaderButtons } from './Buttons';
 import { SnapLogo } from './SnapLogo';
 import { Toggle } from './Toggle';
+import '../App.css';
+// import {
+//   AppBar,
+//   Toolbar,
+//   CssBaseline,
+//   Typography,
+//   makeStyles,
+// } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -36,6 +45,8 @@ const RightContainer = styled.div`
   flex-direction: row;
   align-items: center;
 `;
+
+
 
 export const Header = ({
   handleToggleClick,
@@ -71,6 +82,8 @@ export const Header = ({
           onToggle={handleToggleClick}
           defaultChecked={getThemePreference()}
         /> */}
+        <Link className="routes" to="/route1">ROUTE1</Link>
+        <Link className="routes" to="/route2">ROUTE2</Link>
         <HeaderButtons state={state} onConnectClick={handleConnectClick} />
       </RightContainer>
     </HeaderWrapper>

@@ -15,6 +15,8 @@ import { Box } from '@mui/system';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Sample from './components/Sample';
+import Route1Page from './pages/Route1Page';
+import Route2Page from './pages/Route2Page';
 
 export type AppProps = {
   children: ReactNode;
@@ -51,6 +53,8 @@ useEffect(()=>{
         </Route>
         <Route path='/' element={<Login setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
         <Route path='/sample' element={<Sample/>}/>
+        <Route path='/route1' element={<Route1Page/>}/>
+        <Route path='/route2' element={<Route2Page/>}/>
         
       </Routes>
       </BrowserRouter>

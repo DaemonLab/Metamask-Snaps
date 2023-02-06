@@ -35,3 +35,20 @@
     overflow-y: hidden;
   }
 }
+
+.routes{
+  color: white;
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-right: 3rem;
+  /* border: 2px solid white; */
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  
+}
+.routes:hover{
+  background-color: aliceblue;
+  color:black;
+}
