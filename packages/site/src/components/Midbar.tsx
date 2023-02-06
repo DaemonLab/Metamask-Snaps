@@ -428,7 +428,7 @@ import MidbarSimple from './MidbarSimple';
                             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                             
                            
-                            <div style={{fontSize:'15px'}}>
+                            <div style={{fontSize:'15px',maxWidth:'40%'}}>
                             {
                               
                             contacts[member.id]==undefined?
@@ -436,9 +436,13 @@ import MidbarSimple from './MidbarSimple';
                             <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7}}>
                               Unknown
                             </Typography>
-                            <Typography variant="subtitle1" color="grey" component="div">
+                            <Tooltip title={<div style={{fontSize:'11px'}}>{member.id}</div>} placement="right">
+                            <div style={{cursor:'alias',textOverflow: "ellipsis",textAlign:'right'}}>
+                            <Typography variant="subtitle1" color="grey" component="div" style={{overflow: 'hidden',textOverflow:'ellipsis'}}>
                               {member.id}
                             </Typography>
+                            </div>
+                             </Tooltip>
                             </>:contacts[member.id]
                             
                             }
@@ -544,16 +548,16 @@ import MidbarSimple from './MidbarSimple';
                               }
                             }} />
                            
-                            <div style={{fontSize:'15px',maxWidth:'40%'}}>
+                            <div style={{fontSize:'15px',maxWidth:'80%', textOverflow:'ellipsis'}}>
                             {
                               
                             contacts[member]==undefined? <>
                             <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7}}>
                               Unknown
                             </Typography>
-                            <Tooltip title={<div style={{fontSize:'10px'}}>{member}</div>} placement="top-end">
+                            <Tooltip title={<div style={{fontSize:'11px'}}>{member}</div>} placement="top-end">
                             <div style={{cursor:'alias',textOverflow: "ellipsis",textAlign:'right'}}>
-                            <Typography variant="subtitle1" color="grey" component="div">
+                            <Typography variant="subtitle1" color="grey" component="div"style={{overflow: 'hidden',textOverflow:'ellipsis'}}>
                               {member}
                             </Typography>
                             </div>

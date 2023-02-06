@@ -65,11 +65,12 @@ export const Header = ({
         <SnapLogo color={theme.colors.icon.default} size={36} />
         <Title>template-snap</Title>
       </LogoWrapper>
+      {/* <h1>hiii</h1> */}
       <RightContainer>
-        <Toggle
+        {/* <Toggle
           onToggle={handleToggleClick}
           defaultChecked={getThemePreference()}
-        />
+        /> */}
         <HeaderButtons state={state} onConnectClick={handleConnectClick} />
       </RightContainer>
     </HeaderWrapper>

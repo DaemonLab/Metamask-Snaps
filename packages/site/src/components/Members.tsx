@@ -22,8 +22,8 @@ export default function Members({name,address,amount}:any) {
             {name}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" component="div">
-            <Tooltip title={<div style={{fontSize:'10px'}}>{address}</div>}style={{fontSize:'18px'}} placement="top-end">
-            <div style={{cursor:'alias',textOverflow: "ellipsis"}}>
+            <Tooltip title={<div style={{fontSize:'12px'}}>{address}</div>}style={{fontSize:'18px'}} placement="right">
+            <div style={{cursor:'alias',maxWidth:'200px',overflow:'hidden',textOverflow: "ellipsis"}}>
             {address}
             </div>
             </Tooltip>

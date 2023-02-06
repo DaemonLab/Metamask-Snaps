@@ -28,7 +28,7 @@ const MidbarSimple =(props: any)=> {
           </Typography>
           <Typography variant="subtitle1" color="grey" component="div" >
           <Tooltip title={<div style={{fontSize:'10px'}}>Address</div>} placement="right">
-            <div style={{cursor:'alias',textOverflow: "ellipsis"}}>
+            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",maxWidth:'100%'}}>
             Address
             </div>
             </Tooltip>
@@ -43,7 +43,7 @@ const MidbarSimple =(props: any)=> {
         </Typography>
         <Typography variant="subtitle1" color="grey" component="div" >
           <Tooltip title={<div style={{fontSize:'10px'}}>{second}</div>} placement="top-end">
-            <div style={{cursor:'alias',textOverflow: "ellipsis",textAlign:'right'}}>
+            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",textAlign:'right',maxWidth:'100%'}}>
             Address
             </div>
             </Tooltip>
