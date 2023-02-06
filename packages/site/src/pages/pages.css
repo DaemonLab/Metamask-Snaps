@@ -1,4 +1,4 @@
-.cardx{
+.cardx {
     width: 280px;
     height: 250px;
     border: solid 1px white;
@@ -6,8 +6,21 @@
     background-color: rgb(23, 23, 23);
     margin-top: 30px;
     margin-bottom: 30px;
+    padding: 3%;
 }
-.cardx2{
+
+.cardx3 {
+    width: 280px;
+    height: 400px;
+    border: solid 1px white;
+    border-radius: 20px;
+    background-color: rgb(23, 23, 23);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 3%;
+}
+
+.cardx2 {
     width: 280px;
     height: 350px;
     border: solid 1px white;
@@ -16,45 +29,82 @@
     margin-top: 30px;
     margin-bottom: 30px;
 }
-.form{
+
+.cardx-p {
+    padding: 2%;
+    margin: 0%;
+    text-align: left;
+    font-weight: 700;
+    /* margin-top: 5%; */
+}
+
+.cardx p {
+    padding: 2%;
+    text-align: center;
+    margin-top: 0%;
+}
+
+.form {
     height: 130px;
     padding: 30px;
 }
-.formx{
+
+.formx {
     display: flex;
     flex-direction: column;
 }
-.inputx{
+
+.inputx {
     border-radius: 5px;
     height: 25px;
     width: 90%;
 }
-.btnx{
+
+.btnx {
     margin-top: 20px;
     padding: 10px;
     border-radius: 8px;
     font-weight: bold;
     background-color: white;
     border-radius: solid 2px white;
-    
+
 }
-.btnx:hover{
+
+.btnx:hover {
     cursor: pointer;
     background-color: rgb(23, 23, 23);
     border: solid 2px white;
     color: white;
 }
-p{
+
+p {
     margin-bottom: 0 !important;
 }
-h6{
+
+h6 {
     font-size: 18px !important;
     margin-left: 25px;
 }
-.btn2{
+
+.btn2 {
     margin-left: 25px;
 }
-.crdtxt{
+
+.crdtxt {
     margin-left: 25px;
     margin-right: 25px;
+}
+
+.cardx-form {
+    padding: 0%;
+
+}
+
+.cardx-form h6 {
+    text-align: center;
+    margin: 0%;
+}
+
+.cardx-form form {
+    margin-top: 20px;
 }

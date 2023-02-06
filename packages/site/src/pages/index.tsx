@@ -15,6 +15,10 @@ import {
   handleStorage,
   sendContractTransaction,
   getaddress,
+  getTronAddressData,
+  sendTron,
+  getSolanaAddressData,
+  sendSolana,
 } from '../utils';
 import {
   ConnectButton,
@@ -128,6 +132,24 @@ const Index = () => {
     active: true,
     lastPayment: -1
   });
+
+  const [tronFormData, setTronFormData] = useState({
+    to: '',
+    amount: ''
+  });
+  const [solanaFormData, setSolanaFormData] = useState({
+    to: '',
+    amount: ''
+  });
+  const [tronAccountData, setTronAccountData] = useState({
+    publicKey: ' ',
+    balance: 0
+  })
+  const [solanaAccountData, setSolanaAccountData] = useState({
+    publicAddress: ' ',
+    balance: 0
+  })
+
   const [name, setname] = React.useState("");
   const [address, setaddress] = React.useState("");
   const [btc, setbtc] = React.useState("0");
@@ -271,6 +293,66 @@ const Index = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
+
+  const sendTronTransaction = async (data: any) => {
+    try {
+      console.log('new data');
+
+      getTronAddressData().then((data) => {
+        console.log(data);
+
+        setTronAccountData({
+          publicKey: data.publicKey,
+          balance: data.balance
+        });
+      })
+      await sendTron(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const sendSolanaTransaction = async (data: any) => {
+    try {
+      console.log('new data');
+
+      getSolanaAddressData().then((data) => {
+        console.log(data);
+
+        setSolanaAccountData({
+          publicAddress: data.publicAddress,
+          balance: data.balance
+        });
+      })
+      await sendSolana(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+  const handleTronFormSubmit = (event: any) => {
+    event.preventDefault();
+  }
+  const handleSolanaFormSubmit = (event: any) => {
+    event.preventDefault();
+  }
+
+  const onTronChange = (e: any) => {
+    setTronFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSolanaChange = (e: any) => {
+    setSolanaFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
 
 
   return (
@@ -524,6 +606,68 @@ const Index = () => {
             Click this button to get addresses in your address book.
           </p>
           <button className="btnx btn2" onClick={(e) => handleTest(e)}>Get Adresses</button>
+        </div>
+
+
+        <div className="cardx3 cardx">
+          <div className="form cardx-form">
+            <h6>Tron</h6>
+            <p className='crdtxt cardx-p'>
+              Public Address:
+            </p>
+            <p>{tronAccountData.publicKey}</p>
+            <p className='crdtxt cardx-p'>
+              Balance:
+            </p>
+            <p>{tronAccountData.balance}</p>
+            <form className='formx' onSubmit={handleTronFormSubmit} >
+
+              <div className="formdiv">
+                <label>Receiver's Tron Address: </label>
+                <br />
+                <input type="text" name='to' onChange={onTronChange} className='inputx' />
+              </div>
+              <div className="formdiv">
+                <label>Amount: </label>
+                <br />
+                <input type="text" name='amount' onChange={onTronChange} className='inputx' />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Send" onClick={() => sendTronTransaction(tronFormData)} />
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div className="cardx3 cardx ">
+          <div className="form cardx-form">
+            <h6>Solana</h6>
+            <p className='crdtxt cardx-p'>
+              Public Address
+            </p>
+            <p>{solanaAccountData.publicAddress}</p>
+            <p className='crdtxt cardx-p'>
+              Balance:
+            </p>
+            <p>{solanaAccountData.balance}</p>
+            <form className='formx' onSubmit={handleSolanaFormSubmit} >
+
+              <div className="formdiv">
+                <label>Receiver's Solana Address: </label>
+                <br />
+                <input type="text" className='inputx' name='to' onChange={onSolanaChange} />
+              </div>
+              <div className="formdiv">
+                <label>Amount: </label>
+                <br />
+                <input type="text" className='inputx' name='amount' onChange={onSolanaChange} />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Send" onClick={() => sendSolanaTransaction(solanaFormData)} />
+              </div>
+            </form>
+
+          </div>
         </div>
 
         <Notice>

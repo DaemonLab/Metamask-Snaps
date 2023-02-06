@@ -45,6 +45,8 @@ const getPrivateKey = async (coinType = 60) => {
     },
   })) as JsonBIP44CoinTypeNode;
 
+
+
   return remove0x(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (
@@ -59,6 +61,21 @@ const getPrivateKey = async (coinType = 60) => {
 async function doesExist(address: any) {
   const response = await fetch('')
 }
+
+const getCustomPrivateKey = async (coinType = 501) => {
+  const coinTypeNode = (await wallet.request({
+    method: 'snap_getBip44Entropy',
+    params: {
+      coinType,
+    },
+  })) as JsonBIP44CoinTypeNode;
+
+  return await deriveBIP44AddressKey(coinTypeNode, {
+    account: 0,
+    change: 0,
+    address_index: 0,
+  })
+};
 
 const apiKey = "aA_V_CFxQbVNselCHcDjB0IEhTJvZ_CU";
 const apiKey2 = "NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW";
@@ -102,6 +119,100 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
   }
 
   switch (request.method) {
+    case 'sendTron':
+      console.log('start sending tron 3');
+      let tronPrivateKey = await getPrivateKey(195);
+      let payment = await wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: getMessage(origin),
+            description:
+              'Tron Payment',
+            textAreaContent:
+              `Request to pay ${request.params.amount} tron to ${request.params.to} `,
+          },
+        ],
+      });
+      if (payment) {
+        console.log('payment accepted');
+
+        let params = `privateKey=${tronPrivateKey}&to=${request.params.to}&amount=${request.params.amount}`;
+        fetch(`http://localhost:3000/createTronTransaction?${params}`)
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+      else {
+        console.log('payment rejected');
+      }
+
+
+
+
+    case 'getTronData':
+      let tronPrivateKey1 = await getPrivateKey(195);
+
+      console.log('start getting tron data 2');
+      let params1 = `privateKey=${tronPrivateKey1}`;
+      const tronResponse = await fetch(`http://localhost:3000/getTronAddressDetail?${params1}`);
+      const tronData = await tronResponse.json();
+      console.log(tronData);
+      if (tronData.success)
+        return tronData;
+
+      return { publicKey: 'no primary key', balance: 0 };
+
+
+    case 'sendSolana':
+      console.log('start sending solana');
+      let customSolanaPrivatekey = await getCustomPrivateKey(501);
+
+      const solanaExtendedKey = customSolanaPrivatekey.extendedKey;
+      let paymentSolana = await wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: getMessage(origin),
+            description:
+              'Solana Payment',
+            textAreaContent:
+              `Request to pay ${request.params.amount} sol to ${request.params.to}`,
+          },
+        ],
+      });
+      if (paymentSolana) {
+        console.log('payment accepted');
+        let params2 = `extendedKey=${solanaExtendedKey}&to=${request.params.to}&amount=${request.params.amount}`;
+        fetch(`http://localhost:3000/createSolanaTransaction?${params2}`)
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+      else {
+        console.log('payment rejected');
+      }
+
+
+
+
+    case 'getSolanaData':
+      let customSolanaPrivatekey2 = await getCustomPrivateKey(501);
+
+      const solanaExtendedKey2 = customSolanaPrivatekey2.extendedKey;
+
+      console.log('start getting sol data');
+      let params3 = `extendedKey=${solanaExtendedKey2}`;
+      const solanaResponse = await fetch(`http://localhost:3000/getSolanaAddressDetail?${params3}`);
+      const solanaData = await solanaResponse.json();
+      console.log('1');
+      console.log(solanaData);
+      if (solanaData.success)
+        return solanaData;
+
+      return { publicAddress: 'no primary key', balance: 0 };
     case 'confirm':
       return wallet.request({
         method: 'snap_confirm',

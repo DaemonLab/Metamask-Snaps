@@ -201,4 +201,64 @@ export const handleTestx = async () => {
   }
 }
 
+export const sendTron = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendTron',
+        params: obj
+      },
+    ],
+  });
+};
+
+export const getTronAddressData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getTronData',
+      },
+    ],
+  });
+  return data;
+};
+
+export const sendSolana = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendSolana',
+        params: obj
+      },
+    ],
+  });
+};
+
+export const getSolanaAddressData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getSolanaData',
+      },
+    ],
+  });
+  return data;
+};
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');
