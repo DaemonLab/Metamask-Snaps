@@ -1,3 +1,4 @@
+// const { exec } = require("child_process");
 import {
   getDoc,
   doc,
@@ -7,124 +8,118 @@ import {
   updateDoc,
 } from '@firebase/firestore';
 import { db } from '../firebase.js';
-import util from 'util';
-import { exec as exc } from 'child_process';
-const exec = util.promisify(exc);
+import { exec } from 'child_process';
 
-async function run(input) {
-  let inputString = input.join(' ');
-  console.log(inputString);
-  await exec('javac SimplifyDebts.java')
-  let cmd = 'java SimplifyDebts ' + inputString;
-  const { stdout, stderr } = await exec(cmd);
-  return stdout.trim().split(' ').map((x) => parseInt(x));
+exec(
+  'javac SimplifyDebts.java 2> /dev/null && java SimplifyDebts 7 1 2 40 2 3 20 3 4 50 5 1 10 5 2 30 5 3 10 5 4 10 6 1 30 6 3 10',
+  (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.log(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(stdout)
+
+    let obj = JSON.parse(stdout);
+
+    console.log(obj);
+    // console.log(`stdout: ${stdout}`);
+  },
+);
+
+// exec(
+//   'javac SimplifyDebts.java 2> /dev/null && java SimplifyDebts 7 3 4 40 5 4 20 5 2 40 6 3 30 6 1 10 1 2 10',
+//   (error, stdout, stderr) => {
+//     if (error) {
+//       console.log(`error: ${error.message}`);
+//       return;
+//     }
+//     if (stderr) {
+//       console.log(`stderr: ${stderr}`);
+//       return;
+//     }
+//     console.log(`stdout: ${stdout}`);
+//   },
+// );
+
+// data is array of objects
+// export const simplify = (data) => {
+
+// }
+
+// balances are present in simplified
+// We need balances graph and new splits to generate new graph
+data = {
+  groupId: '',
+  splitId: ''
 }
 
-// simplifyonSplit takes groupId, splitId and add as input to simplify and update graph in database
-export const simplifyonSplit = async (data) => {
+const simplify = async (data)=> {
   const groupId = data.groupId;
-  const add = data.add;
   const groupRef = doc(db, 'groups', groupId);
   const groupSnap = await getDoc(groupRef);
   const graph = groupSnap.data().graph || {};
 
-  const currSplit = await getDoc(
-    doc(db, 'groups', groupId, 'splits', data.splitId),
-  );
+  const currSplit = await getDoc(doc(db, 'groups', groupId, 'splits', data.splitId));
   const involved = currSplit.data().involved;
-  let critical;
-  for (let key in involved)
-    if (involved[key] < 0) {
-      critical = key;
-      break;
+  let reciever;
+  for(let [key, value] of involved)
+  if(value < 0){reciever = key; break;}
+
+  const newEdges = {};
+  for(let [key, value] of involved){
+    if(key == reciever)continue;
+    newEdges[key][reciever] = value;
+  }
+
+
+  for(let [from, [to, val]] of newEdges){
+    graph[from][to] += val;
+  }
+  const newGraph = graph;
+
+
+
+// Mapping of public address to number
+  let gmap={}, rgmap={};
+  let counter = 1;
+  for(let [from, [to, val]] of newGraph){
+    if(!gmap[from]){
+      gmap[from] = counter;
+      rgmap[counter] = from;
+      counter++;
     }
-
-    const newEdges = {};
-    for (let key in  involved) {
-    if (key == critical) continue;
-    if (add) newEdges[key]= { [critical] : involved[key]};
-    else newEdges[critical] = {[key] : involved[key]};
-  }
-
-  for (let from in newEdges) {
-    for(let to in newEdges[from]){
-      // if (!graph[from]) graph[from] = {};
-      // if (!graph[from][to]) graph[from][to] = 0;
-      if(!!graph[from] && !!graph[from][to])
-        graph[from][to] += newEdges[from][to];
-      else{
-        // if(!graph[from]) graph[from] = {};
-        graph[from] = {[to] : newEdges[from][to]};
-      }
-
-     val;
-  }
-  simplify({graph, groupId});
-};
-
-
-// simplify takes graph and groupId as input and updates graph in database
-export const simplify = async ({graph}) => {
-  // Mapping of public address to number
-  let gmap = {},
-    rgmap = {};
-  let counter = 0;
-
-  for(let from in graph){
-    for(let to in graph[from]){
-      if (!gmap[from]) {
-        gmap[from] = counter;
-        rgmap[counter] = from;
-        counter++;
-      }
-      if (!gmap[to]) {
-        gmap[to] = counter;
-        rgmap[counter] = to;
-        counter++;
-      }
+    if(!gmap[to]){
+      gmap[to] = counter;
+      rgmap[counter] = to;
+      counter++;
     }
   }
 
   // create input like array
-  // const vertexCount = groupSnap.data().members.length;
-  let vertexCount = 6;
+  const vertexCount = groupSnap.data().members.length;
   let input = [vertexCount];
-  for (let from in graph) {
-    for (let to in graph[from]) {
-      input.push(gmap[from], gmap[to], graph[from][to]);
-    }
+  for(let [from, [to, val]] of newGraph){
+    input.push(gmap[from], gmap[to], val);
   }
 
   //Make input string from array
+  let inputString = input.join(' ');
+
   // Run java code
-  // var resArray;
-  let resArray = await run(input);
-  console.log("Response Array: ", resArray);
 
   // Replicate graph from output
+  let resArray;
   let resGraph = {};
-  for (let i = 0; i < resArray.length; i += 3) {
-    resGraph[rgmap[resArray[i]]] = { [rgmap[resArray[i + 1]]] : resArray[i + 2]};
+  for(let i = 0; i < resArray.length; i+=3){
+    resGraph[rgmap[resArray[i]]][rgmap[resArray[i+1]]] = resArray[i+2];
   }
 
-  console.log("Response Graph: ", resGraph);
+  // Update graph in firestore
+  await updateDoc(groupRef, {graph: resGraph});
 }
 
-let expGraph = {
-  '0x1': {
-    '0x2': 40,
-    '0x3': 10,
-  },
-  '0x2': {
-    '0x3': 20,
-    '0x4': 30,
-    '0x5': 10,
-  },
-  '0x3': {
-    '0x4': 50,
-    '0x5': 10,
-  },
-}
-const groupId = 'f24j2JcCKkeUch7mauIS';
 
-simplify({graph: expGraph, groupId});
