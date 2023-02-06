@@ -48,9 +48,14 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@metamask/key-tree": "^6.2.1",
     "@metamask/snaps-types": "^0.28.0",
     "@metamask/utils": "^3.4.1",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
+    "@mui/x-data-grid": "^5.17.22",
     "@noble/bls12-381": "^1.4.0",
     "alchemy-sdk": "^2.3.0",
     "cors": "^2.8.5",

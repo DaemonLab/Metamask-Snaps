@@ -42,6 +42,67 @@ export const connectSnap = async (
  * @param version - The version of the snap to install (optional).
  * @returns The snap object returned by the extension.
  */
+
+
+export const addData = async (obj: object) => {
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'addPayment',
+        params: obj,
+      },
+    ],
+  });
+};
+
+export const getData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getPayments',
+      },
+    ],
+  });
+  return data;
+};
+
+export const deleteData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'deletePayment',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const updateData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'updatePayment',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
 export const getSnap = async (version?: string): Promise<Snap | undefined> => {
   try {
     const snaps = await getSnaps();
@@ -95,53 +156,8 @@ export const sendContractTransaction = async (to: string) => {
   });
 };
 
-export const handleStorage = async (to: string, from: string) => {
-  try { 
-    const response = await window.ethereum.request({
-       method: 'wallet_invokeSnap', 
-       params: [defaultSnapOrigin, {
-         method: 'store',
-         params:{
-          to:to,
-          from:from          
-         }                  
-       }]
-    })
- } catch (err) { 
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
- }
-}
 
-export const getaddress = async () => {
-  try { 
-    const response = await window.ethereum.request({
-       method: 'wallet_invokeSnap', 
-       params: [defaultSnapOrigin, {
-         method: 'hello2',                       
-       }]
-    })
- } catch (err) { 
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
- }
-}
-
-export const handleTestx = async () => {
-  try { 
-    const response = await window.ethereum.request({
-       method: 'wallet_invokeSnap', 
-       params: [defaultSnapOrigin, {
-         method: 'confirm2',                       
-       }]
-    })
- } catch (err) {
-    console.error(err)
-    alert('Problem happened: ' + err.message || err)
- }
-}
-
-export const contractData = async (arr: any, address: any, abi:any, fname: any, frequency: any, date:any  ) => {
+export const contractData = async (name: any,arr: any, address: any,publick: any, abi:any, fname: any, frequency: any  ) => {
   try { 
     const response = await window.ethereum.request({
        method: 'wallet_invokeSnap', 
@@ -150,10 +166,10 @@ export const contractData = async (arr: any, address: any, abi:any, fname: any, 
          params:{
           arr: arr,
           address: address,
+          publick: publick,
           abi:abi,
           fname: fname,
-          frequency: frequency,
-          date:date,
+          frequency: frequency,          
          }
        }]
     })
@@ -162,6 +178,66 @@ export const contractData = async (arr: any, address: any, abi:any, fname: any, 
     alert('Problem happened: ' + err.message || err)
  }
 }
+
+export const sendTron = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendTron',
+        params: obj
+      },
+    ],
+  });
+};
+
+export const getTronAddressData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getTronData',
+      },
+    ],
+  });
+  return data;
+};
+
+export const sendSolana = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendSolana',
+        params: obj
+      },
+    ],
+  });
+};
+
+export const getSolanaAddressData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getSolanaData',
+      },
+    ],
+  });
+  return data;
+};
 
 
 export const addjob = async (name: any, arr: any, address: any, abi:any, fname: any, frequency: any, timestamp: any ) => {
@@ -173,7 +249,7 @@ export const addjob = async (name: any, arr: any, address: any, abi:any, fname: 
          params:{
           name: name,
           arr: arr,
-          address: address,
+          address: address,          
           abi:abi,
           fname: fname,                    
           frequency: frequency,

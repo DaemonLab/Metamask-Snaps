@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "pcfjlo28WSGCJmbtNPFrdETB62SZJCmckzlMI2ChfLo=",
+    "shasum": "n+0b53Nljte2onDlpJoqWw/iRFw+Y053kABN6YpTCMo=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -28,7 +28,7 @@
         {
           "expression": "* * * * *",
           "request": {
-            "method": "recurringPayment",
+            "method": "smartContractAutomation",
             "params": [
               "cronjob_param"
             ]
@@ -39,6 +39,12 @@
     "snap_getBip44Entropy": [
       {
         "coinType": 60
+      },
+      {
+        "coinType": 501
+      },
+      {
+        "coinType": 195
       }
     ]
   },

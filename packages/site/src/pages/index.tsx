@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import React from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
@@ -15,7 +15,15 @@ import {
   addjob,
   getjobs,
   clearState,
-  disable
+  disable,
+  addData,
+  deleteData,
+  updateData,
+  getSolanaAddressData,
+  getTronAddressData,
+  sendSolana,
+  sendTron,
+  getData
 } from '../utils';
 import {
   ConnectButton,
@@ -28,6 +36,8 @@ import {
 import './pages.css';
 import { ethers } from 'ethers';
 import { CLIEngine } from 'eslint';
+import { Contract } from 'alchemy-sdk';
+import Table from './tables';
 
 const Container = styled.div`
   display: flex;
@@ -129,18 +139,57 @@ const Index = () => {
   const [show, setshow] = React.useState(false);
   const [load, setload] = React.useState(0)
 
-  React.useEffect(() => {
-    (async () => {
-      if(state.installedSnap){
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    id: '',
+    date: new Date(),
+    amount: '',
+    active: true,
+    lastPayment: -1
+  });
 
-        getjobs().then((data: any) => {
-          setjobs(data)
-        })
+  const [tronFormData, setTronFormData] = useState({
+    to: '',
+    amount: ''
+  });
+  const [solanaFormData, setSolanaFormData] = useState({
+    to: '',
+    amount: ''
+  });
+  const [tronAccountData, setTronAccountData] = useState({
+    publicKey: ' ',
+    balance: 0
+  })
+  const [solanaAccountData, setSolanaAccountData] = useState({
+    publicAddress: ' ',
+    balance: 0
+  })
+
+  const refreshTable = () => {
+    getData().then((data) => {
+      console.log(data);
+      if (data !== null) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        setPayments(data);
       }
-    })();
-  }, [state.installedSnap]);
+    });
+  };
+  const [payments, setPayments] = useState(() => refreshTable());
 
 
+
+  // React.useEffect(() => {
+  //   (async () => {
+  //     if(state.installedSnap){
+
+  //       getjobs().then((data: any) => {
+  //         setjobs(data)
+  //       })
+  //     }
+  //   })();
+  // }, [state.installedSnap]);
+  
   //https://api.etherscan.io/api?module=contract&action=getabi&address=0x2835cb9900638263b574df95bc09f98910e15b12&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW
   const callFuncs = async (e: any) => {
     e.preventDefault();
@@ -158,6 +207,38 @@ const Index = () => {
       .map((func: any) => func);
     setmyarr(funcs);
     setOpen(true);
+  };
+
+  const handleAddDataClick = async (data: any) => {
+    try {
+      await addData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+    refreshTable();
+  };
+
+  const handleDeleteDataClick = async (data: any) => {
+    try {
+      await deleteData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+    console.log('done');
+    refreshTable();
+  };
+
+  const handleUpdateDataClick = async (data: any) => {
+    try {
+      await updateData(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+    console.log('done');
+    refreshTable();
   };
 
   const handleConnectClick = async () => {
@@ -196,8 +277,9 @@ const Index = () => {
   const handleSubmitx = async (e: any) => {
     e.preventDefault();
     const timestamp = Math.floor(Date.now() / 1000);
-    settimestamp(timestamp);
-    await addjob(namex, arr2, `${address}`, abi, fname, frequency, timestamp);
+    settimestamp(timestamp);    
+    await addjob(namex, arr2, `${address}`,  abi, fname, frequency, timestamp);
+    // await contractData(namex, arr2, `${address}`,publick,  abi ,fname, frequency)
     getjobs().then((data: any) => {
       setjobs(data);
     });
@@ -212,6 +294,74 @@ const Index = () => {
     });
     setload(0)
   };
+
+  const onChange = (e: any) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+
+  const sendTronTransaction = async (data: any) => {
+    try {
+      console.log('new data');
+
+      getTronAddressData().then((data) => {
+        console.log(data);
+
+        setTronAccountData({
+          publicKey: data.publicKey,
+          balance: data.balance
+        });
+      })
+      await sendTron(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const sendSolanaTransaction = async (data: any) => {
+    try {
+      console.log('new data');
+
+      getSolanaAddressData().then((data) => {
+        console.log(data);
+
+        setSolanaAccountData({
+          publicAddress: data.publicAddress,
+          balance: data.balance
+        });
+      })
+      await sendSolana(data);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+  const handleTronFormSubmit = (event: any) => {
+    event.preventDefault();
+  }
+  const handleSolanaFormSubmit = (event: any) => {
+    event.preventDefault();
+  }
+
+  const onTronChange = (e: any) => {
+    setTronFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSolanaChange = (e: any) => {
+    setSolanaFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+
 
   return (
     <Container>
@@ -440,6 +590,173 @@ const Index = () => {
             )}
           </div>
         </div>
+        
+        
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'black',
+            padding: 6,
+            paddingLeft: 16,
+            paddingRight: 16,
+            rowGap: 16,
+            border: '1px solid white',
+            borderRadius: 25,
+          }}
+        >
+          <div
+            className=""
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: 4,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 26,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginBottom: 10,
+                marginTop: 10,
+              }}
+            >
+              Payment
+            </div>
+            <div
+              className=""
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: 3,
+                rowGap: 4,
+              }}
+            >
+              <input
+                style={{ height: 24 }}
+                placeholder="Name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={onChange}
+              />
+            </div>
+            <div
+              className=""
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: 3,
+              }}
+            >
+              <input
+                style={{ height: 24 }}
+                placeholder="Address"
+                name="address"
+                type="text"
+                value={formData.address}
+                onChange={onChange}
+              />
+            </div>
+
+            <input
+              style={{ height: 24 }}
+              placeholder="ID"
+              name="id"
+              type="text"
+              value={formData.id}
+              onChange={onChange}
+            />
+            <input
+              style={{ height: 24 }}
+              placeholder="Amount"
+              name="amount"
+              type="number"
+              value={formData.amount}
+              onChange={onChange}
+            />
+            <input
+              style={{ height: 24 }}
+              placeholder="Date"
+              name="date"
+              type="date"
+              onChange={onChange}
+            />
+          </div>
+          <button
+            style={{ marginBottom: 6 }}
+            className="submitBtn"
+            onClick={() => {
+              console.log(formData);
+              handleAddDataClick(formData);
+            }}
+          >
+            {' '}
+            submit
+          </button>
+        </div>
+
+        <div className="cardx3 cardx">
+          <div className="form cardx-form">
+            <h6>Tron</h6>
+            <p className='crdtxt cardx-p'>
+              Public Address:
+            </p>
+            <p>{tronAccountData.publicKey}</p>
+            <p className='crdtxt cardx-p'>
+              Balance:
+            </p>
+            <p>{tronAccountData.balance}</p>
+            <form className='formx' onSubmit={handleTronFormSubmit} >
+
+              <div className="formdiv">
+                <label>Receiver's Tron Address: </label>
+                <br />
+                <input type="text" name='to' onChange={onTronChange} className='inputx' />
+              </div>
+              <div className="formdiv">
+                <label>Amount: </label>
+                <br />
+                <input type="text" name='amount' onChange={onTronChange} className='inputx' />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Send" onClick={() => sendTronTransaction(tronFormData)} />
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div className="cardx3 cardx ">
+          <div className="form cardx-form">
+            <h6>Solana</h6>
+            <p className='crdtxt cardx-p'>
+              Public Address
+            </p>
+            <p>{solanaAccountData.publicAddress}</p>
+            <p className='crdtxt cardx-p'>
+              Balance:
+            </p>
+            <p>{solanaAccountData.balance}</p>
+            <form className='formx' onSubmit={handleSolanaFormSubmit} >
+
+              <div className="formdiv">
+                <label>Receiver's Solana Address: </label>
+                <br />
+                <input type="text" className='inputx' name='to' onChange={onSolanaChange} />
+              </div>
+              <div className="formdiv">
+                <label>Amount: </label>
+                <br />
+                <input type="text" className='inputx' name='amount' onChange={onSolanaChange} />
+              </div>
+              <div className="formdiv">
+                <input type="submit" className='btnx' value="Send" onClick={() => sendSolanaTransaction(solanaFormData)} />
+              </div>
+            </form>
+
+          </div>
+        </div>
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
@@ -449,6 +766,11 @@ const Index = () => {
           </p>
         </Notice>
       </CardContainer>
+      <Table
+        data={payments}
+        deletefunc={handleDeleteDataClick}
+        updatefunc={handleUpdateDataClick}
+      />
     </Container>
   );
 };
