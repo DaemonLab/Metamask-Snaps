@@ -89,6 +89,7 @@ import MidbarSimple from './MidbarSimple';
         // const [currtotal, setCurrtotal]: any=useState(0);
         // const[transacts,setTransactions]= useState([]);
         const [listtobesent , setListtobesent]:any=useState([]);
+        const [user,setUser]=useState();
        const[amount,setAmount]=useState([]);
        const [errorcheck, setErrorcheck]=useState(0);
       // if(errorcheck==5)
@@ -121,82 +122,28 @@ import MidbarSimple from './MidbarSimple';
             })
             setTotalAmount(totalcurrent)
           }, [formData.amountArray])
-        //   sets the search if the room nmae lenght is >0
-          // useEffect(() => {
-          //   if (transacts && transacts.length > 0) {
-          //     setSearch(matcher(input, transacts));
-          //   }
-          //   if (input === "") {
-          //     setsidebarBool(true);
-          //   }
-            
-          // }, [input]);
-        //   value of input changes
-      //     const handleChange = (e:any) => {
-      //       setsidebarBool(false);
-      //       setInput(e.target.value);
-      // };
-    
-          
-    
-      
-      // var input2 = document.getElementById("myInput");
-      // input2.setAttribute("max", totalAmount); // set a new value;
-          
-   
-    // add room
-     
-      //   const getTrans=async()=>{
-      //     try{
-      //     const res=await axios.get(
-      //       `https://knotty-calendar-production.up.railway.app/group/${roomId}`,
-      //       {
-      //         headers: { 
-      //           'Content-Type': 'application/json',
-      //           'Authorization': `Bearer ${access}` 
-      //           }
-      //     })
-      //       const data=res.data;
-      //       console.log(data)
-      //       console.log('Data',data.splits)
-      //       console.log('Transacts', transacts)
-      //       let reset=false;
-      //       if(data.splits.length!==transacts.length)
-      //       {
-      //         reset=true;
-      //       }
-      //       else {
-      //         for(let i:any = 0; i < transacts.length; i++)
-      //         {
-      //          if( data.splits[i].name!=transacts[i].name)
-      //          {
-      //           reset=true;
-      //           break;
-      //          }
-      //         }
-      //       }
-      //       if(reset)
-      //       {
-      //         console.log('Data unequal')
-      //         setTransactions(data.splits)
-      //       }
-              
-      //       }
-      //     catch(err)
-      //     {
-      //       console.log(err);
-      //     }
-      // }  
-      // useEffect(()=>{
-      //   getTrans();setAmount
         
-      // })
-      interface TabPanelProps {
-        children?: React.ReactNode;
-        index: number;
-        value: number;
-      }
-
+          const getUser=async()=>{
+            try{
+            const resUser=await axios.get('https://knotty-calendar-production.up.railway.app/user',{
+              headers: { 'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access}` }
+              
+            })
+            console.log("Midbar user",resUser.data.address)
+            if(user!=resUser.data.address)
+            setUser(resUser.data.address)
+          }
+          catch(e)
+          {
+            console.log('Midbar e',e)
+          }
+          
+          }
+          useEffect(()=>{
+            getUser()
+          },)
+    
       useEffect(()=>{
         
           setFormData((prev):any=>(
@@ -450,43 +397,14 @@ import MidbarSimple from './MidbarSimple';
                           
                             <input style={inputStyle} placeholder='Amount' name="value" key="password" type='number' value={member.value} onChange={(e)=>{
                               const list2:any=[...formData.amountArray];
-                              // if(list2[index]!=undefined)
+
                                
                                list2[index].value = parseInt(e.target.value)   ;
 
-
-                              //  list2.length>0 && list2.map((item)=>{
-
-                              //   if(item.id==member)
-                              //   {
-                              //     item.value=parseInt(e.target.value)
-                              //   }
-                              //  })
-                              //console.log("list",list2)
                               setFormData((prev)=>({
                                 ...prev,
                                 amountArray:list2
-                              }))
-                              // amount.map((item)=>{
-                              //   if(item.id==member)
-                              //   {
-                              //     item.value=newvalue
-                              //   }
-                              // })
-                             // console.log("amt list",formData.amountArray)
-                               
-                                //  : 
-                                // parseInt(newvalue)<=100 &&
-                                // setAmount((prev):any=>(
-                                //       [...prev,{
-                                //         id:member,
-                                //         value:newvalue
-                                //       }]
-                                    
-                                //     ))
-                                   
-                                      
-                                   
+                              }))     
                               
                               
                             }}/>
@@ -676,7 +594,7 @@ import MidbarSimple from './MidbarSimple';
                             {console.log(subItem)}
                             <Errorboundary>
 
-                            <MidbarSimple amount={simplified[item][subItem]} first={item} second ={subItem}  />
+                            <MidbarSimple amount={simplified[item][subItem]} first={item} second ={subItem} user={user}  />
                             </Errorboundary>
                             
                             </div>

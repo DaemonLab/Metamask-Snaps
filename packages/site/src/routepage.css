@@ -1,0 +1,76 @@
+.mainbox{
+    
+}
+.container{
+    
+    height: screen;
+    margin: auto;
+    color: black;
+    
+    margin-top: 90px;
+    width: 60%;
+    
+    border: 2px solid white;
+    border-radius: 4px;
+    background-color: azure;
+}
+.heading{
+    width: 100%;
+    text-align: left;
+    margin-left: 0;
+    padding-left: 40px;
+}
+#curr{
+    font-size: small;
+    text-align: left;
+    margin-left: 0;
+    padding-left: 40px;
+}
+.sample{
+    font-size: medium;
+}
+.btc{
+    font-size: 50px;
+    font-weight: 100;
+}
+.arrowbox1{
+    display: inline;
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgb(225, 230, 240);
+    border-radius: 28px;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin: 10px;
+    margin-left: 40px;
+    margin-top: 50px;
+}
+.arrowbox2{
+    display: inline;
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgb(225, 230, 240);
+    border-radius: 28px;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin: 10px;
+    margin-top: 50px;
+    margin-left: 30px;
+}
+
+.span1{
+    margin-left: 70px;
+}
+.span2{
+    margin-left: 85px;
+}
+.market{
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-bottom: 30px;
+}
+.topup{
+    margin-left: 25%;
+}

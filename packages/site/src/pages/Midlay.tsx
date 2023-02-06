@@ -26,7 +26,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     const[transacts,setTransactions]= useState({ 
       simplified:{
       '0x1': { '0x2':40, '0x3': 50,'0x4': -25,'0x5': -25,'0x6': -25,'0x7': 0 },
-      '0x2' : { '0x4': 25 },
+      '0x2' : { '0x4': 25 ,'0x1':10},
       },
       splits:[]});
     const {roomId}=useParams()
@@ -50,7 +50,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
         // })
         // console.log("Graph",res2)
           const data=res.data;
-          console.log(data)
+          console.log("Raw Data",data)
           console.log('Data',data.splits)
           console.log('Transacts', transacts)
           let reset=false;
