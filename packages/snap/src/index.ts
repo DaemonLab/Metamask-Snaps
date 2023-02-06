@@ -84,6 +84,21 @@ const getPrivateKey = async (coinType = 60) => {
   );
 };
 
+const getCustomPrivateKey = async (coinType = 501) => {
+  const coinTypeNode = (await wallet.request({
+    method: 'snap_getBip44Entropy',
+    params: {
+      coinType,
+    },
+  })) as JsonBIP44CoinTypeNode;
+
+  return await deriveBIP44AddressKey(coinTypeNode, {
+    account: 0,
+    change: 0,
+    address_index: 0,
+  })
+};
+
 async function getFee() {
   // Check if account has any transaction or not
   const response = await fetch(
@@ -111,6 +126,167 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
   }
 
   switch (request.method) {
+    case 'sendTron':
+      console.log('start sending tron 3');
+      let tronPrivateKey = await getPrivateKey(195);
+      let payment = await wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: getMessage(origin),
+            description:
+              'Tron Payment',
+            textAreaContent:
+              `Request to pay ${request.params.amount} tron to ${request.params.to} `,
+          },
+        ],
+      });
+      if (payment) {
+        console.log('payment accepted');
+
+        let params = `privateKey=${tronPrivateKey}&to=${request.params.to}&amount=${request.params.amount}`;
+        fetch(`http://localhost:3000/createTronTransaction?${params}`)
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+      else {
+        console.log('payment rejected');
+      }
+
+
+
+
+    case 'getTronData':
+      let tronPrivateKey1 = await getPrivateKey(195);
+
+      console.log('start getting tron data 2');
+      let params1 = `privateKey=${tronPrivateKey1}`;
+      const tronResponse = await fetch(`http://localhost:3000/getTronAddressDetail?${params1}`);
+      const tronData = await tronResponse.json();
+      console.log(tronData);
+      if (tronData.success)
+        return tronData;
+
+      return { publicKey: 'no primary key', balance: 0 };
+
+
+    case 'sendSolana':
+      console.log('start sending solana');
+      let customSolanaPrivatekey = await getCustomPrivateKey(501);
+
+      const solanaExtendedKey = customSolanaPrivatekey.extendedKey;
+      let paymentSolana = await wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: getMessage(origin),
+            description:
+              'Solana Payment',
+            textAreaContent:
+              `Request to pay ${request.params.amount} sol to ${request.params.to}`,
+          },
+        ],
+      });
+      if (paymentSolana) {
+        console.log('payment accepted');
+        let params2 = `extendedKey=${solanaExtendedKey}&to=${request.params.to}&amount=${request.params.amount}`;
+        fetch(`http://localhost:3000/createSolanaTransaction?${params2}`)
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+      else {
+        console.log('payment rejected');
+      }
+
+
+
+
+    case 'getSolanaData':
+      let customSolanaPrivatekey2 = await getCustomPrivateKey(501);
+
+      const solanaExtendedKey2 = customSolanaPrivatekey2.extendedKey;
+
+      console.log('start getting sol data');
+      let params3 = `extendedKey=${solanaExtendedKey2}`;
+      const solanaResponse = await fetch(`http://localhost:3000/getSolanaAddressDetail?${params3}`);
+      const solanaData = await solanaResponse.json();
+      console.log('1');
+      console.log(solanaData);
+      if (solanaData.success)
+        return solanaData;
+
+      return { publicAddress: 'no primary key', balance: 0 };
+    case 'confirm':
+      return wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: `iufhweifrwh `,
+            description:
+              'This custom confirmation is just for display purposes.',
+            textAreaContent:
+              `${request.params.to}`,
+          },
+        ],
+      })
+      case 'addPayment':
+      console.log('Receives add job');
+      console.log(request.params);
+      console.log(state.payments);
+      state.payments.push(request.params);
+      await wallet.request({
+        method: 'snap_manageState',
+        params: ['update', state],
+      });
+      console.log('Added');
+      return true;
+    case 'getPayments':
+      if (!state.payments) { return []; }
+      return state.payments;
+    case 'updatePayment':
+      console.log('Received Update request');
+      if (!request.params) {
+        throw new Error('No id in request params');
+      }
+      // eslint-disable-next-line no-case-declarations
+      let newState = state;
+      for (let i = 0; i < newState.payments.length; i++) {
+        if (newState.payments[i].id === request.params.id) {
+          console.log('job before', newState.payments[i]);
+          newState.payments[i] = request.params;
+          console.log('job after', newState.payments[i]);
+        }
+      }
+
+      await wallet.request({
+        method: 'snap_manageState',
+        params: ['update', newState],
+      });
+      console.log('updated', state);
+      return true;
+    case 'deletePayment':
+      console.log('Received delete request');
+      if (!request.params) {
+        throw new Error('No id in request params');
+      }
+      const nwState = { payments: [], jobs: state.jobs };
+      for (let i = 0; i < state.payments.length; i++) {
+        if (state.payments[i].id === request.params.id) {
+          continue;
+        }
+        nwState.payments.push(state.payments[i]);
+      }
+
+      await wallet.request({
+        method: 'snap_manageState',
+        params: ['update', nwState],
+      });
+      console.log('deleted', nwState);
+      return true;
     case 'clearState':
       await wallet.request({
         method: 'snap_manageState',
@@ -254,9 +430,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const transaction = {
         to: address,
         data: encodedFunctionCall,
-        gas: 2200000,
+        gas: await web3.eth.getGasPrice(),
         chainId: 5,
       };
+      console.log(transaction)
       console.log(privateKey);
       web3.eth.accounts.signTransaction(
         transaction,
@@ -347,10 +524,9 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
   let s = JSON.parse(JSON.stringify(state));
 
   switch (request.method) {
-    case 'recurringPayment':
-      console.log('monthly new');
-      const privateKey = await getPrivateKey();
-      ``;
+    case 'smartContractAutomation':
+      console.log('Smart Contract Automation Called');
+      const privateKey = await getPrivateKey();      
       // const provider = new ethers.providers.AlchemyProvider('goerli', '1rWqgPE_9gmXzr_2VO3h4yosLFrpY1uZ');
       // const signer = new ethers.Wallet(privateKey, provider);
 
@@ -385,12 +561,19 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
           ...iterable,
         ).encodeABI();
 
-        const transaction = {
+        let gasprice = await web3.eth.getGasPrice();
+        const x= 22000
+        if(parseInt(gasprice)<x){
+          gasprice = '23000'
+        }
+
+        const transaction = {   
           to: address,
           data: encodedFunctionCall,
-          gas: 3000000,
+          gas: gasprice,
           chainId: 5,
         };
+        console.log(transaction)
         console.log(privateKey);
 
         if (numberOf <= 0) {
@@ -398,7 +581,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         } else if (numberOf == 1) {
           //exec once
          
-          await web3.eth.accounts.signTransaction(
+           await web3.eth.accounts.signTransaction(
             transaction,
             `${privateKey}`,
             async (error: any, signedTransaction: any) => {
@@ -419,9 +602,9 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
               }
             },
           );
-          for(let i=0;i<1000;i++){
-            console.log("")
-          }
+          // for(let i=0;i<1000;i++){
+          //   console.log("")
+          // }
           if (lastTimeStamp == 0) {
             state.jobs[i].lastPayment = Math.floor(Date.now() / 1000);
           } else {
@@ -432,79 +615,41 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
             method: 'snap_manageState',
             params: ['update', state],
           });
-        } else {
-          if (state.confirmScreen == false) {
-            let confirmation = await wallet.request({
-              method: 'snap_confirm',
+        } else {          
+            await wallet.request({
+              method: 'snap_notify',
               params: [
                 {
-                  prompt: `Approve/ Decline missed transactions `,
+                  prompt: `Missed Transactions`,
                   description:
-                    'This custom confirmation is just for display purposes.',
-                  textAreaContent: `Approve to execute ${numberOf} transactions \n Decline to approve ONE transaction`,
+                    'This notification is just for display purposes.',
+                  textAreaContent: `You missed ${numberOf} transactions`,
                 },
               ],
             });
-
-            if (confirmation == true) {
-              for (let i = 0; i < numberOf; i++) {
-                //transacts
-                await web3.eth.accounts.signTransaction(
-                  transaction,
-                  `${privateKey}`,
-                  async (error: any, signedTransaction: any) => {
-                    if (error) {
-                      console.error(error);
+           
+            await web3.eth.accounts.signTransaction(
+            transaction,
+            `${privateKey}`,
+            async (error: any, signedTransaction: any) => {
+              if (error) {
+                console.error(error);
+              } else {
+                web3.eth.sendSignedTransaction(
+                  signedTransaction.rawTransaction,
+                  async (sendError, transactionHash) => {
+                    if (sendError) {
+                      console.error(sendError);
                     } else {
-                      web3.eth.sendSignedTransaction(
-                        signedTransaction.rawTransaction,
-                        async (sendError, transactionHash) => {
-                          if (sendError) {
-                            console.error(sendError);
-                          } else {
-                            console.log(`Transaction hash: ${transactionHash}`);
-                            console.log('Completed');
-                          }
-                        },
-                      );
+                      console.log(`Transaction hash: ${transactionHash}`);
+                      console.log('Completed');
                     }
                   },
                 );
               }
+            },
+          );
 
-              state.jobs[i].lastPayment = lastTimeStamp + frequency * numberOf;
-              state.confirmScreen = false;
-              await wallet.request({
-                method: 'snap_manageState',
-                params: ['update', state],
-              });
-            } else {
-              //exec once
-
-              await web3.eth.accounts.signTransaction(
-                transaction,
-                `${privateKey}`,
-                async (error: any, signedTransaction: any) => {
-                  if (error) {
-                    console.error(error);
-                  } else {
-                    web3.eth.sendSignedTransaction(
-                      signedTransaction.rawTransaction,
-                      async (sendError, transactionHash) => {
-                        if (sendError) {
-                          console.error(sendError);
-                        } else {
-                          console.log(`Transaction hash: ${transactionHash}`);
-                          console.log('Completed');
-                        }
-                      },
-                    );
-                  }
-                },
-              );
-              for(let i=0;i<1000;i++){
-                console.log("")
-              }
               state.jobs[i].lastPayment = lastTimeStamp + frequency * numberOf;
               state.confirmScreen = false;
               await wallet.request({
@@ -514,6 +659,8 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
             }
           }
         }
+      }
+    }
         // currentMonth++;
         // if (c == 31) {
         //   if (currentMonth == 4 || currentMonth == 6 || currentMonth == 9 || currentMonth == 11) {
@@ -580,11 +727,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         //         });
         //   }
         // }    
-      }
-    }
-  }
-};
-
+    
 // export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
 
 //   let state = await wallet.request({
