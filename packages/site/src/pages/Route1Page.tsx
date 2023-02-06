@@ -2,15 +2,21 @@ import React from 'react'
 import '../routepage.css'
 import {Header} from '../components/Header'
 import {Footer} from '../components/Footer'
+import styled from 'styled-components';
 // import SendImage from '../assets/send.jpeg';
-
-export default function Route1Page() {
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  max-width: 100vw;
+`;
+export default function Route1Page({toggleTheme}:any) {
   return (
-
+<Wrapper style={{height:'100vh', overflow:'hidden'}} >
+    <Header handleToggleClick={toggleTheme} />
     <div className="mainbox">
-      <Header handleToggleClick={function(): void {
-              throw new Error('Function not implemented.')
-          } }/>
+      
       <div className="container">
 
 
@@ -60,8 +66,9 @@ export default function Route1Page() {
 
 
       </div>
-<Footer/>
+
 
     </div>
+    </Wrapper>
   )
 }

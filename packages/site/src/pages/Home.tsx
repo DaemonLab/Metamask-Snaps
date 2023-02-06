@@ -17,6 +17,7 @@ import axios from 'axios';
 import Midlay from './Midlay';
 import Errorboundary from '../components/errorboundary';
 
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,7 +25,6 @@ const Wrapper = styled.div`
   min-height: 100vh;
   max-width: 100vw;
 `;
-
 const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
     const navigate= useNavigate();
     const[comb,setComb]=useState({rooms:[],contacts:null})
@@ -133,7 +133,7 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
    },)
   
   return (
-    <Wrapper >
+    <Wrapper style={{height:'100vh', overflow:'hidden'}} >
     <Header handleToggleClick={toggleTheme} />
     <Box display="flex"
       justifyContent="center"
@@ -149,13 +149,11 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
     </Routes>
     </div>
     </Box>
-    <Index/>{/** wassnt initially there */}
+   // <Index/>{/** wassnt initially there */}
   
-  {/*{children} for proab rendering index*/ }
-      <Footer />
-      
-    </Wrapper>
- 
+ // {/*{children} for proab rendering index*/ }
+    
+ </Wrapper>
   )
 }
 export default Home;

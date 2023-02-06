@@ -48,15 +48,20 @@ useEffect(()=>{
     <div >
       <GlobalStyle />
       <BrowserRouter>
+      
       <Routes>
+      <Route path='/' element={<Login setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
       <Route  path="/home/*" element={<Home children={children} toggleTheme={toggleTheme}  accessToken={accessToken}  removeToken={removeToken}/>}>
         </Route>
-        <Route path='/' element={<Login setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
+       
         <Route path='/sample' element={<Sample/>}/>
-        <Route path='/route1' element={<Route1Page/>}/>
-        <Route path='/route2' element={<Route2Page/>}/>
+        <Route  path='/route1'  element={<Route1Page toggleTheme={toggleTheme}/>}/>
+        <Route  path='/route2' element={<Route2Page toggleTheme={toggleTheme}/>}/>
         
       </Routes>
+      {/* <Footer /> */}
+      
+    
       </BrowserRouter>
     </div>
   );

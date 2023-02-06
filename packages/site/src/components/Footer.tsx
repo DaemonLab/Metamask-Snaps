@@ -8,8 +8,9 @@ const FooterWrapper = styled.footer`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding-top: 2.4rem;
+  padding-top: 1.2rem;
   padding-bottom: 2.4rem;
+  margin-top: -12rem;
   border-top: 1px solid ${(props) => props.theme.colors.border.default};
 `;
 
