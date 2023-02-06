@@ -424,7 +424,7 @@ const Index = () => {
           }
         </div>
         <div className="cardx"> 
-        <h6>Get Adresses</h6>
+        <h6>Clear State</h6>
           <p className='crdtxt'>
             Click this button to get addresses in your address book.
           </p>         
