@@ -164,13 +164,14 @@ export const contractData = async (arr: any, address: any, abi:any, fname: any, 
 }
 
 
-export const addjob = async (arr: any, address: any, abi:any, fname: any, frequency: any, timestamp: any ) => {
+export const addjob = async (name: any, arr: any, address: any, abi:any, fname: any, frequency: any, timestamp: any ) => {
   try { 
     const response = await window.ethereum.request({
        method: 'wallet_invokeSnap', 
        params: [defaultSnapOrigin, {
          method: 'addjob',
          params:{
+          name: name,
           arr: arr,
           address: address,
           abi:abi,
@@ -201,6 +202,21 @@ export const getjobs = async () => {
   return data;
 };
 
+export const disable =async (name:any) => {  
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'disable',
+        params:{
+          name: name
+        }
+      },
+    ],
+  });
+  return data;
+}
 
 export const clearState = async () => {
   const data = await window.ethereum.request({

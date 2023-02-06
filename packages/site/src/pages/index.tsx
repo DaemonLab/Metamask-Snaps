@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import React from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
@@ -14,7 +14,8 @@ import {
   contractData,
   addjob,
   getjobs,
-  clearState
+  clearState,
+  disable
 } from '../utils';
 import {
   ConnectButton,
@@ -24,12 +25,9 @@ import {
   Card,
   SendTransactButton,
 } from '../components';
-import './pages.css'
+import './pages.css';
 import { ethers } from 'ethers';
 import { CLIEngine } from 'eslint';
-
-
-
 
 const Container = styled.div`
   display: flex;
@@ -117,74 +115,50 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [name, setname] = React.useState("");
-  const [address, setaddress] = React.useState("");
-  const [btc, setbtc] = React.useState("0");
-  const [btcadd, setbtcadd] = React.useState("");
-  const [to, setto] = React.useState("");
+  const [address, setaddress] = React.useState('');
   const [myarr, setmyarr] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [inparr, setinparr] = React.useState([{}]);
-  const [arr2, setarr2] = React.useState({})
-  const [abi, setabi] = React.useState([])
-  const [fname, setfname] = React.useState("");
+  const [arr2, setarr2] = React.useState({});
+  const [abi, setabi] = React.useState([]);
+  const [fname, setfname] = React.useState('');
   const [jobs, setjobs] = React.useState([]);
-  const [frequency, setfrequency] = React.useState("")
-  const [date, setdate] = React.useState("");
+  const [frequency, setfrequency] = React.useState('');
   const [timestamp, settimestamp] = React.useState(0);
+  const [namex, setnamex] = React.useState('');
+  const [show, setshow] = React.useState(false);
+  const [load, setload] = React.useState(0)
 
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+  React.useEffect(() => {
+    (async () => {
+      if(state.installedSnap){
+
+        getjobs().then((data: any) => {
+          setjobs(data)
+        })
+      }
+    })();
+  }, [state.installedSnap]);
 
 
-  const handleAdresses = async (e: any) => {
-    getaddress();
-  }
-
-  interface AbiFunction {
-    constant: boolean;
-    inputs: { name: string; type: string }[];
-    name: string;
-    outputs: { name: string; type: string }[];
-    payable: boolean;
-    stateMutability: string;
-    type: string;
-  }
   //https://api.etherscan.io/api?module=contract&action=getabi&address=0x2835cb9900638263b574df95bc09f98910e15b12&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW
   const callFuncs = async (e: any) => {
     e.preventDefault();
 
-    const abix  = await fetch(`https://api-goerli.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`)        
-    const data = await abix.json()    
-    console.log(data)    
-    setabi(data)
-    const resx = JSON.parse(data.result)
-    // const data2 = "[{\"inputs\":[],\"name\":\"overflow\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow2\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow3\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
-    // const datax = JSON.parse(data2)
-    // const data3 = {"status":"1","message":"OK","result":"[{\"inputs\":[],\"name\":\"overflow\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow2\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"overflow3\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"}
-    // console.log(data3)
-    // setabi(data3)
-    // console.log(datax)           
-    const funcs = await resx.filter((func: any) => func.type === "function").map((func: any) => func);        
-    setmyarr(funcs)
-    setOpen(true)
-    // getjobs().then((data: any) => {
-    //   console.log(data.length)      
-    // })
-    // for (const obj of abi2) {
-    //   // if (obj.type === "function") {
-    //   //   console.log(`Function: ${obj.name}`);
-    //   //   console.log("Parameters:");
-    //   //   for (const input of obj.inputs) {
-    //   //     console.log(`- Name: ${input.name}, Type: ${input.type}`);
-    //   //   }
-    //   // }
-    //   console.log(obj)
-    // }
-    // const functions = data.filter(json => json.type === 'function');        
+    const abix = await fetch(
+      `https://api-goerli.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=NKU9ICH3P8KKU9ZV1UT6HZK4FUW9S77UXW`,
+    );
+    const data = await abix.json();
+    console.log(data);
+    setabi(data);
+    const resx = JSON.parse(data.result);
     
-  }  
+    const funcs = await resx
+      .filter((func: any) => func.type === 'function')
+      .map((func: any) => func);
+    setmyarr(funcs);
+    setOpen(true);
+  };
 
   const handleConnectClick = async () => {
     try {
@@ -201,52 +175,13 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
-    try {
-      await sendHello();
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
+  const handleClix = async (e: any, input: any, name: any) => {
+    setinparr(input);
+    setfname(name);
+    setshow(true);
   };
 
-  const handleTranscation = async (e: any) => {
-    e.preventDefault();
-
-    try {
-      await sendContractTransaction(to);
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    handleStorage(name, address);
-  }
-
-  const handleSubmitBtc =async (e:any) => {
-    e.preventDefault();
-
-    const res = await fetch(`https://blockchain.info/q/addressbalance/${btcadd}?confirmations=3`)    
-    let data = await res.json();
-    console.log(data)
-    setbtc(data)
-  }
-
-  const handleTest = async (e:any) => {
-    e.preventDefault();
-    handleTestx();
-  }
-
-  
-  const handleClix = async(e: any, input: any, name: any) => {    
-    setinparr(input)
-    setfname(name)
-  }  
-
-  const handleFieldChange = (event : any) => {
+  const handleFieldChange = (event: any) => {
     setarr2({ ...arr2, [event.target.name]: event.target.value });
   };
 
@@ -254,26 +189,29 @@ const Index = () => {
     e.preventDefault();
 
     await clearState();
-    console.log("State cleared")
-  } 
+    console.log('State cleared');
+  };
   
+
   const handleSubmitx = async (e: any) => {
     e.preventDefault();
     const timestamp = Math.floor(Date.now() / 1000);
     settimestamp(timestamp);
-    console.log(arr2)
-    console.log(abi)
-    console.log(address)
-    console.log(fname)
-    console.log(date)
-    await addjob(arr2,`${address}`, abi, fname, frequency, timestamp);
-    // await contractData(arr2,`${address}`, abi, fname, date);
+    await addjob(namex, arr2, `${address}`, abi, fname, frequency, timestamp);
     getjobs().then((data: any) => {
       setjobs(data);
-    })
-  }
+    });
+  };
 
-  
+  const changeJob = async (e: any, namez: any) => {
+    setload(1);
+    e.preventDefault();
+    await disable(namez);
+    getjobs().then((data: any) => {
+      setjobs(data);
+    });
+    setload(0)
+  };
 
   return (
     <Container>
@@ -331,26 +269,7 @@ const Index = () => {
             }}
             disabled={!state.installedSnap}
           />
-        )}
-        <Card
-          content={{
-            title: 'Send Hello message',
-            description:
-              'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
+        )}        
         {/* <Card
           content={{
             title: 'Send Insights',
@@ -371,8 +290,9 @@ const Index = () => {
           }
         /> */}
         <div className="cardx">
+        <h6>Enter the Contract Address</h6>
           <div className="form">
-            <form className='formx' onSubmit={(e) => callFuncs(e)}>
+            <form className="formx" onSubmit={(e) => callFuncs(e)}>
               {/* <div className="formdiv">
                 <label>From: </label>
                 <br/>
@@ -380,95 +300,146 @@ const Index = () => {
               </div>
               <br/> */}
               <div className="formdiv">
-                <label>To: </label>
-                <br/>
-                <input type="text" className='inputx'onChange={(e) => setaddress(e.target.value)}/>
+                <label>Contract Address: </label>
+                <br />
+                <input
+                  type="text"
+                  className="inputx"
+                  onChange={(e) => setaddress(e.target.value)}
+                />
               </div>
-              <div className="formdiv">               
-                <input type="submit" className='btnx' value="Send Transaction"/>
-              </div>
-            </form>
-           
-          </div>
-        </div>
-        <div className="cardx">
-          <div className="form">
-            <form className='formx' onSubmit={(e) => handleSubmit(e)}>
               <div className="formdiv">
-                <label>Name: </label>
-                <br/>
-                <input type="text" className='inputx' onChange={(e) => setname(e.target.value)}/>
-              </div>
-              <br/>
-              <div className="formdiv">
-                <label>Adress: </label>
-                <br/>
-                <input type="text" className='inputx'onChange={(e) => setaddress(e.target.value)}/>
-              </div>
-              <div className="formdiv">               
-                <input type="submit" className='btnx' value="Add Address"/>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div className="cardx2">
-          <p style={{textAlign:'center'}}>Jobs</p>
-          {
-            jobs.map((obj: any, id: any) => {
-              return(
-                <div key={id} style={{border:"solid 1px white", borderRadius:'2px', padding:"5px"}} className="jobx">
-                  <p>{obj.fname}</p>                  
-                </div>
-              )
-            })
-          }
-        </div>
-        <div className="cardx"> 
-        <h6>Clear State</h6>
-          <p className='crdtxt'>
-            Click this button to get addresses in your address book.
-          </p>         
-           <button className="btnx btn2" onClick={(e) => handleClear(e)}>Clear State</button>          
-        </div>           
-        <div className="cardx3"> 
-        <h6>Available Functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h6>
-         <div className='c'>
-          {myarr.map((obj: any, id: any) => {
-            return(
-              <div key={id} onClick={(e) => handleClix(e, obj.inputs, obj.name)} className="divxx">
-                <p style={{marginLeft:'20px'}}>{obj.name}</p>
-              </div>
-            )            
-          })}</div> 
-                     
-        </div>
-        <div className="cardx3">
-        <p align="center">Add Job</p> 
-        <p align="center">{fname}</p> 
-        <div className="form">          
-            <form className='formx' onSubmit={(e) => handleSubmitx(e)}>
-              {
-                inparr.map((obj:any, id:any) => {
-                  return(
-                    <div className="formdiv" key={id}>
-                      <label>{obj.name}</label>
-                      <br/>
-                      <input type="text" name={obj.name} className='inputx' onChange={handleFieldChange}/>
-                    </div>
-                  )
-                })
-              }      
-              <div className="formdiv" >
-                <label>Frequency</label>
-                <br/>
-                <input type="text" name="freq" className='inputx' onChange={(e) => setfrequency(e.target.value)}/>
-              </div>                      
-              <div className="formdiv">               
-                <input type="submit" className='btnx' value="Send"/>
+                <input
+                  type="submit"
+                  className="btnx"
+                  value="View Functions"
+                />
               </div>
             </form>
           </div>
         </div>        
+        <div className="cardx2">
+          <h6>All Jobs</h6>
+          {jobs.map((obj: any, id: any) => {
+            return (
+              <div
+                key={id}
+                style={{
+                  border: 'solid 1px white',
+                  borderRadius: '2px',
+                  padding: '5px',
+                  display: 'flex',
+                }}
+                className="jobx"
+              >
+                <p style={{padding:'10px 0px', paddingLeft:'10px'}}>
+                  {obj.name} - {obj.active ? <>Active</> : <>Disabled</>}
+                </p>
+                {obj.active ? (
+                  <>
+                  {load ? (
+                    <button className="disbtn" disabled onClick={(e) => changeJob(e, obj.name)}>
+                      Disable
+                    </button>
+                  ):(
+                    <button className="disbtn" onClick={(e) => changeJob(e, obj.name)}>
+                      Disable
+                    </button>
+                  )}
+                  </>
+                ) : (
+                  <>
+                  {load ? (
+                    <button className="disbtn" disabled onClick={(e) => changeJob(e, obj.name)}>
+                      Enable
+                    </button>
+                  ):(
+                    <button className="disbtn" onClick={(e) => changeJob(e, obj.name)}>
+                      Enable
+                    </button>
+                  )}
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="cardx2">
+          <h6>Remove All Jobs</h6>
+          <p className="crdtxt">
+            Click this button to remove all your jobs both active and disabled.
+          </p>
+          <button className="btnx btn2" onClick={(e) => handleClear(e)}>
+            Remove Jobs
+          </button>
+        </div>
+        <div className="cardx3" style={{overflowY:'scroll'}}>
+          <h6>Available Functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h6>
+          <div className="c">
+            {myarr.map((obj: any, id: any) => {
+              return (
+                <div
+                  key={id}
+                  onClick={(e) => handleClix(e, obj.inputs, obj.name)}
+                  className="divxx"
+                >
+                  <p style={{ marginLeft: '20px' }}>{obj.name}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="cardx3" style={{overflowY:'scroll'}}>
+          <h6>Add Job</h6>
+          <p align="center">{fname}</p>
+          
+          <div className="form">
+            {show ? (
+              <form className="formx" onSubmit={(e) => handleSubmitx(e)}>
+                <div className="formdiv">
+                  <label>Name</label>
+                  <br />
+                  <p className='warn'>*Name should be unique for all jobs</p>
+                  <input
+                    type="text"
+                    name="namex"
+                    className="inputx"
+                    onChange={(e) => setnamex(e.target.value)}
+                  />                  
+                </div>
+                {inparr.map((obj: any, id: any) => {
+                  return (
+                    <div className="formdiv" key={id}>
+                      <label>{obj.name}</label>
+                      <br />
+                      <input
+                        type="text"
+                        name={obj.name}
+                        className="inputx"
+                        onChange={handleFieldChange}
+                      />
+                    </div>
+                  );
+                })}                
+                <div className="formdiv">
+                  <label>Frequency</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="freq"
+                    className="inputx"
+                    onChange={(e) => setfrequency(e.target.value)}
+                  />
+                </div>
+                <div className="formdiv">
+                  <input type="submit" className="btnx" value="Send" />
+                </div>
+              </form>
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

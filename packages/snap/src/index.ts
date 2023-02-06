@@ -116,10 +116,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         method: 'snap_manageState',
         params: ['clear'],
       });
-
+    case 'disable':
+      console.log(request.params.name)
+      state.jobs.filter((job: any) => job.name === request.params.name).map((job:any) => {
+        console.log(job)
+        if(job.active){
+          job.active = false;
+        }else{
+          job.active = true;
+        }
+      })
+      await wallet.request({
+        method: 'snap_manageState',
+        params: ['update', state],
+      });
+      console.log(state.jobs);
     case 'getJobs':
       if (!state.jobs) {
-        return [];
+        return [{name:"", inputs:[], active:""}];
       }
       console.log(state.jobs[0]);
       console.log(state.jobs);
@@ -343,6 +357,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
       // console.log('starting');
 
       for (let i in state.jobs) {
+      if(state.jobs[i].active == true){
         let currTimestamp = Math.floor(Date.now() / 1000) + 5;
         let lastTimeStamp = state.jobs[i].lastPayment;
         let frequency = state.jobs[i].frequency;
@@ -435,16 +450,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
               for (let i = 0; i < numberOf; i++) {
                 //transacts
                 await web3.eth.accounts.signTransaction(
-                  {
-                    nonce: await web3.eth.getTransactionCount(
-                      address,
-                      'pending',
-                    ),
-                    to: address,
-                    data: encodedFunctionCall,
-                    gas: 3000000,
-                    chainId: 5,
-                  },
+                  transaction,
                   `${privateKey}`,
                   async (error: any, signedTransaction: any) => {
                     if (error) {
@@ -496,10 +502,9 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
                   }
                 },
               );
-              console.log("checkerr")
-              setTimeout(async() => {
-              console.log("extended")
-              }, 5000)
+              for(let i=0;i<1000;i++){
+                console.log("")
+              }
               state.jobs[i].lastPayment = lastTimeStamp + frequency * numberOf;
               state.confirmScreen = false;
               await wallet.request({
@@ -574,8 +579,9 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         //           params: ['update', state],
         //         });
         //   }
-        // }
+        // }    
       }
+    }
   }
 };
 
