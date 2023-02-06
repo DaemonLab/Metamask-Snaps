@@ -1,9 +1,16 @@
 import React from 'react'
 import '../routepage.css'
+import {Header} from '../components/Header'
+import {Footer} from '../components/Footer'
+// import SendImage from '../assets/send.jpeg';
 
 export default function Route1Page() {
   return (
+
     <div className="mainbox">
+      <Header handleToggleClick={function(): void {
+              throw new Error('Function not implemented.')
+          } }/>
       <div className="container">
 
 
@@ -16,12 +23,13 @@ export default function Route1Page() {
         </div>
 
         <div className="heading">
-        <p className="btc">--BTC</p>
+        <span className="btc">--BTC</span>
         </div>
         <div className="mainarrowbox">
         
         <div className="arrowbox1">
-
+          <img src="https://icons8.com/icon/42459/copy"/>
+          
         </div>
         
         <div className="arrowbox2">
@@ -34,19 +42,25 @@ export default function Route1Page() {
 
           <div className="market">
             <span>
-              MarketPrice: 0 rupees
+              MarketPrice:<span className="rupee"> 0 rupees</span>
             </span>
+
             <span className="topup">
-              <button>
+              <button id="btn">
                 TOP-UP
               </button>
+              <button className="transaction" id="btn">
+                  ALL TRANSACTIONS
+                  </button>
               </span>
+
+              
 
             </div>
 
 
       </div>
-dfkvcavkbn;sf'vlhbvokvjsnlbi;vjndfa;vq
+<Footer/>
 
     </div>
   )

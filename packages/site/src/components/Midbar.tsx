@@ -594,7 +594,7 @@ import MidbarSimple from './MidbarSimple';
                             {console.log(subItem)}
                             <Errorboundary>
 
-                            <MidbarSimple amount={simplified[item][subItem]} first={item} second ={subItem} user={user}  />
+                            <MidbarSimple amount={simplified[item][subItem]} first={item} second ={subItem} user={"0x1"}  />
                             </Errorboundary>
                             
                             </div>
