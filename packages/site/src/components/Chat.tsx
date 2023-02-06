@@ -7,14 +7,18 @@ import { useParams } from "react-router-dom";
 import UserProfile from './UserProfile';
 import Members from './Members';
 import axios from 'axios';
+import Errorboundary from './errorboundary';
 
 function Chat({rooms,access,contacts,transacts}:any) {  
-  const { transactid} = useParams();  
+  const { transactid,roomId} = useParams();  
+  console.log("GroupID",roomId,"SplitID",transactid)
     const [user,setUser]=useState();
 const transact=transacts.length!=0 ? transacts.filter((item:any)=> item.id===transactid):[];
 const obj = transact.length>0 ? {
+  id: transact[0].id,
   name: transact[0].name,
   date: transact[0].date,
+  groupId:roomId
 }:null;
 
 const getUser=async()=>{
@@ -39,11 +43,15 @@ useEffect(()=>{
 },)
 
     return (
-      <>
+      
       
         <div className="Chat" style={{minHeight:'100vh'}}>
-            <UserProfile userData={obj}/>
+            <Errorboundary>
+            <UserProfile userData={obj} access={access}/>
+            </Errorboundary>
+            <Errorboundary>
             <Divider/>
+            </Errorboundary>
       {console.log("Trnascats",transact)}
 
             <div className="Sidebar__chats" style={{
@@ -54,16 +62,19 @@ useEffect(()=>{
             {transact.length>0&& contacts && transact[0].involved && Object.keys(transact[0].involved).map((mem:any,index:number)=>{
               return(
                 <div key={index} >
-                 
+                 <Errorboundary>
                  <Members name={user==mem ? 'You' :contacts[mem]? contacts[mem]:'Unknown'} address={mem} amount={transact[0].involved[mem]}/>
-                 <Divider/>
+                 </Errorboundary>
+                 <Errorboundary>
+                  <Divider/>
+                  </Errorboundary>
                   </div>
               )
             })}
             </div>
             </div>
         </div>
-        </>
+        
     )
 }
 

@@ -56,7 +56,6 @@ const Login=({setToken,removeToken,accessToken}:any) =>{
                     }
                     catch(err)
                     {
-                        
                         console.log(err);
                         if(typeof err==='object')
                         alert('Signature Error')

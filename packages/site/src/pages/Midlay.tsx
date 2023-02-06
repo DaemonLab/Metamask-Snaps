@@ -9,6 +9,7 @@ import Midbar from '../components/Midbar';
 import { Box } from '@mui/system';
 import Login from '../pages/Login';
 import axios from 'axios';
+import Errorboundary from '../components/errorboundary';
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,7 +23,12 @@ const Wrapper = styled.div`
 
 const Midlay=({ rooms,access,contacts}:any)=> {
     const navigate= useNavigate();
-    const[transacts,setTransactions]= useState([]);
+    const[transacts,setTransactions]= useState({ 
+      simplified:{
+      '0x1': { '0x2':40, '0x3': 50,'0x4': -25,'0x5': -25,'0x6': -25,'0x7': 0 },
+      '0x2' : { '0x4': 25 },
+      },
+      splits:[]});
     const {roomId}=useParams()
     const getTrans=async()=>{
         try{
@@ -34,12 +40,21 @@ const Midlay=({ rooms,access,contacts}:any)=> {
               'Authorization': `Bearer ${access}` 
               }
         })
+        // const res2=await axios.get(
+        //   `https://knotty-calendar-production.up.railway.app/group/${roomId}/graph`,
+        //   {
+        //     headers: { 
+        //       'Content-Type': 'application/json',
+        //       'Authorization': `Bearer ${access}` 
+        //       }
+        // })
+        // console.log("Graph",res2)
           const data=res.data;
           console.log(data)
           console.log('Data',data.splits)
           console.log('Transacts', transacts)
           let reset=false;
-          if(data.splits.length!==transacts.length)
+          if(data.splits.length!==transacts.splits.length)
           {
             reset=true;
           }
@@ -47,7 +62,11 @@ const Midlay=({ rooms,access,contacts}:any)=> {
           if(reset)
           {
             console.log('Data unequal')
-            await setTransactions(data.splits)
+            await setTransactions((prev):any=>({
+              ...prev,
+              splits:data.splits
+            }
+            ))
             console.log('Transacts', transacts)
           }
             
@@ -77,11 +96,12 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     
     
     <div className="chat__body"
-    style={{marginTop:0,flex:.7}}
+    style={{marginTop:0,flex:0.7}}
         >
-    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts} />
+          <Errorboundary>
+    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts.splits} simplified={transacts.simplified} /></Errorboundary>
     <Routes>
-          <Route  path="transacts/:transactid" element={<Chat rooms={rooms} transacts={transacts} access={access} contacts={contacts}/>}>
+          <Route  path="transacts/:transactid" element={<Chat rooms={rooms} transacts={transacts.splits} access={access} contacts={contacts}/>}>
           </Route>
     </Routes>
     </div>

@@ -15,6 +15,7 @@ import { Box } from '@mui/system';
 import Login from '../pages/Login';
 import axios from 'axios';
 import Midlay from './Midlay';
+import Errorboundary from '../components/errorboundary';
 
 const Wrapper = styled.div`
   display: flex;
@@ -139,7 +140,9 @@ const Home=({ children ,accessToken,toggleTheme,removeToken}:any)=> {
       alignItems="center"
       minHeight="100vh" >
     <div className="chat__body">
+      <Errorboundary>
     <Sidebar rooms={comb.rooms} access={accessToken}/>
+    </Errorboundary>
     <Routes>
             <Route  path="rooms/:roomId/*" element={<Midlay rooms={comb.rooms} access={accessToken} contacts={comb.contacts}/>}/>
             {/* <Route  path="rooms/:roomId/transacts/:transactid" element={<Chat rooms={comb.rooms}  access={accessToken} contacts={comb.contacts}/>}/> */}

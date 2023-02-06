@@ -14,6 +14,7 @@ import Midbar from './components/Midbar';
 import { Box } from '@mui/system';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Sample from './components/Sample';
 
 export type AppProps = {
   children: ReactNode;
@@ -49,7 +50,7 @@ useEffect(()=>{
       <Route  path="/home/*" element={<Home children={children} toggleTheme={toggleTheme}  accessToken={accessToken}  removeToken={removeToken}/>}>
         </Route>
         <Route path='/' element={<Login setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
-        
+        <Route path='/sample' element={<Sample/>}/>
       </Routes>
       </BrowserRouter>
     </div>

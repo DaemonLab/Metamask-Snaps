@@ -4,6 +4,11 @@
     flex: 0.30;
     flex-direction: column;
 }
+.Midbar{
+    display: flex;
+    flex: 0.6;
+    flex-direction: column;
+}
 .TEXT{
     font-size: 15px;
     font-weight: bold;

@@ -29,6 +29,8 @@
     import Paper from '@mui/material/Paper';
     import Grid from '@mui/material/Grid';
     import Midbarcont from './Midbarcont';
+    import Errorboundary from './errorboundary';
+import MidbarSimple from './MidbarSimple';
     
     const Item = styled(Paper)(({ theme }) => ({
       backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -70,7 +72,7 @@
       backgroundColor:"#0b1012"
     };
     
-    const Midbar=({rooms,access,contacts,transacts}:any)=> {
+    const Midbar=({rooms,access,contacts,transacts,simplified}:any)=> {
     
       
       const [open, setOpen] = React.useState(false);
@@ -88,8 +90,13 @@
         // const[transacts,setTransactions]= useState([]);
         const [listtobesent , setListtobesent]:any=useState([]);
        const[amount,setAmount]=useState([]);
+       const [errorcheck, setErrorcheck]=useState(0);
+      // if(errorcheck==5)
+      // {
+      //   throw new Error("error detected")
+      // }
     
-        const[seed,setSeed]=useState("");
+        const[seed,setSeed]=useState<any|null>("");
         useEffect(() => {
         return setSeed(Math.floor(Number(Math.random())));
       
@@ -203,25 +210,6 @@
           console.log(formData)
       }, [rooms])
       
-      function TabPanel(props: TabPanelProps) {
-        const { children, value, index, ...other } = props;
-      
-        return (
-          <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-          >
-            {value === index && (
-              <Box sx={{ p: 3 }}>
-                <Typography>{children}</Typography>
-              </Box>
-            )}
-          </div>
-        );
-      }
       function a11yProps(index: number) {
         return {
           id: `simple-tab-${index}`,
@@ -312,9 +300,9 @@
           // console.log(temp)
           // console.log("Memebers array",membersArray)
         return (
-            <div className="Sidebar" >
+            <div className="Midbar" >
                <div className="Sidebar__header" style={{alignItems:'center'}}>               
-                    {temp && temp.name}
+                    Group : {temp && temp.name}
                     <div  style={{display: 'flex',
                       justifyContent:'space-between',
                       minWidth:'6vw',
@@ -358,6 +346,7 @@
               
               
             }}>
+              <Errorboundary>
                 <div style={
                   {
                     fontSize: 26,
@@ -366,7 +355,15 @@
                     marginBottom:10,
                     marginTop:10
                   }
-                }>New Split</div>
+                }
+                onClick={()=>{
+                  setErrorcheck(errorcheck+1);
+                  console.log(errorcheck);
+                  
+                }}
+                >New Split</div>
+                </Errorboundary>
+
                  <div className="" >
                  <div style={{
                     display:'flex',
@@ -377,7 +374,7 @@
                     Split Name : <input style={inputStyle} placeholder='Split Name' name="name" type='text' value={formData.name} onChange={onChange}/>
                     </div>
                     <div className="" style={{display:'flex',justifyContent:'space-between',alignItems:"center",}}>
-                    Total Amount : <input style={inputStyle} placeholder='in INR' name="amount" type='number' value={formData.amount} onChange={onChange}/>
+                    Total Amount : <input style={inputStyle} placeholder='in ETH' name="amount" type='number' value={formData.amount} onChange={onChange}/>
                     </div>
     
                 </div> 
@@ -420,30 +417,7 @@
                 <div style={{display: value==0?'':'none'}}>
                
                 
-                  {/* <div><p>name1</p>
-                  </div>
-                  <div><p>name1</p>
-                  <input type="number" id="myinput" onChange={(e: any)=>{
-                    setTotalAmount(totalAmount-e.target.value)
-                  }}  />
-                  </div>
-                  <div><p>name1</p>
-                  <input type="number" id="myinput" onChange={(e: any)=>{
-                    setTotalAmount(totalAmount-e.target.value)
-                  }}  />
-                  </div>
-                  <div><p>name1</p>
-                  <input type="number" id="myinput" onChange={(e: any)=>{
-                    setTotalAmount(totalAmount-e.target.value)
-                  }}  />
-                  </div>
-                  <div>
-                    {totalAmount}
-                    </div>
-                  {
-                    console.log(totalAmount)
-                  }
-                   */}
+                  
                      {
                      
                      
@@ -570,16 +544,20 @@
                               }
                             }} />
                            
-                            <div style={{fontSize:'15px'}}>
+                            <div style={{fontSize:'15px',maxWidth:'40%'}}>
                             {
                               
                             contacts[member]==undefined? <>
                             <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7}}>
                               Unknown
                             </Typography>
+                            <Tooltip title={<div style={{fontSize:'10px'}}>{member}</div>} placement="top-end">
+                            <div style={{cursor:'alias',textOverflow: "ellipsis",textAlign:'right'}}>
                             <Typography variant="subtitle1" color="grey" component="div">
                               {member}
                             </Typography>
+                            </div>
+                             </Tooltip>
                             </>:contacts[member]
                             
                             }
@@ -683,22 +661,50 @@
                    <Divider/>
                    {/* checks the condition  whetjher the room nmae present or not */}
                    {sidebarBool ? (
+                    <div style={{display:'flex',overflowY:'scroll', overflowX:'hidden',flexDirection:'row',flex:1}}>
+                      <div className='Sidebar__chats'style={{marginBottom:0,paddingBottom:0}}>
+                       {(simplified && simplified!=undefined) && Object.keys(simplified).map((item:any,index:number)=>
+                       {console.log("Item",item,"MAps",Object.keys(simplified[item]))
+                       return(
+                        <>
+                        {simplified[item]!=undefined && Object.keys(simplified[item]).map((subItem:any,subIndex:number)=>{
+                          return(<div key={index*10+subIndex} style={{color:'white'}}>
+                            {console.log(subItem)}
+                            <Errorboundary>
+
+                            <MidbarSimple amount={simplified[item][subItem]} first={item} second ={subItem}  />
+                            </Errorboundary>
+                            
+                            </div>
+                          )
+                       })}
+                       </>)
+                       })}
+                       
+                      </div>
                 <div className="Sidebar__chats" style={{marginBottom:0,paddingBottom:0}}>
-                  <Midbarcont addNewChat="true" />
+                  
                   {(transacts && transacts!==undefined) &&transacts.map((transact:any) => (
+                    <Errorboundary>
                     <Midbarcont key={transact.id} id={transact.id} name={transact.name} roomid={roomId} />
+                    </Errorboundary>
                   ))}
                 </div>
+                </div>
+                
               ) : (
-                <div className="Sidebar__chats" style={{overflowX:'hidden',marginBottom:0,paddingBottom:0}}>
-                  <Midbarcont addNewChat="true" />
+                <div className="Sidebar__chats" style={{overflowX:'hidden',overflowY:'scroll',marginBottom:0,paddingBottom:0}}>
+                  
                   {search.map((room:any) => (
+                    <Errorboundary>
                     <Midbarcont key={room.id} id={room.id} name={room.name} />
+                    </Errorboundary>
                   ))}
                 </div>
               )}
-    
+            
             </div>
+            
         )
     }
     
