@@ -39,6 +39,10 @@ https://knotty-calendar-production.up.railway.app/
 
 Clone the template-snap repository (https://github.com/team53-interiit-11/Simplify/generate) and setup the development environment:
 
+Dependencies:
+- Yarn
+- Java
+
 ```shell
 yarn install && yarn start
 ```
