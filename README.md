@@ -15,13 +15,17 @@ This repository aims to
     Encryption is used by default to store, update, and retrieve data securely in the contactbook.
 
 Simplify is a Snap that allows anyone to is a Snap which utilizes the displaying custom message utility, notification and storing data features.
+
   ○ It delivers a solution to another side of using a decentralized network, that is, high gas and transaction fees by reducing the number of transactions needed by      optimizing the Max-Flow when a number of shared transactions are being done in a relatively bounded group of people.
+
   ○ It does so by:
+    
     i. Allowing users to make groups with other addresses and users and adding them as members
-    ii. Now Members of the group can divide their expenses among themselves and the Snap gives them the ability to record their transactions and how much they owe each         other.
-    iii. The Simplification algorithm efficiently calculates ways to settle all that is owed to one another in a group and reduces overall transaction and hence the            user benefits by having to pay less gas and transaction fees while also lowering the load in the network.
+    ii. Now Members of the group can divide their expenses among themselves and the Snap gives them the ability to record their transactions and how much they owe each other.
+    iii. The Simplification algorithm efficiently calculates ways to settle all that is owed to one another in a group and reduces overall transaction and hence the user benefits by having to pay less gas and transaction fees while also lowering the load in the network.
     iv. It offers versatility by allowing users to divide expenses with granularity.
     v. It allows users to directly add contacts by asking them nicknames for addresses.
+
   ○ It utilizes the provided feature to display custom message by notifying the users about all the above mentioned features
 
 ## Interaction ( Approval, Rejection, showing data, notifications... )
