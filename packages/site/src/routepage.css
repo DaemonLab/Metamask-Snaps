@@ -1,0 +1,285 @@
+.mainbox{
+   /* overflow: scroll;  */
+}
+.mainbox2{
+   overflow: scroll; 
+}
+.container{
+    
+    height: screen;
+    margin: auto;
+    color: black;
+    
+    margin-top: 60px;
+    margin-bottom: 60px;
+    width: 40%;
+    
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: azure;
+}
+.container2{
+    
+    height: 70vh;
+    margin: auto;
+    color: black;
+    
+    margin-top: 60px;
+    margin-bottom: 60px;
+    width: 60%;
+    
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: azure;
+}
+.heading{
+    width: 100%;
+    text-align: left;
+    margin-left: 0;
+    padding-left: 40px;
+    font-size: 30px;
+}
+#curr{
+    font-size: small;
+    text-align: left;
+    margin-left: 0;
+    padding-left: 40px;
+}
+.sample{
+    font-size: medium;
+}
+.btc{
+    font-size: 50px;
+    font-weight: 100;
+    margin-top: 20px;
+}
+.arrowbox1{
+    display: inline;
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgb(158, 162, 170);
+    border-radius: 28px;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin: 10px;
+    margin-left: 250px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+.arrowbox1:hover{
+    border: 1px solid rgb(241, 210, 14);
+}
+.arrowbox2:hover{
+    border: 1px solid rgb(241, 210, 14);
+}
+.arrowbox2{
+    display: inline;
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgb(225, 230, 240);
+    border-radius: 28px;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin: 10px;
+    margin-top: 50px;
+    margin-left: 30px;
+}
+
+.span1{
+    margin: auto auto;
+    font-size: 25px;
+    /* margin-left: 70px; */
+}
+.span2{
+    margin-left: 85px;
+}
+.market{
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-bottom: 30px;
+}
+.topup{
+    margin-left: 25%;
+}
+.transaction{
+    margin-left: 20%;
+}
+.rupee{
+    color: rgb(239, 147, 8);
+}
+#btn{
+    background-color: rgb(239, 147, 8);
+    color: white;
+}
+#btn:hover{
+    color: #1d2327;
+    background-color: white;
+}
+.inputfields{
+    /* width: 50%; */
+    margin-left: 40px;
+    margin-top: 20px;
+}
+.fields{
+    margin: auto;
+    width: 65%;
+}
+.inputvalues{
+    /* width: max-content; */
+    /* width: 100px; */
+    margin: 10px;
+    font-size: 30px;
+}
+.value{
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 3px;
+    border: 0px;
+    background-color: rgb(226, 223, 214);
+    /* font-size: 20px; */
+    margin-right: 0px;
+}
+.values{
+    border-radius: 3px;
+    border: 0px;
+    background-color: rgb(226, 223, 214);
+    float: right;
+}
+
+.options{
+    padding: 5px;
+    height: 40px;
+    width: 150px;
+    font-size: large;
+    margin-top: 30px;
+    background-color: rgb(235, 208, 166);
+    color: rgb(51, 51, 51);
+    border: 0px;
+    border-radius: 5px;
+}
+
+.btn{
+    margin-left: 1%;
+    margin-top: 20px;
+    padding: 5px;
+}
+.btn3{
+    margin-left: 40%;
+    margin-top: 20px;
+    padding: 5px;
+}
+.btn2{
+    margin-left: 40%;
+    /* margin-top: 20px; */
+    padding: 10px;
+    border: 0px;
+}
+.func{
+    background-color: rgb(239, 147, 8);
+    color: white;
+    border: 0px;
+    padding: 10px;
+    border-radius: 4px;
+}
+.func:hover{
+    color: #1d2327;
+    background-color: white;
+}
+
+.mainfunc{
+    display: grid;
+    grid-template-columns: (2, 1fr);
+    gap: 40px;
+    height: 300px;
+    /* border: 2px solid red; */
+    margin-right: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.availablefunc{
+    grid-column: 1/1;
+    height: 320px;
+    border: 0px solid black;
+    background-color: rgb(231, 228, 228);
+    border-radius: 5px;
+    overflow-y: scroll;
+    /* margin-right: 20px; */
+    /* margin-top: 30px; */
+    
+}
+.addjob{
+    grid-column: 2;
+    height: 320px;
+    border: 0px solid black;
+    border-radius: 5px;
+    background-color: rgb(231, 228, 228);
+    /* margin-top: 30px; */
+
+}
+.functions{
+    /* padding-left: 8px;
+     */
+     margin-top: 20px;
+     margin: auto;
+     /* padding-left: 20%; */
+}
+.headingfunc{
+    /* margin: auto; */
+    /* margin-top: 20px; */
+    font-size: larger;
+    margin-left: 30%;
+    font-weight: 300;
+}
+.headingfunc2{
+    /* margin: auto; */
+    margin-top: 20px;
+    font-size: larger;
+    margin-left: 40%;
+    font-weight: 300;
+}
+.headingfunc3{
+    font-size: larger;
+    text-align: center;
+    font-weight: 300;
+}
+.divxx{
+    padding: 1px;
+    font-size: 15px;
+}
+.divxx:hover{
+    background-color: rgb(183, 180, 180);    
+    cursor: pointer;     
+}
+.jobs{
+    margin-left: 30px;
+}
+.warn{
+    font-style: italic;
+    color: red;
+    font-size: 13px;
+    
+}
+.formdiv{
+    margin-top: 20px;
+}
+.func2{
+
+}
+.inputx{
+    border: 0px;
+    border-radius: 3px;
+    padding: 4px;
+}
+.disbtn{
+    min-height: 30px !important;  
+    padding:0 5px;
+    font-size: 12px;
+    margin-left: auto !important;
+    margin-right: 20px !important; 
+    height: 20px !important;
+    margin: auto 0px;
+}
+

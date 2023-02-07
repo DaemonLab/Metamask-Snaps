@@ -1,0 +1,13 @@
+
+a {
+    color: #4a4c54;
+    background-color: #1f2125;
+    text-decoration: none;
+  }
+  
+a.active{
+    color: #ffffff;
+    
+    /* border-bottom: 1px solid; */
+    /* padding-left: 5px; */
+  }
