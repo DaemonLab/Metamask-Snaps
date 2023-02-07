@@ -79,11 +79,58 @@ export const addData = async (obj: object) => {
     params: [
       defaultSnapOrigin,
       {
-        method: 'addJob',
+        method: 'addPayment',
         params: obj,
       },
     ],
   });
+};
+
+export const getData = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getPayments',
+      },
+    ],
+  });
+  return data;
+};
+
+export const deleteData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'deletePayment',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const updateData = async (data: any) => {
+  try {
+    await window.ethereum.request({
+      method: 'wallet_invokeSnap',
+      params: [
+        defaultSnapOrigin,
+        {
+          method: 'updatePayment',
+          params: data,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export const login = async () => {
@@ -101,7 +148,7 @@ export const login = async () => {
     params: [messageHash, from],
   });
 
-  const res = await fetch('https://knotty-calendar-production.up.railway.app/login', {
+  const res = await fetch('http://localhost:5000/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -117,6 +164,170 @@ export const login = async () => {
   localStorage.setItem('access_token', data.accessToken);
   localStorage.setItem('refresh_token', data.refreshToken);
 };
+
+export const sendTron = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendTron',
+        params: obj
+      },
+    ],
+  });
+};
+
+
+export const getTronAddressData = async (token: String) => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getTronData',
+        params: {
+          token: token
+        }
+      },
+    ],
+  });
+  return data;
+};
+export const exportTronPrivateKey = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'exportTronPrivateKey',
+      },
+    ],
+  });
+  return data;
+};
+export const sendSolana = async (obj: object) => {
+  console.log('snap call');
+  console.log(obj);
+
+
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'sendSolana',
+        params: obj
+      },
+    ],
+  });
+};
+
+
+
+export const getSolanaAddressData = async (token: String) => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getSolanaData',
+        params: {
+          token: token
+        }
+
+      },
+    ],
+  });
+  return data;
+};
+
+export const exportSolanaPrivateKey = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'exportSolanaPrivateKey',
+      },
+    ],
+  });
+  return data;
+};
+
+export const addjob = async (name: any, arr: any, address: any, abi:any, fname: any, frequency: any,gas:any, timestamp: any ) => {
+  try { 
+    const response = await window.ethereum.request({
+       method: 'wallet_invokeSnap', 
+       params: [defaultSnapOrigin, {
+         method: 'addjob',
+         params:{
+          name: name,
+          arr: arr,
+          address: address,          
+          abi:abi,
+          fname: fname,                    
+          frequency: frequency,
+          gas:gas,
+          timestamp: timestamp,
+          active: true,
+          lastPayment:0,          
+         }
+       }]
+    })
+ } catch (err) {
+    console.error(err)
+    alert('Problem happened: ' + err.message || err)
+ }
+}
+
+export const getjobs = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'getJobs',
+      },
+    ],
+  });
+  return data;
+};
+
+export const disable =async (name:any) => {  
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'disable',
+        params:{
+          name: name
+        }
+      },
+    ],
+  });
+  return data;
+}
+
+export const clearState = async () => {
+  const data = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'clearState',
+      },
+    ],
+  });
+  return data;
+};
+
+
 
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

@@ -24,17 +24,11 @@ const Wrapper = styled.div`
 const Midlay=({ rooms,access,contacts}:any)=> {
     const navigate= useNavigate();
     const[transacts,setTransactions]:any= useState({ 
-      simplified:{
-      '0x1': { '0x2':40, '0x3': 50,'0x4': -25,'0x5': -25,'0x6': -25,'0x7': 0 },
-      '0x2' : { '0x4': 25 ,'0x1':10},
-      },
+      simplified:null,
       drop:{
-        '0x1':false,
-        '0x2':false
       },
       total:{
-        '0x1':15,
-        '0x2':35
+        
       },
       splits:[]});
        const handleExpandClick = (item:any ) => {
@@ -52,7 +46,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     const getTrans=async()=>{
         try{
         const res=await axios.get(
-          `https://knotty-calendar-production.up.railway.app/group/${roomId}`,
+          `http://localhost:5000/group/${roomId}`,
           {
             headers: { 
               'Content-Type': 'application/json',
@@ -60,7 +54,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
               }
         })
         // const res2=await axios.get(
-        //   `https://knotty-calendar-production.up.railway.app/group/${roomId}/graph`,
+        //   `http://localhost:5000/group/${roomId}/graph`,
         //   {
         //     headers: { 
         //       'Content-Type': 'application/json',
@@ -70,6 +64,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
         // console.log("Graph",res2)
           const data=res.data;
           console.log("Raw Data",data)
+          console.log("Graphs",data.graph)
           console.log('Data',data.splits)
           console.log('Transacts', transacts)
           let reset=false;
@@ -81,9 +76,18 @@ const Midlay=({ rooms,access,contacts}:any)=> {
           if(reset)
           {
             console.log('Data unequal')
+           
             await setTransactions((prev):any=>({
               ...prev,
-              splits:data.splits
+              splits:data.splits,
+              simplified:data.graph!=undefined?data.graph:prev.simplified,
+              drop:data.graph ? Object.keys(data.graph).reduce((acc, cur):any => ({ ...acc, [cur]: prev.drop[cur]!=undefined ? prev.drop[cur] :false }), {}) : prev.drop,
+              total:data.graph ? Object.keys(data.graph).reduce((acc, cur) => ({ ...acc, [cur]: 
+                Object.values(data.graph[cur]).reduce((x, y):any => {
+                  return x + y;
+                }) 
+                    
+                }), {}): prev.total
             }
             ))
             console.log('Transacts', transacts)
@@ -93,6 +97,10 @@ const Midlay=({ rooms,access,contacts}:any)=> {
         catch(err)
         {
           console.log(err);
+          if (err.message === 'jwt expired') {
+            localStorage.removeItem('access_token');
+            navigate('/');
+          }
         }
     }  
     useEffect(()=>{
@@ -102,7 +110,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
 
 
     useEffect(()=>{
-        alert('Midlay rerendering')
+        // alert('Midlay rerendering')
        
        
         

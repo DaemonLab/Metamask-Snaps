@@ -92,3 +92,6 @@ input:focus{
  
     overflow-y: scroll;
  }
+ .loading{
+    margin: 30px auto;
+ }

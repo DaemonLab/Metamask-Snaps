@@ -8,14 +8,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 const MidbarSimpleCont =(props: any)=> {
   // calling from anaother page and rendering props
-  const { addNewChat, amount, first,handleExpandClick,user,open} = props;
+  const { addNewChat, amount, first,handleExpandClick,user,open,contacts} = props;
   const [messages, setMessages] = useState('');  
   //generating random avatar
     const[seed,setSeed]=useState<any|null>("");
     useEffect(() => {
     setSeed(Math.floor(Math.random()*5000))
     }, [])
-
+   // console.log(contacts)
     return addNewChat!=="true"?(
       <div  style={{textDecoration:"none",cursor:'default'}}>
         <div className="MidbarSimple">
@@ -24,13 +24,13 @@ const MidbarSimpleCont =(props: any)=> {
         
         <div style={{ display:'flex',flexDirection:'column',alignItems:'center' }}>
         <Avatar style={{padding:"0 0px 0 0px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
-          <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7}}>
-            {user==first?'You' : first}
+          <Typography component="div" variant="h5" style={{fontWeight:'bold',fontSize:'12px',letterSpacing:0.7}}>
+            {user==first?'You' : (contacts!=undefined && contacts[first]!=undefined)? contacts[first]: 'Unknown'}
           </Typography>
           <Typography variant="subtitle1" color="grey" component="div" >
-          <Tooltip title={<div style={{fontSize:'10px'}}>Address</div>} placement="right">
-            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",maxWidth:'100%'}}>
-            Address
+          <Tooltip title={<div style={{fontSize:'10px'}}>{first}</div>} placement="right">
+            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",textAlign:'left',maxWidth:'60px'}}>
+            {first}
             </div>
             </Tooltip>
           </Typography>

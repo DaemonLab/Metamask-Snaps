@@ -6,14 +6,14 @@ import Typography from '@mui/material/Typography';
 
 const MidbarSimple =(props: any)=> {
   // calling from anaother page and rendering props
-  const { addNewChat, amount, first, second,user} = props;
+  const { addNewChat, amount, first, second,user,contacts} = props;
   const [messages, setMessages] = useState('');  
   //generating random avatar
     const[seed,setSeed]=useState<any|null>("");
     useEffect(() => {
     setSeed(Math.floor(Math.random()*5000))
     }, [])
-    const other=second==user?'you':second;
+    const other=second==user?'you': (contacts && contacts[second]!=undefined)?contacts[second] :'Unknown';
     return addNewChat!=="true"?(
       <div  style={{textDecoration:"none",cursor:'default'}}>
         <div className="SidebarSimple">
@@ -22,13 +22,13 @@ const MidbarSimple =(props: any)=> {
         
         <div style={{ display:'flex',flexDirection:'column',alignItems:'center' }}>
         <Avatar style={{padding:"0 0px 0 0px"}}src={`https://avatars.dicebear.com/api/bottts/${seed}.svg`}/>
-          <Typography component="div" variant="h5" style={{fontWeight:'bold',letterSpacing:0.7}}>
-            {user==first?'You' : first}
+          <Typography component="div" variant="h5" style={{fontWeight:'bold',fontSize:'12px',letterSpacing:0.7}}>
+            {user==first?'You' : (contacts!=undefined && contacts[first]!=undefined)?contacts[first]: 'Unknown'}
           </Typography>
           <Typography variant="subtitle1" color="grey" component="div" >
-          <Tooltip title={<div style={{fontSize:'10px'}}>Address</div>} placement="right">
-            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",maxWidth:'100%'}}>
-            Address
+          <Tooltip title={<div style={{fontSize:'10px'}}>{first}</div>} placement="right">
+            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",maxWidth:'40px'}}>
+            {first}
             </div>
             </Tooltip>
           </Typography>
@@ -36,16 +36,16 @@ const MidbarSimple =(props: any)=> {
         </div>
     
       
-      <div style={{ display:'flex',flexDirection:'column',alignItems:'right',width:'100%' }}>
+      <div style={{ display:'flex',flexDirection:'column',alignItems:'right',width:'80%' }}>
         <Typography component="div" variant="h6" style={{fontFamily:"sans-serif",textAlign:'right'}}>
         {user!=first ? amount>0? `Owes ${other}`: amount==0 ?`is settled with ${other}`: `is owed by ${other}` :
         amount>0? `Owe ${other}`: amount==0 ?`are settled with ${other}`: `are owed by ${other}`
         }
         </Typography>
-        <Typography variant="subtitle1" color="grey" component="div" >
-          <Tooltip title={<div style={{fontSize:'10px'}}>{other}</div>} placement="top-end">
-            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",textAlign:'right',maxWidth:'100%'}}>
-            Address
+        <Typography variant="subtitle1" color="grey" component="div" style={{display:'flex',justifyContent:'right',textAlign:'right'}}  >
+          <Tooltip title={<div style={{fontSize:'10px'}}>{second}</div>} placement="top-end">
+            <div style={{cursor:'alias',overflow:'hidden',textOverflow: "ellipsis",textAlign:'right',alignItems:'right',maxWidth:'60px'}}>
+            {second}
             </div>
             </Tooltip>
           </Typography>

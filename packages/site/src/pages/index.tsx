@@ -104,7 +104,7 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   useEffect(()=>{
-    alert('Index rendering')
+    // 0x309cd873d15b07cb96aa0c09e403bc5aae3f349alert('Index rendering')
   },)
   const [state, dispatch] = useContext(MetaMaskContext);
   const [formData,setFormData]=useState({name:"",address:"",id:"",date:new Date,amount:"", active:'false'})

@@ -4,8 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import axios from'axios';
+
+
 const Sidebarchat =(props: any)=> {
+  
+  
   // calling from anaother page and rendering props
+  const navigate = useNavigate();
   const { addNewChat, name, id,access} = props;
   const [messages, setMessages] = useState('');
   //generating random avatar
@@ -40,7 +45,7 @@ const Sidebarchat =(props: any)=> {
 const getTrans=async()=>{
   try{
   const res=await axios.get(
-    'https://knotty-calendar-production.up.railway.app/group/eocVicbi3FLtK7OLW6Ln',
+    'http://localhost:5000/group/eocVicbi3FLtK7OLW6Ln',
     {
       headers: { 
         'Content-Type': 'application/json',
@@ -53,9 +58,12 @@ const getTrans=async()=>{
   catch(err)
   {
     console.log(err);
+    if (err.message === 'jwt expired') {
+      localStorage.removeItem('access_token');
+      navigate('/');
+    }
   }
 }
-const navigate=useNavigate();
     return addNewChat!=="true"?(
       <div onClick={async()=>{
         await getTrans();

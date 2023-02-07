@@ -20,7 +20,7 @@ const Login=({setToken,removeToken,accessToken}:any) =>{
     const navigate=useNavigate();
   useEffect(()=>{
     
-    alert(`Login rerendering ${accessToken}`)
+    // alert(`Login rerendering ${accessToken}`)
     
   
     if(localStorage.getItem("access_token"))

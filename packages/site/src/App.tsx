@@ -17,6 +17,7 @@ import Home from './pages/Home';
 import Sample from './components/Sample';
 import Route1Page from './pages/Route1Page';
 import Route2Page from './pages/Route2Page';
+import Route3Page from './pages/Route3Page';
 
 export type AppProps = {
   children: ReactNode;
@@ -34,10 +35,11 @@ const setToken=()=>{
   ? setAccessToken(localStorage.getItem("access_token")):
   setAccessToken(null)
 }
-const removeToken=()=>{
+const removeToken=async()=>{
+  
+  await localStorage.removeItem('access_token')
+  await localStorage.removeItem('refresh_token')
   setAccessToken(null);
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
 }
 useEffect(()=>{
   console.log('App.tsx rendering')
@@ -55,9 +57,9 @@ useEffect(()=>{
         </Route>
        
         <Route path='/sample' element={<Sample/>}/>
-        <Route  path='/route1'  element={<Route1Page toggleTheme={toggleTheme}/>}/>
-        <Route  path='/route2' element={<Route2Page toggleTheme={toggleTheme}/>}/>
-        
+        <Route  path='/route1'  element={<Route1Page toggleTheme={toggleTheme} setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
+        <Route  path='/route2' element={<Route2Page toggleTheme={toggleTheme} setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
+        <Route  path='/route3' element={<Route3Page toggleTheme={toggleTheme} setToken={setToken} removeToken={removeToken} accessToken={accessToken}/>}/>
       </Routes>
       {/* <Footer /> */}
       

@@ -26,7 +26,20 @@ const HeaderWrapper = styled.header`
   padding: 2rem;
   border-bottom: 1px solid ${(props) => props.theme.colors.border.default};
 `;
-
+const style = {
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '1px solid #131c21',
+  boxShadow: 24,
+  borderRadius:'5%',
+  p: 4,
+  height:'60vh',
+  backgroundColor:"#0b1012",
+};
 const Title = styled.p`
   font-size: ${(props) => props.theme.fontSizes.title};
   font-weight: bold;
@@ -60,15 +73,8 @@ export const Header = ({
   const [state, dispatch] = useContext(MetaMaskContext);
   const [value, setValue] = useState(0);
   const navigate=useNavigate();
-  function handleChange(e, newValue):any {
-    setValue(newValue);
-  }
-  function a11yProps(index) {
-    return {
-      id: `scrollable-auto-tab-${index}`,
-      "aria-controls": `scrollable-auto-tabpanel-${index}`
-    };
-  }
+ 
+
   
   const handleConnectClick = async () => {
     try {
@@ -98,10 +104,10 @@ export const Header = ({
         <SnapLogo color={theme.colors.icon.default} size={36} />
         <Title>Simplify</Title>
       </LogoWrapper>
-        <div style={{display:'flex',width:'40%',minWidth:'700px',justifyContent:'flex-end', marginRight:'3%',alignItems:'center'}}>
+        <div style={{display:'flex',width:'40%',minWidth:'800px',justifyContent:'flex-end', marginRight:'3%',alignItems:'center'}}>
       
     
-     <div style={{display:'flex',flexDirection:'row',width:'60%',justifyContent:'space-around',fontSize:'16px',letterSpacing:0.7, }}>
+     <div style={{display:'flex',flexDirection:'row',width:'80%',justifyContent:'space-around',fontSize:'16px',letterSpacing:0.7, }}>
         <NavLink to="/home" >
           <button style={{backgroundColor:'inherit',border:'0.01em #2b2d33 solid',color:'inherit',width:'120px'}}>
           Home 
@@ -118,6 +124,12 @@ export const Header = ({
           Smart Contract
           </button>
         </NavLink>
+        <NavLink  to="/route3">
+        <button style={{backgroundColor:'inherit',border:'0.01em #2b2d33 solid',color:'inherit',width:'150px'}}>
+          Recurring Payment
+          </button>
+        </NavLink>
+        
         </div>
         <RightContainer style={{alignItems:'center',marginLeft:'3%'}}>
         {/* <Toggle
