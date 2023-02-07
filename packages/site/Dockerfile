@@ -3,7 +3,7 @@ ENV NODE_ENV production
 WORKDIR /app
 
 COPY ./package.json ./
-RUN yarn install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN yarn run build
