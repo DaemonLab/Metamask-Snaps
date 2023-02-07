@@ -1,4 +1,5 @@
 FROM node:19
+RUN apt-get update -y && apt-get install -y openjdk-11-jre
 
 # Create app directory
 WORKDIR /usr/src/app

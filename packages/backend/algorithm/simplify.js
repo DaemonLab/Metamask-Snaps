@@ -1,4 +1,3 @@
-// const { exec } = require("child_process");
 import {
   getDoc,
   doc,
@@ -12,10 +11,18 @@ import { exec } from 'child_process';
 
 async function run(input) {
   let inputString = input.join(' ');
-  console.log(inputString);
   // await exec(`javac SimplifyDebts.java`, {cwd : process.cwd()+'/algorithm'});
   let cmd = 'java SimplifyDebts ' + inputString;
-  const { stdout, stderr } = await exec(cmd, {cwd : process.cwd()+'/algorithm'});
+  console.log("Cmd is ", cmd);
+  const stdout = await new Promise((resolve, reject) => {
+    exec(cmd, {cwd : process.cwd()+'/algorithm'}, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
   return stdout
     .trim()
     .split(' ')
@@ -39,21 +46,27 @@ export const simplifyonSplit = async (data) => {
   const newEdges = {};
   for (let key in involved) {
     if (key == critical) continue;
-    if (add) newEdges[key] = { [critical]: involved[key] };
-    else newEdges[critical] = { ...newEdges[critical], [key]: involved[key] };
+    if (add){
+      if(!newEdges[key]) newEdges[key] = {};
+      newEdges[key][critical] = involved[key];
+    }
+    else
+    {
+      if(!newEdges[critical]) newEdges[critical] = {};
+      newEdges[critical][key] = involved[key];
+    }
   }
 
   console.log("New Edges",newEdges);
 
   for (let from in newEdges) {
     for (let to in newEdges[from]) {
-      if (!!graph[from] && !!graph[from][to]) {
-        graph[from][to] += newEdges[from][to];
-      } else {
-        graph[from] = { [to]: newEdges[from][to] };
+      if(!graph[from]) graph[from] = {};
+      if(!graph[from][to]) graph[from][to] = 0;
+      graph[from][to] += newEdges[from][to];
       }
-    }
   }
+  console.log("Graph Sent for simplified ",graph)
   return simplify( graph );
 };
 
@@ -89,11 +102,11 @@ export const simplify = async ( graph ) => {
   }
 
   let resArray = await run(input);
-
+  console.log('Response Array: ', resArray);
   // Replicate graph from output
   let resGraph = {};
   for (let i = 0; i < resArray.length; i += 3) {
-    resGraph[rgmap[resArray[i]]] = {
+    resGraph[rgmap[resArray[i]]] = {...resGraph[rgmap[resArray[i]]],
       [rgmap[resArray[i + 1]]]: resArray[i + 2],
     };
   }
