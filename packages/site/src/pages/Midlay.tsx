@@ -23,12 +23,31 @@ const Wrapper = styled.div`
 
 const Midlay=({ rooms,access,contacts}:any)=> {
     const navigate= useNavigate();
-    const[transacts,setTransactions]= useState({ 
+    const[transacts,setTransactions]:any= useState({ 
       simplified:{
       '0x1': { '0x2':40, '0x3': 50,'0x4': -25,'0x5': -25,'0x6': -25,'0x7': 0 },
       '0x2' : { '0x4': 25 ,'0x1':10},
       },
+      drop:{
+        '0x1':false,
+        '0x2':false
+      },
+      total:{
+        '0x1':15,
+        '0x2':35
+      },
       splits:[]});
+       const handleExpandClick = (item:any ) => {
+        console.log("Item ", item)
+        setTransactions((prev):any=>({
+          ...prev,
+          drop:{
+            ...prev.drop,
+            [item]:!prev.drop[item]
+          }
+        }))
+      };
+
     const {roomId}=useParams()
     const getTrans=async()=>{
         try{
@@ -99,7 +118,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     style={{marginTop:0,flex:0.7}}
         >
           <Errorboundary>
-    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts.splits} simplified={transacts.simplified} /></Errorboundary>
+    <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts.splits} simplified={transacts.simplified} total={transacts.total} drop={transacts.drop} handleExpandClick={handleExpandClick} /></Errorboundary>
     <Routes>
           <Route  path="transacts/:transactid" element={<Chat rooms={rooms} transacts={transacts.splits} access={access} contacts={contacts}/>}>
           </Route>

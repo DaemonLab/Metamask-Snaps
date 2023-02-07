@@ -6,7 +6,7 @@
 }
 .Midbar{
     display: flex;
-    flex: 0.6;
+    flex: 0.7;
     flex-direction: column;
 }
 .TEXT{
@@ -79,6 +79,14 @@ input:focus{
  .Sidebar__chats{
     display: flex;
     flex: 1;
+    flex-direction: column;
+    background-color: #131c21;
+ 
+    overflow-y: scroll;
+ }
+ .Midbar__simple{
+    display: flex;
+    flex: 0.6;
     flex-direction: column;
     background-color: #131c21;
  

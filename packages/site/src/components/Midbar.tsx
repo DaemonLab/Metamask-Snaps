@@ -11,11 +11,13 @@
     import Tabs from '@mui/material/Tabs';
     import Tab from '@mui/material/Tab';
     import Typography from '@mui/material/Typography';
-    
+    import Collapse from '@mui/material/Collapse';
     import InputLabel from '@mui/material/InputLabel';
     import { Avatar, IconButton, Tooltip, Button,ButtonGroup} from '@mui/material';
-    import { AddCircleOutline, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined, SearchRounded} from '@mui/icons-material';
+    import { AddCircleOutline, ChatBubble, ContentCutOutlined, DonutLargeRounded, ExitToAppOutlined,  SearchRounded} from '@mui/icons-material';
     import Divider from '@mui/material/Divider';
+    import  { IconButtonProps } from '@mui/material/IconButton';
+
     import FormControl from '@mui/material/FormControl';
     import Box from '@mui/material/Box';
     import Modal from '@mui/material/Modal';
@@ -31,6 +33,7 @@
     import Midbarcont from './Midbarcont';
     import Errorboundary from './errorboundary';
 import MidbarSimple from './MidbarSimple';
+import MidbarSimpleCont from './MidbarSimpleCont';
     
     const Item = styled(Paper)(({ theme }) => ({
       backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -71,8 +74,13 @@ import MidbarSimple from './MidbarSimple';
       p: 4,
       backgroundColor:"#0b1012"
     };
+  
     
-    const Midbar=({rooms,access,contacts,transacts,simplified}:any)=> {
+   
+    
+ 
+    
+    const Midbar=({rooms,access,contacts,transacts,simplified,handleExpandClick,drop,total}:any)=> {
     
       
       const [open, setOpen] = React.useState(false);
@@ -97,6 +105,8 @@ import MidbarSimple from './MidbarSimple';
       //   throw new Error("error detected")
       // }
     
+
+     
         const[seed,setSeed]=useState<any|null>("");
         useEffect(() => {
         return setSeed(Math.floor(Number(Math.random())));
@@ -584,11 +594,15 @@ import MidbarSimple from './MidbarSimple';
                    {/* checks the condition  whetjher the room nmae present or not */}
                    {sidebarBool ? (
                     <div style={{display:'flex',overflowY:'scroll', overflowX:'hidden',flexDirection:'row',flex:1}}>
-                      <div className='Sidebar__chats'style={{marginBottom:0,paddingBottom:0}}>
+                      <div className='Midbar__simple'style={{marginBottom:0,paddingBottom:0}}>
                        {(simplified && simplified!=undefined) && Object.keys(simplified).map((item:any,index:number)=>
-                       {console.log("Item",item,"MAps",Object.keys(simplified[item]))
+                       {console.log("Item",item,"MAps",Object.keys(simplified[item]),drop[item])
                        return(
                         <>
+                        <MidbarSimpleCont open={drop[item]} amount={total[item]} first={item}  user={"0x1"} handleExpandClick={handleExpandClick}/>
+                         
+                        
+                          <div style={{display:drop[item]?'block':'none'}}>
                         {simplified[item]!=undefined && Object.keys(simplified[item]).map((subItem:any,subIndex:number)=>{
                           return(<div key={index*10+subIndex} style={{color:'white'}}>
                             {console.log(subItem)}
@@ -600,6 +614,8 @@ import MidbarSimple from './MidbarSimple';
                             </div>
                           )
                        })}
+                       </div>
+                 
                        </>)
                        })}
                        
@@ -608,7 +624,7 @@ import MidbarSimple from './MidbarSimple';
                   
                   {(transacts && transacts!==undefined) &&transacts.map((transact:any) => (
                     <Errorboundary>
-                    <Midbarcont key={transact.id} id={transact.id} name={transact.name} roomid={roomId} />
+                    <Midbarcont key={transact.id} id={transact.id} name={transact.name} involved={transact.involved} roomid={roomId} user={user} />
                     </Errorboundary>
                   ))}
                 </div>
@@ -619,7 +635,7 @@ import MidbarSimple from './MidbarSimple';
                   
                   {search.map((room:any) => (
                     <Errorboundary>
-                    <Midbarcont key={room.id} id={room.id} name={room.name} />
+                    <Midbarcont key={room.id} id={room.id} name={room.name} user={user} />
                     </Errorboundary>
                   ))}
                 </div>
