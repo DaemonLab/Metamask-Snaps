@@ -32,8 +32,7 @@ Simplify is a Snap that allows anyone to is a Snap which utilizes the displaying
 
 To interact with Simplify, you will need to install [MetaMask Flask](https://metamask.io/flask/), a canary distribution for developers that provides access to upcoming features.
 
-## This repository is hosted online!!
-https://knotty-calendar-production.up.railway.app/
+
 
 ## You can also locally host it by folling the below instructions.
 
