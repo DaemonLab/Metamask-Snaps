@@ -431,6 +431,35 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
   }
 };
 
+export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
+  let result: any;
+  let spam: any;
+  let fee: any;
+  let transacts: any;
+
+  await checkTransacts(`${transaction.to}`).then(async (res) => {
+    const resx = JSON.parse(res);
+    result = 'ATTENTION: Recievers balance is 0';
+    if (resx.result != 0) {
+      result = `Recievers balance is ${resx.result}`;
+    }
+  });
+  await checkScam(`${transaction.to}`).then(async (res) => {
+    spam = res;
+  });
+  await getFee().then((res) => {
+    const res2 = JSON.parse(res);
+    fee = res2.blockPrices[0].estimatedPrices[0].maxFeePerGas;
+  });
+  await hasTransacts(`${transaction.to}`).then((res) => {
+    const res2 = JSON.parse(res);
+    transacts = res2.result.length;
+  });
+  return {
+    insights: await getInsights(transaction, result, spam, fee, transacts),
+  };
+};
+
 export const onCronjob: OnCronjobHandler = async ({ request }) => {
   let state = await wallet.request({
     method: 'snap_manageState',
