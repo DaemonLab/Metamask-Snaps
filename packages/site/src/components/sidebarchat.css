@@ -4,6 +4,13 @@
   border-bottom: 1px solid rgb(48, 48, 48);
   border-right: 1px solid rgb(48, 48, 48);
 }
+.MidbarSimple {
+  display: flex;
+  padding: 3%;
+  border-bottom: 1px solid rgb(48, 48, 48);
+  background-color:#18242b;
+  border-right: 1px solid rgb(48, 48, 48);
+}
 .Sidebarchat {
   display: flex;
   padding: 15px;

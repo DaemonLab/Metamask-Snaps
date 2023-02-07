@@ -18,7 +18,7 @@ const MidbarSimpleCont =(props: any)=> {
 
     return addNewChat!=="true"?(
       <div  style={{textDecoration:"none",cursor:'default'}}>
-        <div className="SidebarSimple">
+        <div className="MidbarSimple">
          
          <div style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%'}}>
         
@@ -39,18 +39,19 @@ const MidbarSimpleCont =(props: any)=> {
     
       
       <div style={{ display:'flex',flexDirection:'column',alignItems:'right',width:'100%' }}>
-      <div style={{textAlign:'right'}} onClick={()=>handleExpandClick(first)}> 
-      <button style={{backgroundColor:'transparent',color:'white',borderRadius :'50%',border:'none'}}>       
-      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-         </button>   
-            </div>
+     
             <Typography component="div" variant="h6" style={{fontFamily:"sans-serif",textAlign:'right'}}>
         {amount>0? `Owes `: amount==0 ?`is settled`: `is owed `
         }
         </Typography>
-      <Typography component="div" variant="h6" style={{marginLeft:'10px', display:amount==0?'none':'',fontWeight:'bold',letterSpacing:0.7,color:amount>0 ?'red': amount==0?'gray': 'green',textAlign:'right'}}>
+      <Typography component="div" variant="h6" style={{marginLeft:'10px', display:amount==0?'none':'flex',alignItems:'center',justifyContent:'flex-end',fontWeight:'bold',letterSpacing:0.7,color:amount>0 ?'red': amount==0?'gray': 'green',textAlign:'right'}}>
       
             ETH {Math.abs(amount)}
+            <div style={{display:'inline',textAlign:'right',height:'15px'}} onClick={()=>handleExpandClick(first)}> 
+      <button style={{backgroundColor:'transparent',color:'white',border:'none',padding:'3px',marginTop:'-10px'}}>       
+      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+         </button>   
+            </div>
           </Typography>
           
           </div>

@@ -1,12 +1,12 @@
 /* full side bar css */
 .Sidebar{
     display: flex;
-    flex: 0.30;
+    flex: 0.25;
     flex-direction: column;
 }
 .Midbar{
     display: flex;
-    flex: 0.7;
+    flex: 0.5;
     flex-direction: column;
 }
 .TEXT{

@@ -115,7 +115,7 @@ const Midlay=({ rooms,access,contacts}:any)=> {
     
     
     <div className="chat__body"
-    style={{marginTop:0,flex:0.7}}
+    style={{marginTop:0,flex:0.8}}
         >
           <Errorboundary>
     <Midbar rooms={rooms} access={access} contacts={contacts} transacts={transacts.splits} simplified={transacts.simplified} total={transacts.total} drop={transacts.drop} handleExpandClick={handleExpandClick} /></Errorboundary>
