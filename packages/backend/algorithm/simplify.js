@@ -54,11 +54,11 @@ export const simplifyonSplit = async (data) => {
       }
     }
   }
-  return simplify({ graph });
+  return simplify( graph );
 };
 
 // simplify takes graph and groupId as input and updates graph in database
-export const simplify = async ({ graph }) => {
+export const simplify = async ( graph ) => {
   // Mapping of public address to number
   let gmap = {},
     rgmap = {};
@@ -81,18 +81,14 @@ export const simplify = async ({ graph }) => {
 
   // create input like array
   // const vertexCount = groupSnap.data().members.length;;
-  console.log(graph, counter);
-
   let input = [counter];
   for (let from in graph) {
     for (let to in graph[from]) {
       input.push(gmap[from], gmap[to], graph[from][to]);
     }
   }
-  console.log('Input Array: ', input);
 
   let resArray = await run(input);
-  console.log('Response Array: ', resArray);
 
   // Replicate graph from output
   let resArray;

@@ -7,6 +7,7 @@ import {
   collection,
   getDocs,
 } from '@firebase/firestore';
+import { simplify } from '../algorithm/simplify.js';
 import { db } from '../firebase.js';
 
 // Add group details
@@ -28,8 +29,7 @@ export const addGroup = async (req, res) => {
           let groups = transactionSnap.data().groups || {};
           groups[groupRef.id] = 0;
           transaction.update(transactionSnap.ref, { groups: groups });
-        }
-        else
+        } else
           throw new Error('Invalid public Address/es, please signup first');
       });
 
@@ -46,7 +46,7 @@ export const addGroup = async (req, res) => {
       });
     });
 
-    return res.status(200).json({ status: 'success' , groupId: groupRef.id });
+    return res.status(200).json({ status: 'success', groupId: groupRef.id });
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }
@@ -87,13 +87,18 @@ export const getGroup = async (req, res) => {
     if (!docSnap.exists()) {
       throw new Error('group does not exists');
     }
-    console.log(docSnap.data(), docSnap.data().members.hasOwnProperty(req.user));
+    console.log(
+      docSnap.data(),
+      docSnap.data().members.hasOwnProperty(req.user),
+    );
     // check if user is part of the group
     if (!docSnap.data().members.hasOwnProperty(req.user)) {
       throw new Error('User not part of this group');
     }
 
-    const splitsData = await getDocs(collection(db, 'groups', req.params.gid, 'splits'));
+    const splitsData = await getDocs(
+      collection(db, 'groups', req.params.gid, 'splits'),
+    );
     const splits = splitsData.docs.map((split) => {
       return { ...split.data(), id: split.id };
     });
@@ -147,22 +152,41 @@ export const addMember = async (req, res) => {
   }
 };
 
-export const settleup = async (data) => {
-  try{
-    const sender = data.sender;
-    const reciever = data.reciever;
-    const groupId = req.params.id;
-    const groupRef = doc(db, 'groups', gid);
-    const groupSnap = await getDoc(groupRef);
-    const graph = groupSnap.data().graph;
-    if (!graph) throw new Error('No graph present, Bad request');
+export const settleup = async (req, res) => {
+  try {
+    const { sender, receiver, amount } = req.body;
+    const gid = req.params.gid;
 
-    if (!graph[sender][reciever]) throw new Error('No debt between these two');
-    graph[sender][reciever] = 0;
-    simplify({graph, groupId});
+    await runTransaction(db, async (transaction) => {
+      const groupRef = doc(db, 'groups', gid);
+      const groupSnap = await transaction.get(groupRef);
+      if (!groupSnap.exists()) throw new Error('Group does not exist!');
+
+      const graph = groupSnap.data().graph;
+      if (!graph) throw new Error('No graph present, Bad request');
+
+      if (!graph[sender] || !graph[sender][receiver])
+        throw new Error('No debt between these two');
+      if (amount > graph[sender][receiver])
+        throw new Error('Amount exceeds debt');
+
+      graph[sender][receiver] -= amount;
+      let payments = groupSnap.data().payments || [];
+      payments.push({
+        sender: sender,
+        reciever: receiver,
+        amount: amount,
+        date: Date.now(),
+      });
+      const newGraph = await simplify(graph);
+      transaction.update(
+        groupRef,
+        { payments: payments, graph: newGraph },
+        { merge: true },
+      );
+    });
     return res.status(200).json({ status: 'OK' });
-  }
-  catch(error){
+  } catch (error) {
     return res.status(404).json({ error: error.message });
   }
 };
@@ -178,4 +202,4 @@ export const getGraph = async (req, res) => {
   } catch (error) {
     return res.status(404).json({ error: error.message });
   }
-}
+};

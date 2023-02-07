@@ -16,7 +16,7 @@ router.route('/').post(addGroup).get(listGroups);
 router.route('/:gid').get(getGroup);
 router.route('/add').post(addMember);
 
-router.route('/:gid/settleup').post(settleup)
+router.route('/:gid/settle').post(settleup)
 router.route('/:gid/graph').get(getGraph);
 
 export default router;
