@@ -91,7 +91,6 @@ export const simplify = async ( graph ) => {
   let resArray = await run(input);
 
   // Replicate graph from output
-  let resArray;
   let resGraph = {};
   for (let i = 0; i < resArray.length; i += 3) {
     resGraph[rgmap[resArray[i]]] = {
